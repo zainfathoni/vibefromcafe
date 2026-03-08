@@ -25,14 +25,36 @@ const initialForm: InterestForm = {
 export default function Join() {
   const [form, setForm] = useState<InterestForm>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   function updateField<K extends keyof InterestForm>(key: K, value: InterestForm[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) {
+        const data = await response.json() as { error?: string };
+        throw new Error(data.error ?? "Something went wrong");
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -40,7 +62,7 @@ export default function Join() {
       <div className="mb-12 text-center">
         <h1 className="mb-4 text-3xl font-bold text-vfc-white">Join Vibe From Cafe</h1>
         <p className="mx-auto max-w-xl text-lg text-vfc-muted">
-          Vibe Coding is our first active theme. Fill the interest form and we’ll reach out when new chapter activities open.
+          Vibe Coding is our first active theme. Fill the interest form and we'll reach out when new chapter activities open.
         </p>
       </div>
 
@@ -94,12 +116,16 @@ export default function Join() {
               WhatsApp community access is invite-only. This form helps us prioritize onboarding.
             </p>
 
+            {error && (
+              <p className="text-sm text-red-400">{error}</p>
+            )}
+
             <button
               type="submit"
-              disabled
-              className="inline-flex cursor-not-allowed rounded-lg bg-vfc-border px-6 py-2.5 font-semibold text-vfc-muted"
+              disabled={loading}
+              className="inline-flex rounded-lg bg-vfc-yellow px-6 py-2.5 font-semibold text-vfc-black transition-colors hover:bg-yellow-300 disabled:cursor-not-allowed disabled:bg-vfc-border disabled:text-vfc-muted"
             >
-              Coming Soon
+              {loading ? "Submitting…" : "Express Interest"}
             </button>
           </form>
         )}

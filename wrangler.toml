@@ -1,3 +1,7 @@
 name = "vibefromcafe"
 compatibility_date = "2024-12-01"
 pages_build_output_dir = "build/client"
+
+[[kv_namespaces]]
+binding = "VFC_SUBMISSIONS"
+id = "7bd0071895c547758ba95a323592bf4b"
