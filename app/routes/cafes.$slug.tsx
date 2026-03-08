@@ -1,10 +1,9 @@
 import { Link } from "react-router";
-import type { MetaFunction } from "react-router";
 import cafes from "../data/cafes.json";
 import type { Cafe } from "../data/types";
 import type { Route } from "./+types/cafes.$slug";
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: Route.MetaFunction = ({ data }) => {
   if (!data) {
     return [{ title: "Cafe Not Found — Vibe From Cafe" }];
   }
@@ -17,7 +16,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   ];
 };
 
-export function loader({ params }: Route.LoaderArgs) {
+export function clientLoader({ params }: Route.ClientLoaderArgs) {
   const cafe = (cafes as Cafe[]).find((c) => c.slug === params.slug);
   if (!cafe) {
     throw new Response("Cafe not found", { status: 404 });

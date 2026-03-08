@@ -98,7 +98,7 @@ export default function Join() {
 
         {/* GitHub */}
         <a
-          href="https://github.com/vibefromcafe"
+          href="https://github.com/zainfathoni/vibefromcafe"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-5 bg-white rounded-xl border border-coffee-100 shadow-sm hover:shadow-md transition-all p-6 group"
