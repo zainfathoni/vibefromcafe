@@ -96,9 +96,10 @@ export default function Join() {
 
             <button
               type="submit"
-              className="inline-flex rounded-lg bg-vfc-yellow px-6 py-2.5 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
+              disabled
+              className="inline-flex cursor-not-allowed rounded-lg bg-vfc-border px-6 py-2.5 font-semibold text-vfc-muted"
             >
-              Express Interest
+              Coming Soon
             </button>
           </form>
         )}

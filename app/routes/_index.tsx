@@ -146,12 +146,11 @@ export default function Home() {
             Connect with fellow vibe coders, share your favorite cafe spots,
             and find your next coding workspace.
           </p>
-          <Link
-            to="/join"
-            className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
+          <span
+            className="inline-block cursor-not-allowed rounded-lg bg-vfc-border px-8 py-3 font-semibold text-vfc-muted"
           >
-            Express Interest
-          </Link>
+            Coming Soon
+          </span>
         </div>
       </section>
     </div>

@@ -105,12 +105,11 @@ export default function ChapterJogja() {
             Connect with builders in Jogja, share cafe recommendations,
             and join future invite-only community sessions.
           </p>
-          <Link
-            to="/join"
-            className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
+          <span
+            className="inline-block cursor-not-allowed rounded-lg bg-vfc-border px-8 py-3 font-semibold text-vfc-muted"
           >
-            Express Interest
-          </Link>
+            Coming Soon
+          </span>
         </div>
       </div>
     </div>
