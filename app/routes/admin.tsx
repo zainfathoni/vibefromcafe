@@ -200,12 +200,12 @@ export default function Admin() {
                       <td className="px-4 py-3 font-medium text-vfc-white">{submission.name}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.city}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.role}</td>
-                      <td className="px-4 py-3 text-vfc-white/90">{submission.whatsapp}</td>
-                      <td className="px-4 py-3 text-vfc-white/90">{formatReferralSource(submission.referralSource)}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{submission.whatsapp || "-"}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{submission.referralSource ? formatReferralSource(submission.referralSource) : "-"}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.referralName || "-"}</td>
                       <td className="px-4 py-3">
                         <select
-                          value={submission.invitationStatus}
+                          value={submission.invitationStatus ?? "pending"}
                           onChange={(event) =>
                             void updateInvitationStatus(
                               submission.id,
