@@ -4,7 +4,7 @@ import type { Cafe } from "../data/types";
 function AmenityBadge({ label, active }: { label: string; active: boolean | null }) {
   if (!active) return null;
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-leaf-500/10 text-leaf-600 border border-leaf-500/20">
+    <span className="inline-flex items-center rounded border border-vfc-yellow/30 bg-vfc-yellow/10 px-2 py-0.5 text-xs font-medium text-vfc-yellow">
       {label}
     </span>
   );
@@ -14,12 +14,12 @@ function WifiSpeedBadge({ speed }: { speed: string | null }) {
   if (!speed) return null;
 
   const downloadSpeed = parseFloat(speed.split(":")[0].split(" ")[0]);
-  let color = "bg-red-100 text-red-700 border-red-200";
-  if (downloadSpeed >= 100) color = "bg-green-100 text-green-700 border-green-200";
-  else if (downloadSpeed >= 50) color = "bg-yellow-100 text-yellow-700 border-yellow-200";
+  let color = "bg-red-500/20 text-red-200 border-red-500/50";
+  if (downloadSpeed >= 100) color = "bg-green-500/20 text-green-200 border-green-500/50";
+  else if (downloadSpeed >= 50) color = "bg-yellow-500/20 text-yellow-200 border-yellow-500/50";
 
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${color}`}>
+    <span className={`inline-flex items-center rounded border px-2 py-0.5 text-xs font-semibold tracking-wide ${color}`}>
       {speed} Mbps
     </span>
   );
@@ -29,14 +29,14 @@ export default function CafeCard({ cafe }: { cafe: Cafe }) {
   return (
     <Link
       to={`/cafes/${cafe.slug}`}
-      className="block bg-white rounded-xl border border-coffee-100 shadow-sm hover:shadow-md hover:border-coffee-200 transition-all p-5 group"
+      className="group block rounded-xl border border-vfc-border bg-vfc-surface p-5 transition-all hover:-translate-y-0.5 hover:border-vfc-yellow hover:shadow-[0_0_24px_rgba%28245%2C196%2C0%2C0.18%29]"
     >
-      <h3 className="font-semibold text-coffee-800 group-hover:text-coffee-600 mb-2">
+      <h3 className="mb-2 font-semibold text-vfc-white group-hover:text-vfc-yellow">
         {cafe.name}
       </h3>
 
       {cafe.map_location && (
-        <p className="text-sm text-coffee-400 mb-3">{cafe.map_location}</p>
+        <p className="mb-3 text-sm text-vfc-muted">{cafe.map_location}</p>
       )}
 
       <div className="flex flex-wrap gap-1.5 mb-3">

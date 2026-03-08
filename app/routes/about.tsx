@@ -2,89 +2,85 @@ import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => [
-  { title: "About — Vibe Coding From Cafe" },
+  { title: "About — Vibe From Cafe" },
   {
     name: "description",
     content:
-      "Learn about Vibe Coding From Cafe — a community of vibe coders in Indonesia.",
+      "Learn about Vibe From Cafe, a community built from cafes across Indonesia, with Vibe Coding as the first active theme.",
   },
 ];
 
 export default function About() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-coffee-800 mb-8">About Vibe Coding From Cafe</h1>
+      <h1 className="mb-8 text-3xl font-bold text-vfc-white">About Vibe From Cafe</h1>
 
-      <div className="prose max-w-none">
-        <div className="bg-white rounded-xl border border-coffee-100 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-coffee-800 mb-4">Our Story</h2>
-          <p className="text-coffee-600 mb-4">
-            Vibe Coding From Cafe started as a WhatsApp group for vibe coders in Jogja who
-            wanted to share their favorite cafe spots for AI-assisted coding sessions. We'd swap notes on WiFi speeds,
-            power outlet availability, and which cafes had the best vibes for getting
-            into flow with AI.
+      <div>
+        <div className="mb-8 rounded-xl border border-vfc-border bg-vfc-surface p-6">
+          <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Our Story</h2>
+          <p className="mb-4 text-vfc-muted">
+            Vibe From Cafe started as a community of people sharing productive cafe spots in Jogja.
+            The first theme we organized around was Vibe Coding: builders using AI and modern tools
+            from real-world cafe workspaces.
           </p>
-          <p className="text-coffee-600 mb-4">
-            What started as casual recommendations quickly grew into something bigger.
-            We realized that vibe coders across Indonesia needed a reliable way to
-            find coding-friendly cafes — not just any cafe, but ones where you can actually
-            be productive with your AI tools.
+          <p className="mb-4 text-vfc-muted">
+            What began as recommendations quickly became a structured community effort.
+            We realized people needed reliable, verified information on cafes where real work can happen,
+            not just aesthetic spots.
           </p>
-          <p className="text-coffee-600">
-            So we built this. Every cafe on Vibe Coding From Cafe has been visited and reviewed
-            by community members. The WiFi speeds are real (we run speed tests). The
-            amenity info is verified. No paid placements, no ads — just honest
-            recommendations from people who vibe code from cafes every day.
+          <p className="text-vfc-muted">
+            Every cafe on Vibe From Cafe is reviewed by community members. WiFi speeds are measured,
+            amenity info is verified, and recommendations stay transparent.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-coffee-100 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-coffee-800 mb-4">Our Vision</h2>
-          <p className="text-coffee-600 mb-4">
-            We envision a nationwide community of vibe coders who support each other
-            and contribute to a shared knowledge base of the best coding-friendly cafes
-            in Indonesia.
+        <div className="mb-8 rounded-xl border border-vfc-border bg-vfc-surface p-6">
+          <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Community Themes</h2>
+          <p className="mb-4 text-vfc-muted">
+            Vibe Coding is the first active theme in Vibe From Cafe.
+            Over time, we plan to expand into more themes like Marketing, Learning,
+            and other creative/professional communities that thrive in cafe environments.
           </p>
-          <p className="text-coffee-600">
-            Starting from Jogja, we're expanding to Jakarta, Bandung, and beyond. Each
-            chapter is community-driven — locals who know their city's cafe scene best.
+          <p className="text-vfc-muted">
+            Our chapter model stays community-driven: locals curate local spots,
+            and each theme can adapt to the way people actually work in each city.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-coffee-100 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-coffee-800 mb-4">What We Review</h2>
-          <ul className="space-y-3 text-coffee-600">
+        <div className="mb-8 rounded-xl border border-vfc-border bg-vfc-surface p-6">
+          <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">What We Review</h2>
+          <ul className="space-y-3 text-vfc-muted">
             <li className="flex items-start gap-3">
-              <span className="text-leaf-500 font-bold mt-0.5">&#10003;</span>
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
               <span><strong>WiFi Speed</strong> — Real speed test results, not just "WiFi available"</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-leaf-500 font-bold mt-0.5">&#10003;</span>
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
               <span><strong>Power Outlets</strong> — Because a dead laptop means no work</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-leaf-500 font-bold mt-0.5">&#10003;</span>
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
               <span><strong>Atmosphere</strong> — Quiet vibes, background music, crowd levels</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-leaf-500 font-bold mt-0.5">&#10003;</span>
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
               <span><strong>Amenities</strong> — AC, musholla, private rooms, kids area</span>
             </li>
             <li className="flex items-start gap-3">
-              <span className="text-leaf-500 font-bold mt-0.5">&#10003;</span>
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
               <span><strong>Prices</strong> — So you know before you go</span>
             </li>
           </ul>
         </div>
 
-        <div className="bg-white rounded-xl border border-coffee-100 p-6">
-          <h2 className="text-xl font-semibold text-coffee-800 mb-4">Connect With Us</h2>
+        <div className="rounded-xl border border-vfc-border bg-vfc-surface p-6">
+          <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Connect With Us</h2>
           <div className="flex flex-wrap gap-4">
             <a
               href="https://x.com/vibefromcafe"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-coffee-600 hover:text-coffee-800 font-medium"
+              className="font-medium text-vfc-muted hover:text-vfc-yellow"
             >
               X (@vibefromcafe)
             </a>
@@ -92,7 +88,7 @@ export default function About() {
               href="https://instagram.com/vibefromcafe"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-coffee-600 hover:text-coffee-800 font-medium"
+              className="font-medium text-vfc-muted hover:text-vfc-yellow"
             >
               Instagram (@vibefromcafe)
             </a>
@@ -100,7 +96,7 @@ export default function About() {
               href="https://github.com/vibefromcafe"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-coffee-600 hover:text-coffee-800 font-medium"
+              className="font-medium text-vfc-muted hover:text-vfc-yellow"
             >
               GitHub (@vibefromcafe)
             </a>
@@ -111,7 +107,7 @@ export default function About() {
       <div className="mt-10 text-center">
         <Link
           to="/join"
-          className="inline-block bg-coffee-700 hover:bg-coffee-800 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+          className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
         >
           Join the Community
         </Link>

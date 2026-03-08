@@ -13,10 +13,13 @@ export default function Nav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="bg-coffee-800 text-white sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 border-b border-vfc-border bg-vfc-black/95 text-vfc-white backdrop-blur">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/">
-          <img src="/logos/vfc-logo.jpg" alt="Vibe Coding From Cafe" className="h-10 w-auto rounded" />
+        <Link to="/" className="flex items-center gap-3">
+          <img src="/logos/vfc-logo.jpg" alt="Vibe From Cafe" className="h-10 w-auto rounded" />
+          <span className="font-semibold tracking-wide hidden sm:block">
+            <span className="text-vfc-yellow">VFC</span> Indonesia
+          </span>
         </Link>
 
         {/* Desktop */}
@@ -26,8 +29,10 @@ export default function Nav() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `text-sm font-medium hover:text-warm-300 ${
-                  isActive ? "text-warm-300" : "text-warm-100"
+                `rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-vfc-yellow text-vfc-black"
+                    : "text-vfc-white/80 hover:bg-vfc-surface hover:text-vfc-yellow"
                 }`
               }
             >
@@ -38,7 +43,7 @@ export default function Nav() {
 
         {/* Mobile toggle */}
         <button
-          className="md:hidden text-warm-100 p-1"
+          className="md:hidden text-vfc-white hover:text-vfc-yellow p-1"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -54,15 +59,17 @@ export default function Nav() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-coffee-700 px-4 pb-3">
+        <div className="md:hidden border-t border-vfc-border px-4 pb-3">
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `block py-2 text-sm font-medium hover:text-warm-300 ${
-                  isActive ? "text-warm-300" : "text-warm-100"
+                `block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-vfc-yellow text-vfc-black"
+                    : "text-vfc-white/80 hover:bg-vfc-surface hover:text-vfc-yellow"
                 }`
               }
             >

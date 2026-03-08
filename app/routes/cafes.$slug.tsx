@@ -5,10 +5,10 @@ import type { Route } from "./+types/cafes.$slug";
 
 export const meta: Route.MetaFunction = ({ data }) => {
   if (!data) {
-    return [{ title: "Cafe Not Found — Vibe Coding From Cafe" }];
+    return [{ title: "Cafe Not Found — Vibe From Cafe" }];
   }
   return [
-    { title: `${data.cafe.name} — Vibe Coding From Cafe` },
+    { title: `${data.cafe.name} — Vibe From Cafe` },
     {
       name: "description",
       content: `${data.cafe.name} in ${data.cafe.map_location ?? "Jogja"} — WiFi, amenities, and prices for vibe coders.`,
@@ -36,8 +36,8 @@ function Badge({
     <span
       className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
         active
-          ? "bg-leaf-500/10 text-leaf-600 border border-leaf-500/20"
-          : "bg-gray-100 text-gray-400 border border-gray-200 line-through"
+          ? "border border-vfc-yellow/30 bg-vfc-yellow/10 text-vfc-yellow"
+          : "border border-vfc-border bg-vfc-black text-vfc-muted line-through"
       }`}
     >
       {label}
@@ -54,9 +54,9 @@ function PriceRow({
 }) {
   if (!price) return null;
   return (
-    <div className="flex justify-between py-2 border-b border-coffee-100">
-      <span className="text-coffee-600">{label}</span>
-      <span className="font-medium text-coffee-800">{price}</span>
+    <div className="flex justify-between border-b border-vfc-border py-2">
+      <span className="text-vfc-muted">{label}</span>
+      <span className="font-medium text-vfc-white">{price}</span>
     </div>
   );
 }
@@ -70,29 +70,29 @@ export default function CafeDetail({ loaderData }: Route.ComponentProps) {
     <div className="max-w-3xl mx-auto px-4 py-10">
       <Link
         to="/cafes"
-        className="text-sm text-coffee-500 hover:text-coffee-700 mb-6 inline-block"
+        className="mb-6 inline-block text-sm text-vfc-muted hover:text-vfc-yellow"
       >
         &larr; Back to Cafes
       </Link>
 
-      <h1 className="text-3xl font-bold text-coffee-800 mb-2">{cafe.name}</h1>
+      <h1 className="mb-2 text-3xl font-bold text-vfc-white">{cafe.name}</h1>
 
       {cafe.map_location && (
-        <p className="text-coffee-400 mb-6">{cafe.map_location}</p>
+        <p className="mb-6 text-vfc-muted">{cafe.map_location}</p>
       )}
 
       {/* WiFi Speed */}
       {cafe.wifi_speed && (
-        <div className="bg-white rounded-xl border border-coffee-100 p-5 mb-6">
-          <h2 className="text-sm font-semibold text-coffee-600 uppercase tracking-wide mb-2">
+        <div className="mb-6 rounded-xl border border-vfc-border bg-vfc-surface p-5">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-vfc-muted">
             WiFi Speed
           </h2>
-          <p className="text-2xl font-bold text-coffee-800">
+          <p className="text-2xl font-bold text-vfc-yellow">
             {cafe.wifi_speed}{" "}
-            <span className="text-sm font-normal text-coffee-400">Mbps</span>
+            <span className="text-sm font-normal text-vfc-muted">Mbps</span>
           </p>
           {cafe.wifi_speed.includes(":") && (
-            <p className="text-xs text-coffee-400 mt-1">
+            <p className="mt-1 text-xs text-vfc-muted">
               Format: download : upload
             </p>
           )}
@@ -101,8 +101,8 @@ export default function CafeDetail({ loaderData }: Route.ComponentProps) {
 
       {/* Prices */}
       {hasPrices && (
-        <div className="bg-white rounded-xl border border-coffee-100 p-5 mb-6">
-          <h2 className="text-sm font-semibold text-coffee-600 uppercase tracking-wide mb-3">
+        <div className="mb-6 rounded-xl border border-vfc-border bg-vfc-surface p-5">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-vfc-muted">
             Prices
           </h2>
           <PriceRow label="Espresso" price={cafe.espresso_price} />
@@ -112,8 +112,8 @@ export default function CafeDetail({ loaderData }: Route.ComponentProps) {
       )}
 
       {/* Amenities */}
-      <div className="bg-white rounded-xl border border-coffee-100 p-5 mb-6">
-        <h2 className="text-sm font-semibold text-coffee-600 uppercase tracking-wide mb-3">
+      <div className="mb-6 rounded-xl border border-vfc-border bg-vfc-surface p-5">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-vfc-muted">
           Amenities
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -129,11 +129,11 @@ export default function CafeDetail({ loaderData }: Route.ComponentProps) {
 
       {/* Notes */}
       {cafe.notes && (
-        <div className="bg-warm-100 rounded-xl border border-warm-200 p-5 mb-6">
-          <h2 className="text-sm font-semibold text-coffee-600 uppercase tracking-wide mb-2">
+        <div className="mb-6 rounded-xl border border-vfc-yellow/40 bg-vfc-surface p-5">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-vfc-yellow">
             Notes
           </h2>
-          <p className="text-coffee-700">{cafe.notes}</p>
+          <p className="text-vfc-white">{cafe.notes}</p>
         </div>
       )}
 
@@ -147,7 +147,7 @@ export default function CafeDetail({ loaderData }: Route.ComponentProps) {
           }
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-coffee-700 hover:bg-coffee-800 text-white font-medium px-5 py-2.5 rounded-lg transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg bg-vfc-yellow px-5 py-2.5 font-medium text-vfc-black transition-colors hover:bg-yellow-300"
         >
           <svg
             className="w-4 h-4"

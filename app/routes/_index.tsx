@@ -5,11 +5,11 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "Vibe Coding From Cafe — Vibe Coding Community in Indonesia" },
+  { title: "Vibe From Cafe — Community Across Indonesia" },
   {
     name: "description",
     content:
-      "Where vibe coders build with AI and connect — from the best cafes across Indonesia.",
+      "Vibe From Cafe is a community built from cafes across Indonesia, with Vibe Coding as the first active theme.",
   },
 ];
 
@@ -28,28 +28,31 @@ export default function Home() {
   const featuredCafes = getTopCafesByWifi(cafes as Cafe[], 4);
 
   return (
-    <div>
+    <div className="bg-vfc-black">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-coffee-800 via-coffee-700 to-coffee-900 text-white py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <img src="/logos/vfc-logo.jpg" alt="Vibe Coding From Cafe" className="h-30 w-auto mx-auto mb-8 rounded-xl" />
+      <section className="relative overflow-hidden bg-vfc-black py-24 px-4 text-vfc-white">
+        <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-vfc-yellow/15 blur-3xl" />
+        <div className="relative max-w-4xl mx-auto text-center">
+          <img src="/logos/vfc-logo.jpg" alt="Vibe From Cafe" className="h-30 w-auto mx-auto mb-8 rounded-xl" />
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Code with AI from the best cafes across Indonesia.
+            Build fast, ship often, and keep
+            <span className="text-vfc-yellow"> coding</span> in flow.
           </h1>
-          <p className="text-lg text-warm-200 mb-8 max-w-2xl mx-auto">
-            A community of vibe coders building with AI from cafes. Real WiFi speeds, power
-            outlets, and vibes — reviewed by the community.
+          <p className="text-lg text-vfc-muted mb-8 max-w-2xl mx-auto">
+            Vibe From Cafe is where people gather, build, and share from cafes.
+            Vibe Coding is our first active theme, with real WiFi speeds, power
+            outlets, and vibes reviewed by the community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/cafes"
-              className="inline-block bg-warm-400 hover:bg-warm-500 text-coffee-900 font-semibold px-8 py-3 rounded-lg transition-colors"
+              className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
             >
               Browse Cafes
             </Link>
             <Link
               to="/join"
-              className="inline-block border-2 border-warm-300 hover:bg-warm-300/10 text-warm-100 font-semibold px-8 py-3 rounded-lg transition-colors"
+              className="inline-block rounded-lg border-2 border-vfc-yellow px-8 py-3 font-semibold text-vfc-yellow transition-colors hover:bg-vfc-yellow hover:text-vfc-black"
             >
               Join the Community
             </Link>
@@ -60,12 +63,12 @@ export default function Home() {
       {/* Featured Cafes */}
       <section className="max-w-6xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-coffee-800">
+          <h2 className="text-2xl font-bold text-vfc-white">
             Top Cafes by WiFi Speed
           </h2>
           <Link
             to="/cafes"
-            className="text-sm font-medium text-coffee-500 hover:text-coffee-700"
+            className="text-sm font-medium text-vfc-muted hover:text-vfc-yellow"
           >
             View all &rarr;
           </Link>
@@ -78,17 +81,17 @@ export default function Home() {
       </section>
 
       {/* Events Placeholder */}
-      <section className="bg-coffee-50 py-16 px-4">
+      <section className="bg-vfc-surface py-16 px-4 border-y border-vfc-border">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-coffee-800 mb-4">
+          <h2 className="text-2xl font-bold text-vfc-white mb-4">
             Upcoming Events
           </h2>
-          <p className="text-coffee-500 mb-6">
+          <p className="text-vfc-muted mb-6">
             Vibe coding sessions, community meetups, and more — coming soon.
           </p>
           <Link
             to="/events"
-            className="text-sm font-medium text-coffee-600 hover:text-coffee-800"
+            className="text-sm font-medium text-vfc-yellow hover:text-yellow-300"
           >
             Check events &rarr;
           </Link>
@@ -97,57 +100,57 @@ export default function Home() {
 
       {/* Chapters */}
       <section className="max-w-6xl mx-auto px-4 py-16">
-        <h2 className="text-2xl font-bold text-coffee-800 mb-8">
+        <h2 className="text-2xl font-bold text-vfc-white mb-8">
           Our Chapters
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Link
             to="/chapters/jogja"
-            className="bg-white rounded-xl border border-coffee-100 shadow-sm hover:shadow-md transition-all p-6 group"
+            className="group rounded-xl border border-vfc-border bg-vfc-surface p-6 transition-all hover:border-vfc-yellow"
           >
-            <h3 className="text-xl font-semibold text-coffee-800 group-hover:text-coffee-600 mb-2">
+            <h3 className="text-xl font-semibold text-vfc-white group-hover:text-vfc-yellow mb-2">
               Jogja
             </h3>
-            <p className="text-coffee-400 text-sm mb-3">
+            <p className="text-vfc-muted text-sm mb-3">
               {cafes.length}+ cafes reviewed
             </p>
-            <p className="text-coffee-500 text-sm">
+            <p className="text-vfc-muted text-sm">
               The first VFC chapter. A thriving community of vibe coders in
               the heart of Java.
             </p>
           </Link>
 
-          <div className="bg-coffee-50 rounded-xl border border-dashed border-coffee-200 p-6 opacity-60">
-            <h3 className="text-xl font-semibold text-coffee-600 mb-2">
+          <div className="rounded-xl border border-dashed border-vfc-border bg-vfc-black p-6 opacity-80">
+            <h3 className="text-xl font-semibold text-vfc-white/70 mb-2">
               Jakarta
             </h3>
-            <p className="text-coffee-400 text-sm">Coming soon</p>
+            <p className="text-vfc-muted text-sm">Coming soon</p>
           </div>
 
-          <div className="bg-coffee-50 rounded-xl border border-dashed border-coffee-200 p-6 opacity-60">
-            <h3 className="text-xl font-semibold text-coffee-600 mb-2">
+          <div className="rounded-xl border border-dashed border-vfc-border bg-vfc-black p-6 opacity-80">
+            <h3 className="text-xl font-semibold text-vfc-white/70 mb-2">
               Bandung
             </h3>
-            <p className="text-coffee-400 text-sm">Coming soon</p>
+            <p className="text-vfc-muted text-sm">Coming soon</p>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-coffee-800 text-white py-16 px-4">
+      <section className="border-y border-vfc-border bg-vfc-surface py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">
-            Join the Vibe Coding From Cafe community
+            Join the Vibe From Cafe community
           </h2>
-          <p className="text-warm-200 mb-8">
+          <p className="text-vfc-muted mb-8">
             Connect with fellow vibe coders, share your favorite cafe spots,
             and find your next coding workspace.
           </p>
           <Link
             to="/join"
-            className="inline-block bg-warm-400 hover:bg-warm-500 text-coffee-900 font-semibold px-8 py-3 rounded-lg transition-colors"
+            className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
           >
-            Join on WhatsApp
+            Express Interest
           </Link>
         </div>
       </section>
