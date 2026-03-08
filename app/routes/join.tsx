@@ -14,13 +14,27 @@ type InterestForm = {
   name: string;
   city: string;
   role: string;
+  whatsapp: string;
+  referralSource: string;
+  referralName: string;
 };
 
 const initialForm: InterestForm = {
   name: "",
   city: "",
   role: "",
+  whatsapp: "",
+  referralSource: "",
+  referralName: "",
 };
+
+const REFERRAL_SOURCES = [
+  { value: "friend", label: "A friend" },
+  { value: "instagram", label: "Instagram" },
+  { value: "twitter", label: "X (Twitter)" },
+  { value: "github", label: "GitHub" },
+  { value: "other", label: "Other" },
+];
 
 export default function Join() {
   const [form, setForm] = useState<InterestForm>(initialForm);
@@ -106,11 +120,56 @@ export default function Join() {
                 required
                 value={form.role}
                 onChange={(event) => updateField("role", event.target.value)}
-                rows={4}
+                rows={3}
                 className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
                 placeholder="Builder, designer, marketer, student, etc."
               />
             </label>
+
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-vfc-white">WhatsApp number</span>
+              <input
+                type="tel"
+                required
+                value={form.whatsapp}
+                onChange={(event) => updateField("whatsapp", event.target.value)}
+                className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+                placeholder="+62 812 3456 7890"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-vfc-white">How did you hear about us?</span>
+              <select
+                required
+                value={form.referralSource}
+                onChange={(event) => {
+                  updateField("referralSource", event.target.value);
+                  updateField("referralName", "");
+                }}
+                className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+              >
+                <option value="" disabled>Select an option…</option>
+                {REFERRAL_SOURCES.map((source) => (
+                  <option key={source.value} value={source.value}>
+                    {source.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {form.referralSource === "friend" && (
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-vfc-white">Who referred you?</span>
+                <input
+                  type="text"
+                  value={form.referralName}
+                  onChange={(event) => updateField("referralName", event.target.value)}
+                  className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+                  placeholder="Their name or WhatsApp handle"
+                />
+              </label>
+            )}
 
             <p className="text-sm text-vfc-muted">
               WhatsApp community access is invite-only. This form helps us prioritize onboarding.
