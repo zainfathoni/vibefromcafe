@@ -30,7 +30,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   let body: SubmissionBody;
   try {
-    body = await request.json<SubmissionBody>();
+    body = (await request.json()) as SubmissionBody;
   } catch {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
