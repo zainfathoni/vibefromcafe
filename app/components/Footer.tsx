@@ -6,9 +6,9 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="font-bold text-lg text-white mb-3">Vibe From Cafe</h3>
+            <h3 className="font-bold text-lg text-white mb-3">Vibe Coding From Cafe</h3>
             <p className="text-sm text-warm-300">
-              Where remote workers vibe, code, and connect — from cafes across Indonesia.
+              Where vibe coders build with AI and connect — from cafes across Indonesia.
             </p>
           </div>
 
@@ -46,7 +46,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-coffee-700 mt-8 pt-6 text-center text-sm text-warm-400">
-          Vibe From Cafe &mdash; Made with warmth from Indonesia.
+          Vibe Coding From Cafe &mdash; Made with warmth from Indonesia.
         </div>
       </div>
     </footer>

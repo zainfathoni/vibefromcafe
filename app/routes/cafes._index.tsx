@@ -5,11 +5,11 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "Cafe Directory — Vibe From Cafe" },
+  { title: "Cafe Directory — Vibe Coding From Cafe" },
   {
     name: "description",
     content:
-      "Find the best cafes for remote work in Indonesia. Real WiFi speeds, amenities, and community reviews.",
+      "Find the best cafes for vibe coding in Indonesia. Real WiFi speeds, amenities, and community reviews.",
   },
 ];
 

@@ -5,11 +5,11 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "Vibe From Cafe — Remote Work Community in Indonesia" },
+  { title: "Vibe Coding From Cafe — Vibe Coding Community in Indonesia" },
   {
     name: "description",
     content:
-      "Where remote workers vibe, code, and connect — from cafes across Indonesia.",
+      "Where vibe coders build with AI and connect — from the best cafes across Indonesia.",
   },
 ];
 
@@ -32,12 +32,12 @@ export default function Home() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-coffee-800 via-coffee-700 to-coffee-900 text-white py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
+          <img src="/logos/vfc-logo.jpg" alt="Vibe Coding From Cafe" className="h-30 w-auto mx-auto mb-8 rounded-xl" />
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Where remote workers vibe, code, and connect — from cafes across
-            Indonesia.
+            Code with AI from the best cafes across Indonesia.
           </h1>
           <p className="text-lg text-warm-200 mb-8 max-w-2xl mx-auto">
-            Find the best cafes for working remotely. Real WiFi speeds, power
+            A community of vibe coders building with AI from cafes. Real WiFi speeds, power
             outlets, and vibes — reviewed by the community.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -84,7 +84,7 @@ export default function Home() {
             Upcoming Events
           </h2>
           <p className="text-coffee-500 mb-6">
-            Community meetups, co-working sessions, and more — coming soon.
+            Vibe coding sessions, community meetups, and more — coming soon.
           </p>
           <Link
             to="/events"
@@ -112,7 +112,7 @@ export default function Home() {
               {cafes.length}+ cafes reviewed
             </p>
             <p className="text-coffee-500 text-sm">
-              The first VFC chapter. A thriving community of remote workers in
+              The first VFC chapter. A thriving community of vibe coders in
               the heart of Java.
             </p>
           </Link>
@@ -137,11 +137,11 @@ export default function Home() {
       <section className="bg-coffee-800 text-white py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">
-            Join the Vibe From Cafe community
+            Join the Vibe Coding From Cafe community
           </h2>
           <p className="text-warm-200 mb-8">
-            Connect with fellow remote workers, share your favorite cafe spots,
-            and find your next workspace.
+            Connect with fellow vibe coders, share your favorite cafe spots,
+            and find your next coding workspace.
           </p>
           <Link
             to="/join"

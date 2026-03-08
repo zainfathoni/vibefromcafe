@@ -3,10 +3,10 @@ import type { MetaFunction } from "react-router";
 import cafes from "../data/cafes.json";
 
 export const meta: MetaFunction = () => [
-  { title: "Chapters — Vibe From Cafe" },
+  { title: "Chapters — Vibe Coding From Cafe" },
   {
     name: "description",
-    content: "Vibe From Cafe chapters across Indonesia. Find your local community.",
+    content: "Vibe Coding From Cafe chapters across Indonesia. Find your local community.",
   },
 ];
 
@@ -15,7 +15,7 @@ export default function Chapters() {
     <div className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-coffee-800 mb-2">Chapters</h1>
       <p className="text-coffee-500 mb-10">
-        Vibe From Cafe is growing across Indonesia. Find your local chapter or start one.
+        Vibe Coding From Cafe is growing across Indonesia. Find your local chapter or start one.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -34,7 +34,7 @@ export default function Chapters() {
           </h2>
           <p className="text-coffee-400 text-sm mb-3">{cafes.length}+ cafes reviewed</p>
           <p className="text-coffee-500 text-sm mb-4">
-            The first VFC chapter. A thriving community of remote workers in the cultural heart of Java.
+            The first VFC chapter. A thriving community of vibe coders in the cultural heart of Java.
           </p>
           <span className="text-sm font-medium text-coffee-600 group-hover:text-coffee-800">
             Explore Jogja &rarr;
@@ -46,7 +46,7 @@ export default function Chapters() {
           <h2 className="text-2xl font-bold text-coffee-600 mb-2">Jakarta</h2>
           <p className="text-coffee-400 text-sm mb-3">Coming soon</p>
           <p className="text-coffee-400 text-sm">
-            The capital city's remote work scene is booming. We're scouting cafes now.
+            The capital city's vibe coding scene is booming. We're scouting cafes now.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ export default function Chapters() {
           <h2 className="text-2xl font-bold text-coffee-600 mb-2">Bandung</h2>
           <p className="text-coffee-400 text-sm mb-3">Coming soon</p>
           <p className="text-coffee-400 text-sm">
-            Known for its creative scene and cool climate — a natural fit for remote workers.
+            Known for its creative scene and cool climate — a natural fit for vibe coders.
           </p>
         </div>
       </div>

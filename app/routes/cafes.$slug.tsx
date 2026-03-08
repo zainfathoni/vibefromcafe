@@ -5,13 +5,13 @@ import type { Route } from "./+types/cafes.$slug";
 
 export const meta: Route.MetaFunction = ({ data }) => {
   if (!data) {
-    return [{ title: "Cafe Not Found — Vibe From Cafe" }];
+    return [{ title: "Cafe Not Found — Vibe Coding From Cafe" }];
   }
   return [
-    { title: `${data.cafe.name} — Vibe From Cafe` },
+    { title: `${data.cafe.name} — Vibe Coding From Cafe` },
     {
       name: "description",
-      content: `${data.cafe.name} in ${data.cafe.map_location ?? "Jogja"} — WiFi, amenities, and prices for remote workers.`,
+      content: `${data.cafe.name} in ${data.cafe.map_location ?? "Jogja"} — WiFi, amenities, and prices for vibe coders.`,
     },
   ];
 };

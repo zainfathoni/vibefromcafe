@@ -15,8 +15,8 @@ export default function Nav() {
   return (
     <nav className="bg-coffee-800 text-white sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold tracking-tight text-warm-100">
-          Vibe From Cafe
+        <Link to="/">
+          <img src="/logos/vfc-logo.jpg" alt="Vibe Coding From Cafe" className="h-10 w-auto rounded" />
         </Link>
 
         {/* Desktop */}

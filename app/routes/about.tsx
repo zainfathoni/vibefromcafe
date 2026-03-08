@@ -2,47 +2,47 @@ import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => [
-  { title: "About — Vibe From Cafe" },
+  { title: "About — Vibe Coding From Cafe" },
   {
     name: "description",
     content:
-      "Learn about Vibe From Cafe — a community for remote workers in Indonesia.",
+      "Learn about Vibe Coding From Cafe — a community of vibe coders in Indonesia.",
   },
 ];
 
 export default function About() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold text-coffee-800 mb-8">About Vibe From Cafe</h1>
+      <h1 className="text-3xl font-bold text-coffee-800 mb-8">About Vibe Coding From Cafe</h1>
 
       <div className="prose max-w-none">
         <div className="bg-white rounded-xl border border-coffee-100 p-6 mb-8">
           <h2 className="text-xl font-semibold text-coffee-800 mb-4">Our Story</h2>
           <p className="text-coffee-600 mb-4">
-            Vibe From Cafe started as a WhatsApp group for remote workers in Jogja who
-            wanted to share their favorite cafe spots. We'd swap notes on WiFi speeds,
+            Vibe Coding From Cafe started as a WhatsApp group for vibe coders in Jogja who
+            wanted to share their favorite cafe spots for AI-assisted coding sessions. We'd swap notes on WiFi speeds,
             power outlet availability, and which cafes had the best vibes for getting
-            work done.
+            into flow with AI.
           </p>
           <p className="text-coffee-600 mb-4">
             What started as casual recommendations quickly grew into something bigger.
-            We realized that remote workers across Indonesia needed a reliable way to
-            find work-friendly cafes — not just any cafe, but ones where you can actually
-            be productive.
+            We realized that vibe coders across Indonesia needed a reliable way to
+            find coding-friendly cafes — not just any cafe, but ones where you can actually
+            be productive with your AI tools.
           </p>
           <p className="text-coffee-600">
-            So we built this. Every cafe on Vibe From Cafe has been visited and reviewed
+            So we built this. Every cafe on Vibe Coding From Cafe has been visited and reviewed
             by community members. The WiFi speeds are real (we run speed tests). The
             amenity info is verified. No paid placements, no ads — just honest
-            recommendations from people who work from cafes every day.
+            recommendations from people who vibe code from cafes every day.
           </p>
         </div>
 
         <div className="bg-white rounded-xl border border-coffee-100 p-6 mb-8">
           <h2 className="text-xl font-semibold text-coffee-800 mb-4">Our Vision</h2>
           <p className="text-coffee-600 mb-4">
-            We envision a nationwide community of remote workers who support each other
-            and contribute to a shared knowledge base of the best work-friendly cafes
+            We envision a nationwide community of vibe coders who support each other
+            and contribute to a shared knowledge base of the best coding-friendly cafes
             in Indonesia.
           </p>
           <p className="text-coffee-600">

@@ -5,11 +5,11 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "Jogja Chapter — Vibe From Cafe" },
+  { title: "Jogja Chapter — Vibe Coding From Cafe" },
   {
     name: "description",
     content:
-      "Vibe From Cafe Jogja — the first chapter. Discover the best cafes for remote work in Yogyakarta.",
+      "Vibe Coding From Cafe Jogja — the first chapter. Discover the best cafes for vibe coding in Yogyakarta.",
   },
 ];
 
@@ -25,7 +25,17 @@ export default function ChapterJogja() {
     .slice(0, 6);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
+    <div>
+      {/* Hero Banner */}
+      <div className="w-full mb-8">
+        <img
+          src="/logos/vfc-jogja-banner.jpg"
+          alt="Vibe Coding From Cafe — Chapter Yogyakarta"
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4">
       <Link
         to="/chapters"
         className="text-sm text-coffee-500 hover:text-coffee-700 mb-6 inline-block"
@@ -34,16 +44,23 @@ export default function ChapterJogja() {
       </Link>
 
       {/* Intro */}
-      <div className="mb-12">
-        <h1 className="text-3xl font-bold text-coffee-800 mb-4">
-          VFC Jogja
-        </h1>
-        <p className="text-coffee-600 max-w-2xl text-lg">
-          Jogja is where Vibe From Cafe started. What began as a WhatsApp group
-          of remote workers sharing cafe recommendations has grown into a
-          vibrant community exploring the best work-friendly cafes in
-          Yogyakarta.
-        </p>
+      <div className="mb-12 flex items-start gap-6">
+        <img
+          src="/logos/vfc-jogja-logo.jpg"
+          alt="VFC Jogja"
+          className="w-20 h-20 rounded-xl shrink-0 hidden sm:block"
+        />
+        <div>
+          <h1 className="text-3xl font-bold text-coffee-800 mb-4">
+            VFC Jogja
+          </h1>
+          <p className="text-coffee-600 max-w-2xl text-lg">
+            Jogja is where Vibe Coding From Cafe started. What began as a WhatsApp group
+            of vibe coders sharing cafe recommendations has grown into a
+            vibrant community exploring the best cafes for AI-assisted coding in
+            Yogyakarta.
+          </p>
+        </div>
       </div>
 
       {/* Stats */}
@@ -86,8 +103,8 @@ export default function ChapterJogja() {
       <div className="bg-coffee-800 text-white rounded-2xl p-8 text-center">
         <h2 className="text-2xl font-bold mb-3">Join VFC Jogja</h2>
         <p className="text-warm-200 mb-6 max-w-md mx-auto">
-          Connect with remote workers in Jogja. Share cafe recommendations,
-          join co-working sessions, and be part of the community.
+          Connect with vibe coders in Jogja. Share cafe recommendations,
+          join vibe coding sessions, and be part of the community.
         </p>
         <Link
           to="/join"
@@ -96,6 +113,7 @@ export default function ChapterJogja() {
           Join on WhatsApp
         </Link>
       </div>
+    </div>
     </div>
   );
 }

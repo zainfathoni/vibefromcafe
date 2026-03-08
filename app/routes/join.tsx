@@ -1,11 +1,11 @@
 import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => [
-  { title: "Join — Vibe From Cafe" },
+  { title: "Join — Vibe Coding From Cafe" },
   {
     name: "description",
     content:
-      "Join the Vibe From Cafe community. Connect with remote workers across Indonesia.",
+      "Join the Vibe Coding From Cafe community. Connect with vibe coders across Indonesia.",
   },
 ];
 
@@ -14,11 +14,11 @@ export default function Join() {
     <div className="max-w-3xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
         <h1 className="text-3xl font-bold text-coffee-800 mb-4">
-          Join Vibe From Cafe
+          Join Vibe Coding From Cafe
         </h1>
         <p className="text-coffee-500 text-lg max-w-xl mx-auto">
-          Connect with fellow remote workers, share cafe recommendations, and
-          find your next workspace.
+          Connect with fellow vibe coders, share cafe recommendations, and
+          find your next coding workspace.
         </p>
       </div>
 

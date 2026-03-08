@@ -1,10 +1,10 @@
 import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => [
-  { title: "Events — Vibe From Cafe" },
+  { title: "Events — Vibe Coding From Cafe" },
   {
     name: "description",
-    content: "Community events, meetups, and co-working sessions by Vibe From Cafe.",
+    content: "Vibe coding sessions, meetups, and community events by Vibe Coding From Cafe.",
   },
 ];
 
@@ -20,7 +20,7 @@ export default function Events() {
 
         <h1 className="text-3xl font-bold text-coffee-800 mb-4">Events Coming Soon</h1>
         <p className="text-coffee-500 mb-8 max-w-md mx-auto">
-          We're planning community meetups, co-working sessions, and more.
+          We're planning vibe coding sessions, community meetups, and more.
           Follow us on social media to stay updated!
         </p>
 
