@@ -1,7 +1,16 @@
 import { render, screen, within } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import Admin from "./admin";
+
+function renderAdmin() {
+  render(
+    <MemoryRouter>
+      <Admin />
+    </MemoryRouter>,
+  );
+}
 
 type MockSubmission = {
   id: string;
@@ -47,7 +56,7 @@ describe("admin route", () => {
       },
     ]);
 
-    render(<Admin />);
+    renderAdmin();
 
     const nameCell = await screen.findByText("Legacy User");
     const row = nameCell.closest("tr");
@@ -78,7 +87,7 @@ describe("admin route", () => {
       },
     ]);
 
-    render(<Admin />);
+    renderAdmin();
 
     const row = (await screen.findByText("Complete User")).closest("tr");
     expect(row).not.toBeNull();
@@ -109,7 +118,7 @@ describe("admin route", () => {
       },
     ]);
 
-    render(<Admin />);
+    renderAdmin();
 
     const withNameRow = (await screen.findByText("Friend With Name")).closest("tr");
     expect(withNameRow).not.toBeNull();
@@ -135,7 +144,7 @@ describe("admin route", () => {
       },
     ]);
 
-    render(<Admin />);
+    renderAdmin();
 
     const noNameRow = (await screen.findByText("Friend No Name")).closest("tr");
     expect(noNameRow).not.toBeNull();
@@ -161,7 +170,7 @@ describe("admin route", () => {
       },
     ]);
 
-    render(<Admin />);
+    renderAdmin();
 
     const row = (await screen.findByText("Unknown Referral")).closest("tr");
     expect(row).not.toBeNull();
@@ -175,7 +184,7 @@ describe("admin route", () => {
   it("shows an empty state when there are no submissions", async () => {
     mockSubmissionsApi([]);
 
-    render(<Admin />);
+    renderAdmin();
 
     expect(await screen.findByText("No submissions found.")).toBeInTheDocument();
   });
@@ -187,7 +196,7 @@ describe("admin route", () => {
 
     vi.stubGlobal("fetch", fetchMock);
 
-    render(<Admin />);
+    renderAdmin();
 
     expect(await screen.findByText("Unable to reach submissions API")).toBeInTheDocument();
   });

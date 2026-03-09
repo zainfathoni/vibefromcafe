@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
+import type { Event } from "../data/types";
 
 export const meta: MetaFunction = () => [
   { title: "Admin — Vibe From Cafe" },
@@ -30,6 +32,11 @@ interface SubmissionsResponse {
 
 interface UpdateSubmissionResponse {
   submission?: Submission;
+  error?: string;
+}
+
+interface EventsResponse {
+  events?: Event[];
   error?: string;
 }
 
@@ -67,15 +74,31 @@ function formatSubmittedAt(createdAt: string) {
   });
 }
 
+function formatEventSchedule(event: Event) {
+  const date = new Date(`${event.date}T00:00:00`);
+  const readableDate = Number.isNaN(date.getTime())
+    ? event.date
+    : date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+  return `${readableDate} • ${event.time}`;
+}
+
 export default function Admin() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [submissionsLoading, setSubmissionsLoading] = useState(true);
+  const [submissionsError, setSubmissionsError] = useState<string | null>(null);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
+  const [eventsError, setEventsError] = useState<string | null>(null);
   const [updatingById, setUpdatingById] = useState<Record<string, boolean>>({});
 
   const loadSubmissions = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+    setSubmissionsLoading(true);
+    setSubmissionsError(null);
 
     try {
       const response = await fetch("/api/admin/submissions");
@@ -87,18 +110,41 @@ export default function Admin() {
 
       setSubmissions(data.submissions ?? []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load submissions");
+      setSubmissionsError(err instanceof Error ? err.message : "Failed to load submissions");
     } finally {
-      setLoading(false);
+      setSubmissionsLoading(false);
+    }
+  }, []);
+
+  const loadEvents = useCallback(async () => {
+    setEventsLoading(true);
+    setEventsError(null);
+
+    try {
+      const response = await fetch("/api/admin/events");
+      const data = (await response.json()) as EventsResponse;
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ? `Failed to load events: ${data.error}` : "Failed to load events",
+        );
+      }
+
+      setEvents(data.events ?? []);
+    } catch (err) {
+      setEventsError(err instanceof Error ? err.message : "Failed to load events");
+    } finally {
+      setEventsLoading(false);
     }
   }, []);
 
   useEffect(() => {
     void loadSubmissions();
-  }, [loadSubmissions]);
+    void loadEvents();
+  }, [loadEvents, loadSubmissions]);
 
   async function updateInvitationStatus(id: string, invitationStatus: InvitationStatus) {
-    setError(null);
+    setSubmissionsError(null);
     setUpdatingById((current) => ({ ...current, [id]: true }));
 
     try {
@@ -122,7 +168,7 @@ export default function Admin() {
         ),
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update invitation status");
+      setSubmissionsError(err instanceof Error ? err.message : "Failed to update invitation status");
     } finally {
       setUpdatingById((current) => {
         const next = { ...current };
@@ -144,16 +190,16 @@ export default function Admin() {
         <button
           type="button"
           onClick={() => void loadSubmissions()}
-          disabled={loading}
+          disabled={submissionsLoading}
           className="inline-flex items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? "Refreshing…" : "Refresh"}
+          {submissionsLoading ? "Refreshing…" : "Refresh"}
         </button>
       </div>
 
-      {error && (
+      {submissionsError && (
         <div className="mb-6 rounded-lg border border-red-400/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">
-          {error}
+          {submissionsError}
         </div>
       )}
 
@@ -179,7 +225,7 @@ export default function Admin() {
             </thead>
 
             <tbody>
-              {loading ? (
+              {submissionsLoading ? (
                 <tr>
                   <td className="px-4 py-6 text-vfc-muted" colSpan={8}>
                     Loading submissions…
@@ -233,6 +279,92 @@ export default function Admin() {
           </table>
         </div>
       </div>
+
+      <section className="mt-10">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-2xl font-bold text-vfc-white">Events Management</h2>
+            <p className="mt-1 text-sm text-vfc-muted">Publish new events and edit existing schedules shown on the public events page.</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void loadEvents()}
+              disabled={eventsLoading}
+              className="inline-flex items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {eventsLoading ? "Refreshing…" : "Refresh"}
+            </button>
+            <Link
+              to="/admin/events/new"
+              className="inline-flex items-center rounded-lg bg-vfc-yellow px-4 py-2 text-sm font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
+            >
+              New Event
+            </Link>
+          </div>
+        </div>
+
+        {eventsError && (
+          <div className="mb-6 rounded-lg border border-red-400/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+            {eventsError}
+          </div>
+        )}
+
+        <div className="rounded-2xl border border-vfc-border bg-vfc-surface">
+          <div className="flex items-center justify-between border-b border-vfc-border px-4 py-3 text-sm text-vfc-muted">
+            <span>Total events</span>
+            <span className="font-semibold text-vfc-white">{events.length}</span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="min-w-[860px] w-full text-left text-sm">
+              <thead className="bg-vfc-black/70 text-xs uppercase tracking-wide text-vfc-muted">
+                <tr>
+                  <th className="px-4 py-3 font-medium">Title</th>
+                  <th className="px-4 py-3 font-medium">Schedule</th>
+                  <th className="px-4 py-3 font-medium">Location</th>
+                  <th className="px-4 py-3 font-medium">Tags</th>
+                  <th className="px-4 py-3 font-medium">Created At</th>
+                  <th className="px-4 py-3 font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {eventsLoading ? (
+                  <tr>
+                    <td className="px-4 py-6 text-vfc-muted" colSpan={6}>
+                      Loading events…
+                    </td>
+                  </tr>
+                ) : events.length === 0 ? (
+                  <tr>
+                    <td className="px-4 py-6 text-vfc-muted" colSpan={6}>
+                      No events found.
+                    </td>
+                  </tr>
+                ) : (
+                  events.map((event) => (
+                    <tr key={event.id} className="border-t border-vfc-border/70 align-top">
+                      <td className="px-4 py-3 font-medium text-vfc-white">{event.title}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{formatEventSchedule(event)}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{event.location}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{event.tags.length > 0 ? event.tags.join(", ") : "-"}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">{formatSubmittedAt(event.createdAt)}</td>
+                      <td className="px-4 py-3">
+                        <Link
+                          to={`/admin/events/${event.id}/edit`}
+                          className="inline-flex items-center rounded-md border border-vfc-border px-3 py-1.5 text-xs font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow"
+                        >
+                          Edit
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

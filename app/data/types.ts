@@ -16,3 +16,16 @@ export interface Cafe {
   has_power_outlets: boolean | null;
   notes: string | null;
 }
+
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  cafeId?: string;
+  imageUrl?: string;
+  tags: string[];
+  createdAt: string;
+}
