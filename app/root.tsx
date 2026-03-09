@@ -5,10 +5,30 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import type { LinksFunction } from "react-router";
+import type { LinksFunction, MetaFunction } from "react-router";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import "./app.css";
+
+const SITE_URL = "https://vibefromcafe.id/";
+const SITE_TITLE = "Vibe From Cafe — Community Across Indonesia";
+const SITE_DESCRIPTION =
+  "Vibe From Cafe is a community built from cafes across Indonesia, with Vibe Coding as the first active theme.";
+const OG_IMAGE_URL = `${SITE_URL}og-image.png`;
+
+export const meta: MetaFunction = () => [
+  { title: SITE_TITLE },
+  { name: "description", content: SITE_DESCRIPTION },
+  { property: "og:title", content: SITE_TITLE },
+  { property: "og:description", content: SITE_DESCRIPTION },
+  { property: "og:image", content: OG_IMAGE_URL },
+  { property: "og:url", content: SITE_URL },
+  { property: "og:type", content: "website" },
+  { name: "twitter:card", content: "summary_large_image" },
+  { name: "twitter:title", content: SITE_TITLE },
+  { name: "twitter:description", content: SITE_DESCRIPTION },
+  { name: "twitter:image", content: OG_IMAGE_URL },
+];
 
 export const links: LinksFunction = () => [
   {
