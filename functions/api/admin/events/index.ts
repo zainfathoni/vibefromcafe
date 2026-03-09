@@ -1,21 +1,33 @@
 import { parseEventInput } from "../../../../app/data/event-validation";
 import { getAllEvents, saveEvent } from "../../../../app/data/events-store";
 import type { Event } from "../../../../app/data/types";
+import { requireAdmin } from "../auth";
 
 interface Env {
   VFC_SUBMISSIONS: KVNamespace;
+  ADMIN_SECRET?: string;
 }
 
 type CreateEventResponse =
   | { event: Event }
   | { error: string };
 
-export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
+export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
+  const unauthorized = requireAdmin(request, env);
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const events = await getAllEvents(env);
   return Response.json({ events });
 };
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+  const unauthorized = requireAdmin(request, env);
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   let body: unknown;
   try {
     body = await request.json();

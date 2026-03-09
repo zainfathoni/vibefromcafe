@@ -24,6 +24,26 @@ type MockSubmission = {
   createdAt: string;
 };
 
+type MockEvent = {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  tags: string[];
+  createdAt: string;
+};
+
+type MockAdminApisOptions = {
+  submissions?: MockSubmission[];
+  submissionsOk?: boolean;
+  submissionsError?: string;
+  events?: MockEvent[];
+  eventsOk?: boolean;
+  eventsError?: string;
+};
+
 function mockResponse(body: unknown, ok = true): Response {
   return {
     ok,
@@ -31,10 +51,42 @@ function mockResponse(body: unknown, ok = true): Response {
   } as unknown as Response;
 }
 
-function mockSubmissionsApi(submissions: MockSubmission[]) {
-  const fetchMock = vi.fn().mockResolvedValue(
-    mockResponse({ submissions }),
-  ) as unknown as typeof fetch;
+function mockAdminApis({
+  submissions = [],
+  submissionsOk = true,
+  submissionsError = "Failed to load submissions",
+  events = [],
+  eventsOk = true,
+  eventsError = "Failed to load events",
+}: MockAdminApisOptions = {}) {
+  const fetchMock = vi.fn((input: RequestInfo | URL) => {
+    const url =
+      typeof input === "string"
+        ? input
+        : input instanceof URL
+          ? input.toString()
+          : input.url;
+
+    if (url.includes("/api/admin/submissions")) {
+      return Promise.resolve(
+        mockResponse(
+          submissionsOk ? { submissions } : { error: submissionsError },
+          submissionsOk,
+        ),
+      );
+    }
+
+    if (url.includes("/api/admin/events")) {
+      return Promise.resolve(
+        mockResponse(
+          eventsOk ? { events } : { error: eventsError },
+          eventsOk,
+        ),
+      );
+    }
+
+    return Promise.reject(new Error(`Unhandled fetch request in test: ${url}`));
+  }) as unknown as typeof fetch;
 
   vi.stubGlobal("fetch", fetchMock);
 }
@@ -46,7 +98,8 @@ describe("admin route", () => {
   });
 
   it("renders legacy incomplete submissions with safe defaults", async () => {
-    mockSubmissionsApi([
+    mockAdminApis({
+      submissions: [
       {
         id: "legacy-1",
         name: "Legacy User",
@@ -54,7 +107,8 @@ describe("admin route", () => {
         role: "Developer",
         createdAt: "2025-01-01T10:00:00.000Z",
       },
-    ]);
+      ],
+    });
 
     renderAdmin();
 
@@ -73,7 +127,8 @@ describe("admin route", () => {
   });
 
   it("renders submissions with complete data correctly", async () => {
-    mockSubmissionsApi([
+    mockAdminApis({
+      submissions: [
       {
         id: "full-1",
         name: "Complete User",
@@ -85,7 +140,8 @@ describe("admin route", () => {
         invitationStatus: "invited",
         createdAt: "2025-01-02T11:00:00.000Z",
       },
-    ]);
+      ],
+    });
 
     renderAdmin();
 
@@ -104,7 +160,8 @@ describe("admin route", () => {
   });
 
   it("shows referral name when referral source is friend and name is present", async () => {
-    mockSubmissionsApi([
+    mockAdminApis({
+      submissions: [
       {
         id: "friend-with-name",
         name: "Friend With Name",
@@ -116,7 +173,8 @@ describe("admin route", () => {
         invitationStatus: "pending",
         createdAt: "2025-01-03T12:00:00.000Z",
       },
-    ]);
+      ],
+    });
 
     renderAdmin();
 
@@ -131,7 +189,8 @@ describe("admin route", () => {
   });
 
   it("shows '-' when referral source is friend but referral name is missing", async () => {
-    mockSubmissionsApi([
+    mockAdminApis({
+      submissions: [
       {
         id: "friend-no-name",
         name: "Friend No Name",
@@ -142,7 +201,8 @@ describe("admin route", () => {
         invitationStatus: "pending",
         createdAt: "2025-01-04T13:00:00.000Z",
       },
-    ]);
+      ],
+    });
 
     renderAdmin();
 
@@ -157,7 +217,8 @@ describe("admin route", () => {
   });
 
   it("formats unknown referral source values", async () => {
-    mockSubmissionsApi([
+    mockAdminApis({
+      submissions: [
       {
         id: "unknown-referral",
         name: "Unknown Referral",
@@ -168,7 +229,8 @@ describe("admin route", () => {
         invitationStatus: "pending",
         createdAt: "2025-01-05T14:00:00.000Z",
       },
-    ]);
+      ],
+    });
 
     renderAdmin();
 
@@ -182,7 +244,7 @@ describe("admin route", () => {
   });
 
   it("shows an empty state when there are no submissions", async () => {
-    mockSubmissionsApi([]);
+    mockAdminApis();
 
     renderAdmin();
 
@@ -190,14 +252,59 @@ describe("admin route", () => {
   });
 
   it("shows API error messages when submission loading fails", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      mockResponse({ error: "Unable to reach submissions API" }, false),
-    ) as unknown as typeof fetch;
-
-    vi.stubGlobal("fetch", fetchMock);
+    mockAdminApis({
+      submissionsOk: false,
+      submissionsError: "Unable to reach submissions API",
+    });
 
     renderAdmin();
 
     expect(await screen.findByText("Unable to reach submissions API")).toBeInTheDocument();
+  });
+
+  it("renders events section with loaded events", async () => {
+    mockAdminApis({
+      events: [
+        {
+          id: "event-1",
+          title: "Vibe Coding Night #4",
+          description: "Build together and ship features.",
+          date: "2026-03-21",
+          time: "19:00",
+          location: "Bilik Kayu Heritage, Yogyakarta",
+          tags: ["vibe coding", "networking"],
+          createdAt: "2026-03-10T12:00:00.000Z",
+        },
+      ],
+    });
+
+    renderAdmin();
+
+    expect(await screen.findByText("Vibe Coding Night #4")).toBeInTheDocument();
+    expect(screen.getByText("Bilik Kayu Heritage, Yogyakarta")).toBeInTheDocument();
+    expect(screen.getByText("vibe coding, networking")).toBeInTheDocument();
+  });
+
+  it("shows an empty state when there are no events", async () => {
+    mockAdminApis({
+      events: [],
+    });
+
+    renderAdmin();
+
+    expect(await screen.findByText("No events found.")).toBeInTheDocument();
+  });
+
+  it("shows API error messages when events loading fails", async () => {
+    mockAdminApis({
+      eventsOk: false,
+      eventsError: "Events API unavailable",
+    });
+
+    renderAdmin();
+
+    expect(
+      await screen.findByText("Failed to load events: Events API unavailable"),
+    ).toBeInTheDocument();
   });
 });

@@ -1,8 +1,10 @@
 import { applyEventInput, parseEventInput } from "../../../../app/data/event-validation";
 import { getEventById, removeEvent, saveEvent } from "../../../../app/data/events-store";
+import { requireAdmin } from "../auth";
 
 interface Env {
   VFC_SUBMISSIONS: KVNamespace;
+  ADMIN_SECRET?: string;
 }
 
 function getEventId(request: Request, params?: Record<string, string | string[] | undefined>) {
@@ -16,6 +18,11 @@ function getEventId(request: Request, params?: Record<string, string | string[] 
 }
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
+  const unauthorized = requireAdmin(request, env);
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const id = getEventId(request, params);
   if (!id) {
     return Response.json({ error: "Event id is required" }, { status: 400 });
@@ -30,6 +37,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
 };
 
 export const onRequestPut: PagesFunction<Env> = async ({ request, env, params }) => {
+  const unauthorized = requireAdmin(request, env);
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const id = getEventId(request, params);
   if (!id) {
     return Response.json({ error: "Event id is required" }, { status: 400 });
@@ -59,6 +71,11 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
 };
 
 export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params }) => {
+  const unauthorized = requireAdmin(request, env);
+  if (unauthorized) {
+    return unauthorized;
+  }
+
   const id = getEventId(request, params);
   if (!id) {
     return Response.json({ error: "Event id is required" }, { status: 400 });

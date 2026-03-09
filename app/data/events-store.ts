@@ -110,14 +110,19 @@ export async function saveEvent(env: Env, event: Event) {
 }
 
 export async function removeEvent(env: Env, id: string) {
-  const existing = await getEventById(env, id);
+  const normalizedId = id.trim();
+  if (!normalizedId) {
+    return false;
+  }
+
+  const existing = await getEventById(env, normalizedId);
   if (!existing) {
     return false;
   }
 
-  await env.VFC_SUBMISSIONS.delete(`${EVENT_PREFIX}${id}`);
+  await env.VFC_SUBMISSIONS.delete(`${EVENT_PREFIX}${normalizedId}`);
   await env.VFC_SUBMISSIONS.put(
-    `${EVENT_DELETED_PREFIX}${id}`,
+    `${EVENT_DELETED_PREFIX}${normalizedId}`,
     JSON.stringify({ deletedAt: new Date().toISOString() }),
   );
 
