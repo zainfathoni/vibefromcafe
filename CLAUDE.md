@@ -33,3 +33,12 @@
 - Pages: Home, Cafes, Chapters/Jogja, Events, Join, About, Admin
 - Static site (no SSR) — deployed to Cloudflare Pages
 - Wrangler config in `wrangler.toml`
+- **Do NOT put non-route files (e.g. CLAUDE.md) in `app/routes/`** — `flatRoutes()` treats every file there as a route
+
+## Routes
+- `admin.tsx` is a **layout route** — renders `<Outlet />` for child routes
+- `admin._index.tsx` is the **index route** — the admin dashboard content
+- Child routes like `admin.events.new.tsx` render inside the layout's `<Outlet />`
+- If a route has children, it **must** use `<Outlet />` or child routes won't render
+- All pages use client-side `fetch()` in `useEffect` (not loaders) since this is an SPA
+- Tests live next to route files (e.g., `admin.test.tsx`) using Testing Library + `vi.stubGlobal("fetch", ...)`
