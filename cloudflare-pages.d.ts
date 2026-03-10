@@ -42,4 +42,5 @@ interface KVNamespace {
     limit?: number;
     cursor?: string;
   }): Promise<KVNamespaceListResult<Metadata>>;
+  delete(key: string): Promise<void>;
 }

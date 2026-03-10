@@ -17,17 +17,24 @@ A community website for remote workers in Indonesia — find the best cafes with
 # Install dependencies
 npm install
 
-# Start dev server
+# Start dev server (Vite only — no API/KV)
 npm run dev
+
+# Start dev server with Cloudflare Functions + local KV
+wrangler pages dev
 ```
 
 Then open [http://localhost:5173](http://localhost:5173).
+
+> **Note:** `npm run dev` runs Vite only — API endpoints (`/api/*`) won't work.
+> Use `wrangler pages dev` to test the full stack including Cloudflare Functions and KV.
 
 ## Commands
 
 | Command              | Description                                  |
 | -------------------- | -------------------------------------------- |
-| `npm run dev`        | Start dev server at localhost:5173           |
+| `npm run dev`        | Start Vite dev server (no API/KV)            |
+| `wrangler pages dev` | Start full dev server with Functions + KV    |
 | `npm run build`      | Build for production → `build/client/`       |
 | `npm run typecheck`  | Run type generation + TypeScript check       |
 | `npm start`          | Serve the production build locally           |

@@ -4,3 +4,4 @@ build
 .env
 .dev.vars
 .wrangler
+.vscode

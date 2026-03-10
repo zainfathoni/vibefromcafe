@@ -85,7 +85,7 @@ export default function CafesIndex() {
           <button
             key={f.key}
             onClick={() => toggleFilter(f.key)}
-            className={`text-sm px-3 py-1.5 rounded-lg border transition-colors ${
+            className={`cursor-pointer text-sm px-3 py-1.5 rounded-lg border transition-colors ${
               activeFilters.has(f.key)
                 ? "bg-vfc-yellow text-vfc-black border-vfc-yellow"
                 : "bg-vfc-surface text-vfc-white border-vfc-border hover:border-vfc-yellow hover:text-vfc-yellow"
@@ -98,7 +98,7 @@ export default function CafesIndex() {
         {activeFilters.size > 0 && (
           <button
             onClick={() => setActiveFilters(new Set())}
-            className="text-sm text-vfc-muted hover:text-vfc-yellow underline"
+            className="cursor-pointer text-sm text-vfc-muted hover:text-vfc-yellow underline"
           >
             Clear filters
           </button>
@@ -117,7 +117,7 @@ export default function CafesIndex() {
           <p className="text-lg mb-2">No cafes match your filters.</p>
           <button
             onClick={() => setActiveFilters(new Set())}
-            className="text-vfc-yellow hover:text-yellow-300 underline text-sm"
+            className="cursor-pointer text-vfc-yellow hover:text-yellow-300 underline text-sm"
           >
             Clear all filters
           </button>
