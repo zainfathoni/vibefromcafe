@@ -30,6 +30,12 @@
 - Dark theme with VFC brand colors defined in `app/app.css`
 - Custom colors: `vfc-black`, `vfc-yellow`, `vfc-white`, `vfc-surface`, `vfc-border`, `vfc-muted`
 
+## Git Workflow
+- PRs are **squash-merged** into `main`
+- **Before creating a PR**, always rebase the feature branch onto `origin/main` so the PR only contains new commits — not commits already squash-merged from a previous PR on the same branch
+- Use `git rebase --onto origin/main <last-merged-commit> <branch>` to drop commits that were already merged
+- Use `--force-with-lease` (not `--force`) when force-pushing after a rebase
+
 ## Conventions
 - Routes follow React Router v7 flat routes convention in `app/routes/`
 - Pages: Home, Cafes, Chapters/Jogja, Events, Join, About, Admin
