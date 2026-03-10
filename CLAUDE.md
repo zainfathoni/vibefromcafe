@@ -1,33 +1,35 @@
 # Vibe From Cafe (VFC)
 
 ## Stack
-- React Router v7 (file-based routing, static export)
+- React Router v7 (file-based routing via `flatRoutes()`, static export)
 - Tailwind CSS v4
 - TypeScript
 - Cloudflare Pages (static site via `ssr: false`)
+- Vitest + Testing Library for tests
 
 ## Commands
-- `npm run dev` — Start dev server (Vite only, no KV/Functions)
-- `wrangler pages dev` — Start dev server with Cloudflare Functions + local KV
+- `npm run dev` — Start Vite dev server (no KV/Functions — API calls will fail)
+- `wrangler pages dev` — Full dev server with Cloudflare Functions + local KV (requires `npm run build` first)
 - `npm run build` — Build for production (outputs to build/client)
 - `npm run typecheck` — Run typegen + tsc
-- No tests yet
+- `npm test` — Run Vitest tests
 
 ## Data
 - `app/data/cafes.json` — Cafe directory (55 cafes, all chapter: "jogja")
-- Form submissions stored in Cloudflare KV (`VFC_SUBMISSIONS` binding, namespace ID in `wrangler.toml`)
-- Locally, `npm run dev` won't have KV — API calls to `/api/*` will fail. Use `wrangler pages dev` instead.
+- `app/data/events.json` — Seed events (merged with KV-stored events at runtime)
+- Form submissions and events stored in Cloudflare KV (`VFC_SUBMISSIONS` binding, namespace ID in `wrangler.toml`)
 
 ## Admin
 - `/admin` and `/api/admin/*` are protected by **Cloudflare Access** (Zero Trust) — configured at the dashboard level, not in code
+- Admin events API also requires `X-Admin-Secret` header (checked in `functions/api/admin/auth.ts`)
 - Locally there's no Cloudflare Access, so `/admin` is accessible without auth when running `wrangler pages dev`
 
 ## Theme
-- Coffee/warm/leaf color palette defined in `app/app.css`
-- Custom colors: coffee-*, warm-*, leaf-*
+- Dark theme with VFC brand colors defined in `app/app.css`
+- Custom colors: `vfc-black`, `vfc-yellow`, `vfc-white`, `vfc-surface`, `vfc-border`, `vfc-muted`
 
 ## Conventions
-- Routes follow React Router v7 file naming in `app/routes/`
-- Pages: Home, Cafes, Chapters/Jogja, Events, Join, About
+- Routes follow React Router v7 flat routes convention in `app/routes/`
+- Pages: Home, Cafes, Chapters/Jogja, Events, Join, About, Admin
 - Static site (no SSR) — deployed to Cloudflare Pages
 - Wrangler config in `wrangler.toml`
