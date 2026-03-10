@@ -6,5 +6,7 @@ interface Env {
 
 export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
   const events = await getAllEvents(env);
-  return Response.json({ events });
+  return Response.json({
+    events: events.filter((event) => event.status === "published"),
+  });
 };

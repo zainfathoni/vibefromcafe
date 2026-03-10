@@ -11,6 +11,9 @@ export type EventInput = {
   tags?: string[];
 };
 
+const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_FORMAT_REGEX = /^\d{2}:\d{2}$/;
+
 function normalizeString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -62,6 +65,9 @@ export function parseEventInput(body: unknown, requireAllFields: boolean) {
 
   const date = normalizeString(payload.date);
   if (date) {
+    if (!DATE_FORMAT_REGEX.test(date)) {
+      return { error: "date must be in YYYY-MM-DD format" };
+    }
     input.date = date;
   } else if (requireAllFields) {
     return { error: "date is required" };
@@ -69,6 +75,9 @@ export function parseEventInput(body: unknown, requireAllFields: boolean) {
 
   const time = normalizeString(payload.time);
   if (time) {
+    if (!TIME_FORMAT_REGEX.test(time)) {
+      return { error: "time must be in HH:MM format" };
+    }
     input.time = time;
   } else if (requireAllFields) {
     return { error: "time is required" };

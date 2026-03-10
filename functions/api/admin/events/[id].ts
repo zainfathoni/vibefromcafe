@@ -7,14 +7,9 @@ interface Env {
   ADMIN_SECRET?: string;
 }
 
-function getEventId(request: Request, params?: Record<string, string | string[] | undefined>) {
+function getEventId(params?: Record<string, string | string[] | undefined>) {
   const paramId = params?.id;
-  if (typeof paramId === "string" && paramId.trim()) {
-    return paramId.trim();
-  }
-
-  const match = new URL(request.url).pathname.match(/\/api\/admin\/events\/([^/]+)$/);
-  return match?.[1] ? decodeURIComponent(match[1]).trim() : "";
+  return typeof paramId === "string" ? paramId.trim() : "";
 }
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
@@ -23,7 +18,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
     return unauthorized;
   }
 
-  const id = getEventId(request, params);
+  const id = getEventId(params);
   if (!id) {
     return Response.json({ error: "Event id is required" }, { status: 400 });
   }
@@ -42,7 +37,7 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
     return unauthorized;
   }
 
-  const id = getEventId(request, params);
+  const id = getEventId(params);
   if (!id) {
     return Response.json({ error: "Event id is required" }, { status: 400 });
   }
@@ -76,7 +71,7 @@ export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params
     return unauthorized;
   }
 
-  const id = getEventId(request, params);
+  const id = getEventId(params);
   if (!id) {
     return Response.json({ error: "Event id is required" }, { status: 400 });
   }

@@ -17,6 +17,8 @@ export interface Cafe {
   notes: string | null;
 }
 
+export type EventStatus = "published" | "draft";
+
 export interface Event {
   id: string;
   title: string;
@@ -26,6 +28,7 @@ export interface Event {
   location: string;
   cafeId?: string;
   imageUrl?: string;
+  status: EventStatus;
   tags: string[];
   createdAt: string;
 }

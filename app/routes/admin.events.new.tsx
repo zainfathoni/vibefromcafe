@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, type MetaFunction } from "react-router";
+import type { EventForm } from "../data/event-form";
 
 export const meta: MetaFunction = () => [
   { title: "Create Event — Admin" },
@@ -8,17 +9,6 @@ export const meta: MetaFunction = () => [
     content: "Create a new community event for Vibe From Cafe.",
   },
 ];
-
-type EventForm = {
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  cafeId: string;
-  imageUrl: string;
-  tags: string;
-};
 
 const initialForm: EventForm = {
   title: "",

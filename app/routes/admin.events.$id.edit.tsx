@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams, type MetaFunction } from "react-router";
+import type { EventForm } from "../data/event-form";
 import type { Event } from "../data/types";
 
 export const meta: MetaFunction = () => [
@@ -9,17 +10,6 @@ export const meta: MetaFunction = () => [
     content: "Edit or remove a Vibe From Cafe community event.",
   },
 ];
-
-type EventForm = {
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  cafeId: string;
-  imageUrl: string;
-  tags: string;
-};
 
 interface EventResponse {
   event?: Event;

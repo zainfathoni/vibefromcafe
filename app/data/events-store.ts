@@ -8,6 +8,13 @@ interface Env {
 const EVENT_PREFIX = "event:";
 const EVENT_DELETED_PREFIX = "event-deleted:";
 
+function normalizeEventStatus(event: Event): Event {
+  return {
+    ...event,
+    status: event.status === "draft" ? "draft" : "published",
+  };
+}
+
 function toDateValue(event: Event) {
   return Date.parse(`${event.date}T${event.time || "00:00"}:00`);
 }
@@ -48,7 +55,9 @@ async function listStoredEvents(env: Env) {
     keys.map((key) => env.VFC_SUBMISSIONS.get<Event>(key, "json")),
   );
 
-  return records.filter((record): record is Event => Boolean(record));
+  return records
+    .filter((record): record is Event => Boolean(record))
+    .map(normalizeEventStatus);
 }
 
 async function getDeletedEventIds(env: Env) {
@@ -63,7 +72,9 @@ async function getDeletedEventIds(env: Env) {
 
 export async function getAllEvents(env: Env) {
   const deletedIds = await getDeletedEventIds(env);
-  const seedRecords = (seedEvents as Event[]).filter((event) => !deletedIds.has(event.id));
+  const seedRecords = (seedEvents as Event[])
+    .filter((event) => !deletedIds.has(event.id))
+    .map(normalizeEventStatus);
   const storedRecords = await listStoredEvents(env);
 
   const mergedById = new Map<string, Event>();
@@ -98,15 +109,17 @@ export async function getEventById(env: Env, id: string) {
     "json",
   );
   if (storedRecord) {
-    return storedRecord;
+    return normalizeEventStatus(storedRecord);
   }
 
-  return (seedEvents as Event[]).find((event) => event.id === normalizedId) ?? null;
+  const seedRecord = (seedEvents as Event[]).find((event) => event.id === normalizedId);
+  return seedRecord ? normalizeEventStatus(seedRecord) : null;
 }
 
 export async function saveEvent(env: Env, event: Event) {
-  await env.VFC_SUBMISSIONS.put(`${EVENT_PREFIX}${event.id}`, JSON.stringify(event));
-  await env.VFC_SUBMISSIONS.delete(`${EVENT_DELETED_PREFIX}${event.id}`);
+  const normalizedEvent = normalizeEventStatus(event);
+  await env.VFC_SUBMISSIONS.put(`${EVENT_PREFIX}${normalizedEvent.id}`, JSON.stringify(normalizedEvent));
+  await env.VFC_SUBMISSIONS.delete(`${EVENT_DELETED_PREFIX}${normalizedEvent.id}`);
 }
 
 export async function removeEvent(env: Env, id: string) {
