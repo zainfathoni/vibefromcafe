@@ -2,7 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import Admin from "./admin";
+import Admin from "./admin._index";
 
 function renderAdmin() {
   render(
