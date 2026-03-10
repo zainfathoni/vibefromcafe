@@ -15,7 +15,7 @@ Preview the Vibe From Cafe app at the given path (default: `/`).
 2. Check if wrangler is already running on port 5173:
    - Run `lsof -ti:5173` to check
    - If running, skip starting a new one
-   - If not running, start `wrangler pages dev --port 5173` in the background
+   - If not running, start `npx wrangler pages dev --port 5173` in the background
 3. Wait a few seconds for the server to be ready, then verify with a quick `curl -s -o /dev/null -w '%{http_code}' http://localhost:5173/`
 4. Use Chrome DevTools MCP to navigate to `http://localhost:5173$ARGUMENTS` (default to `/` if no argument)
 5. Take a screenshot and show the result
