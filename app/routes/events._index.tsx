@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
 import type { Event } from "../data/types";
 
@@ -80,7 +81,7 @@ export default function Events() {
           type="button"
           onClick={() => void loadEvents()}
           disabled={loading}
-          className="inline-flex items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-70"
+          className="inline-flex cursor-pointer items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-70"
         >
           {loading ? "Refreshing…" : "Refresh"}
         </button>
@@ -126,7 +127,24 @@ export default function Events() {
 
                 <p className="text-sm leading-relaxed text-vfc-muted">{event.description}</p>
 
-                <p className="text-sm text-vfc-white/90">{event.location}</p>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-vfc-white/90">
+                  {event.cafeId ? (
+                    <Link to={`/cafes/${event.cafeId}`} className="underline decoration-vfc-yellow/40 underline-offset-2 transition-colors hover:text-vfc-yellow">
+                      {event.location}
+                    </Link>
+                  ) : (
+                    <span>{event.location}</span>
+                  )}
+                  {event.mapUrl && (
+                    <a href={event.mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-vfc-muted transition-colors hover:text-vfc-yellow">
+                      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      Map
+                    </a>
+                  )}
+                </div>
 
                 {event.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">

@@ -6,5 +6,6 @@ export type EventForm = {
   location: string;
   cafeId: string;
   imageUrl: string;
+  mapUrl: string;
   tags: string;
 };

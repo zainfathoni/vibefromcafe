@@ -1,41 +1,16 @@
 [
   {
-    "id": "vfc-jogja-vibe-coding-01",
-    "title": "Vibe Coding Night #1",
-    "description": "A relaxed co-building night for indie hackers, students, and creators. Bring your laptop, ship one small feature, and share progress at the end.",
-    "date": "2026-03-20",
-    "time": "19:00",
-    "location": "Bilik Kayu Heritage, Yogyakarta",
-    "cafeId": "bilik-kayu-heritage",
-    "imageUrl": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80",
+    "id": "vfc-jogja-bukber-2026",
+    "title": "VFC + Bukber Closingan Sebelum Syawal",
+    "description": "Sesi VFC+Bukber closingan sebelum Syawal. Sistemnya open bill, tapi boleh kalau mau list pesanan lebih awal biar pas mendekati buka puasa sudah selesai masak.",
+    "date": "2026-03-13",
+    "time": "15:00",
+    "location": "Bean Garden Palagan, Yogyakarta",
+    "cafeId": "the-bean-garden-palagan",
+    "mapUrl": "https://maps.app.goo.gl/YQyQK2oAxJJLTa4F7",
+    "imageUrl": "/events/the-bean-garden-palagan.jpg",
     "status": "published",
-    "tags": ["vibe coding", "build in public", "networking"],
-    "createdAt": "2026-03-01T10:00:00.000Z"
-  },
-  {
-    "id": "vfc-jogja-founder-breakfast-01",
-    "title": "Founder Breakfast Meetup",
-    "description": "Morning meetup focused on early-stage startup stories, product validation, and founder accountability in Jogja.",
-    "date": "2026-03-27",
-    "time": "08:30",
-    "location": "Simetri Coffee Roasters, Yogyakarta",
-    "cafeId": "simetri-coffee-roasters",
-    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80",
-    "status": "published",
-    "tags": ["founders", "startup", "community"],
-    "createdAt": "2026-03-02T09:30:00.000Z"
-  },
-  {
-    "id": "vfc-jogja-open-demo-01",
-    "title": "Open Demo Day",
-    "description": "Show what you have built this month and get feedback from fellow builders. Every participant gets five minutes to demo.",
-    "date": "2026-04-05",
-    "time": "16:00",
-    "location": "Legend Coffee, Yogyakarta",
-    "cafeId": "legend-coffee",
-    "imageUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
-    "status": "published",
-    "tags": ["demo day", "feedback", "show and tell"],
-    "createdAt": "2026-03-03T11:15:00.000Z"
+    "tags": ["bukber", "VFC", "networking"],
+    "createdAt": "2026-03-10T16:00:00.000Z"
   }
 ]

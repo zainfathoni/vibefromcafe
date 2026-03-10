@@ -191,7 +191,7 @@ export default function Admin() {
           type="button"
           onClick={() => void loadSubmissions()}
           disabled={submissionsLoading}
-          className="inline-flex items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex cursor-pointer items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submissionsLoading ? "Refreshing…" : "Refresh"}
         </button>
@@ -291,7 +291,7 @@ export default function Admin() {
               type="button"
               onClick={() => void loadEvents()}
               disabled={eventsLoading}
-              className="inline-flex items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex cursor-pointer items-center rounded-lg border border-vfc-border bg-vfc-surface px-4 py-2 text-sm font-medium text-vfc-white transition-colors hover:border-vfc-yellow hover:text-vfc-yellow disabled:cursor-not-allowed disabled:opacity-60"
             >
               {eventsLoading ? "Refreshing…" : "Refresh"}
             </button>

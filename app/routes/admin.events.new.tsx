@@ -18,6 +18,7 @@ const initialForm: EventForm = {
   location: "",
   cafeId: "",
   imageUrl: "",
+  mapUrl: "",
   tags: "",
 };
 
@@ -44,6 +45,7 @@ export default function AdminEventsNew() {
       location: form.location,
       cafeId: form.cafeId,
       imageUrl: form.imageUrl,
+      mapUrl: form.mapUrl,
       tags: form.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
     };
 
@@ -172,6 +174,17 @@ export default function AdminEventsNew() {
             />
           </label>
         </div>
+
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-vfc-white">Map URL (optional)</span>
+          <input
+            type="url"
+            value={form.mapUrl}
+            onChange={(event) => updateField("mapUrl", event.target.value)}
+            className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+            placeholder="https://maps.app.goo.gl/..."
+          />
+        </label>
 
         <label className="block">
           <span className="mb-2 block text-sm font-medium text-vfc-white">Tags</span>
