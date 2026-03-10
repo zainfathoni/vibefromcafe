@@ -8,7 +8,8 @@
       "Bash(gh run:*)",
       "Bash(gh workflow:*)",
       "Bash(gh pr:*)",
-      "Bash(gh issue:*)"
+      "Bash(gh issue:*)",
+      "Bash(npm test:*)"
     ]
   }
 }
