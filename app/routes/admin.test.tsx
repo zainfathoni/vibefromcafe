@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -306,5 +307,38 @@ describe("admin route", () => {
     expect(
       await screen.findByText("Failed to load events: Events API unavailable"),
     ).toBeInTheDocument();
+  });
+
+  it("renders cafes directory section with cafe data", async () => {
+    mockAdminApis();
+    renderAdmin();
+
+    expect(await screen.findByText("Cafes Directory")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Search cafes…")).toBeInTheDocument();
+    expect(screen.getByText("Total cafes")).toBeInTheDocument();
+  });
+
+  it("filters cafes by search input", async () => {
+    mockAdminApis();
+    renderAdmin();
+
+    const searchInput = await screen.findByPlaceholderText("Search cafes…");
+    await userEvent.type(searchInput, "bean garden");
+
+    expect(screen.getByText("The Bean Garden Palagan")).toBeInTheDocument();
+    expect(screen.getByText("1 matching")).toBeInTheDocument();
+  });
+
+  it("shows image and map status for cafes with those fields", async () => {
+    mockAdminApis();
+    renderAdmin();
+
+    // The Bean Garden Palagan has imageUrl and mapUrl
+    const row = (await screen.findByText("The Bean Garden Palagan")).closest("tr");
+    expect(row).not.toBeNull();
+    if (!row) return;
+
+    expect(within(row).getByText("Yes")).toBeInTheDocument();
+    expect(within(row).getByText("Link")).toBeInTheDocument();
   });
 });

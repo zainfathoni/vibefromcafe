@@ -1,6 +1,6 @@
 ---
 name: address-pr-comments
-description: Fetch unresolved PR review comments, fix the code issues, commit, push, reply to each comment, and resolve the threads.
+description: Fetch unresolved PR review comments, fix the code issues, commit, push, reply to each comment, resolve the threads, and update the PR description.
 argument-hint: <pr-url-or-number>
 ---
 
@@ -82,7 +82,11 @@ mutation {
 }
 ```
 
-### 7. Report
+### 7. Update PR description
+
+Update the PR body to reflect any changes made while addressing comments using `gh pr edit {number} --body "..."`. The description should accurately describe the current state of the PR, not just the original scope.
+
+### 8. Report
 
 Summarize what was done:
 - Number of comments addressed

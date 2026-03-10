@@ -490,6 +490,8 @@
     "name": "The Bean Garden Palagan",
     "chapter": "jogja",
     "map_location": "Maps",
+    "imageUrl": "/events/the-bean-garden-palagan.jpg",
+    "mapUrl": "https://maps.app.goo.gl/YQyQK2oAxJJLTa4F7",
     "espresso_price": null,
     "cappuccino_price": null,
     "americano_price": null,
