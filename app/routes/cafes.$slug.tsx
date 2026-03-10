@@ -61,6 +61,21 @@ function PriceRow({
   );
 }
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, "https://placeholder.invalid");
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+function safeMapUrl(cafe: Cafe): string | undefined {
+  if (cafe.mapUrl && isSafeUrl(cafe.mapUrl)) return cafe.mapUrl;
+  if (cafe.map_location?.startsWith("http") && isSafeUrl(cafe.map_location)) return cafe.map_location;
+  return undefined;
+}
+
 export default function CafeDetail({ loaderData }: Route.ComponentProps) {
   const { cafe } = loaderData;
   const hasPrices =
@@ -149,11 +164,8 @@ export default function CafeDetail({ loaderData }: Route.ComponentProps) {
       {(cafe.mapUrl || cafe.map_location) && (
         <a
           href={
-            cafe.mapUrl
-              ? cafe.mapUrl
-              : cafe.map_location?.startsWith("http")
-                ? cafe.map_location
-                : `https://www.google.com/maps/search/${encodeURIComponent(cafe.name + " " + (cafe.map_location ?? "") + " Jogja")}`
+            safeMapUrl(cafe)
+              ?? `https://www.google.com/maps/search/${encodeURIComponent(cafe.name + " " + (cafe.map_location ?? "") + " Jogja")}`
           }
           target="_blank"
           rel="noopener noreferrer"

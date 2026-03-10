@@ -42,16 +42,26 @@ function formatEventTime(time: string) {
   return `${hours}:${minutes} WIB`;
 }
 
-function resolveEventImage(event: Event): string | undefined {
-  if (event.imageUrl) return event.imageUrl;
-  if (event.cafeId) return cafesById.get(event.cafeId)?.imageUrl;
-  return undefined;
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, "https://placeholder.invalid");
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
 }
 
-function resolveEventMapUrl(event: Event): string | undefined {
-  if (event.mapUrl) return event.mapUrl;
-  if (event.cafeId) return cafesById.get(event.cafeId)?.mapUrl;
-  return undefined;
+export function resolveEventImage(event: Event): string | undefined {
+  const url = event.imageUrl || (event.cafeId ? cafesById.get(event.cafeId)?.imageUrl : undefined);
+  if (!url) return undefined;
+  if (url.startsWith("/")) return url;
+  return isSafeUrl(url) ? url : undefined;
+}
+
+export function resolveEventMapUrl(event: Event): string | undefined {
+  const url = event.mapUrl || (event.cafeId ? cafesById.get(event.cafeId)?.mapUrl : undefined);
+  if (!url) return undefined;
+  return isSafeUrl(url) ? url : undefined;
 }
 
 export default function Events() {

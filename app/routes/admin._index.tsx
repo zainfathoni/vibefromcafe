@@ -372,6 +372,15 @@ export default function Admin() {
   );
 }
 
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, "https://placeholder.invalid");
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 function CafesSection() {
   const allCafes = cafes as Cafe[];
   const [search, setSearch] = useState("");
@@ -447,7 +456,7 @@ function CafesSection() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {cafe.mapUrl ? (
+                      {cafe.mapUrl && isSafeUrl(cafe.mapUrl) ? (
                         <a href={cafe.mapUrl} target="_blank" rel="noopener noreferrer" className="text-vfc-yellow hover:underline">
                           Link
                         </a>
