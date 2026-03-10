@@ -7,7 +7,8 @@
 - `functions/api/admin/auth.ts` — Shared auth helper
 
 ## Auth
-Admin endpoints call `requireAdmin(request, env)` from `auth.ts`, which checks the `X-Admin-Secret` header against `env.ADMIN_SECRET`. In production, Cloudflare Access provides an additional layer.
+- `functions/api/admin/_middleware.ts` — **Primary auth gate** for all `/api/admin/*` routes. Requires either a Cloudflare Access JWT (`Cf-Access-Jwt-Assertion` header) or a valid `X-Admin-Secret` header. Allows localhost for local dev. This protects preview deployments that aren't covered by Cloudflare Access.
+- `functions/api/admin/auth.ts` — Secondary per-endpoint auth helper. Events endpoints call `requireAdmin(request, env)` for additional `X-Admin-Secret` validation.
 
 ## KV bindings
 All functions use the `VFC_SUBMISSIONS` KV namespace (bound in `wrangler.toml`). Events use the `event:` key prefix, soft-deletes use `event-deleted:` prefix.

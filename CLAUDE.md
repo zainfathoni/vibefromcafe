@@ -20,7 +20,8 @@
 - Form submissions and events stored in Cloudflare KV (`VFC_SUBMISSIONS` binding, namespace ID in `wrangler.toml`)
 
 ## Admin
-- `/admin` and `/api/admin/*` are protected by **Cloudflare Access** (Zero Trust) — configured at the dashboard level, not in code
+- `/admin` and `/api/admin/*` are protected by **Cloudflare Access** (Zero Trust) — configured at the dashboard level for both production (`vibefromcafe.pages.dev`) and preview deployments (`*.vibefromcafe.pages.dev`)
+- `functions/api/admin/_middleware.ts` provides defense-in-depth — blocks unauthenticated API requests on any deployment not covered by Access (checks `Cf-Access-Jwt-Assertion` or `X-Admin-Secret` headers)
 - Admin events API also requires `X-Admin-Secret` header (checked in `functions/api/admin/auth.ts`)
 - Locally there's no Cloudflare Access, so `/admin` is accessible without auth when running `wrangler pages dev`
 
