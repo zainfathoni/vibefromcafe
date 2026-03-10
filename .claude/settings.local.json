@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__chrome-devtools__emulate",
+      "Bash(npx vitest:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(npm run:*)",
+      "Bash(gh run:*)",
+      "Bash(gh workflow:*)",
+      "Bash(gh pr:*)",
+      "Bash(gh issue:*)"
+    ]
+  }
+}
