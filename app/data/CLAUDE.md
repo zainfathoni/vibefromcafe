@@ -1,12 +1,12 @@
 # Data Layer
 
 ## Types (`types.ts`)
-- `Cafe` — cafe directory entry (slug, name, chapter, amenities, wifi speed)
+- `Cafe` — cafe directory entry (slug, name, chapter, amenities, wifi speed, optional imageUrl/mapUrl)
 - `Event` — community event (title, date, time, location, cafeId, imageUrl, mapUrl, tags, status)
 - `EventStatus` — `"published"` | `"draft"` (only published events show on public page)
 
 ## Cafes (`cafes.json`)
-Static JSON, 55 cafes, all in the "jogja" chapter. Read directly by route components.
+Static JSON, 55 cafes, all in the "jogja" chapter. Read directly by route components. Cafes can optionally have `imageUrl` and `mapUrl` — these serve as fallbacks for linked events that don't specify their own.
 
 ## Events
 - **Seed data** in `events.json` — checked into the repo, merged with KV at runtime

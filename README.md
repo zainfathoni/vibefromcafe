@@ -51,11 +51,18 @@ app/
 │   ├── chapters.jogja.tsx  # Jogja chapter
 │   ├── events._index.tsx   # Events
 │   ├── join.tsx            # Join page
-│   └── about.tsx           # About
+│   ├── about.tsx           # About
+│   └── admin*.tsx          # Admin pages (protected by Cloudflare Access)
 ├── components/       # Shared components (Nav, Footer, CafeCard)
 ├── data/
-│   └── cafes.json    # 55 cafes with WiFi speeds & amenities
+│   ├── cafes.json    # 55 cafes with WiFi speeds & amenities
+│   ├── events.json   # Seed events (merged with KV at runtime)
+│   └── types.ts      # Cafe and Event type definitions
 └── app.css           # Global styles + custom color theme
+functions/
+└── api/              # Cloudflare Functions (API endpoints)
+    ├── events.ts     # Public: GET published events
+    └── admin/        # Protected: admin CRUD + submissions
 ```
 
 ## Data
@@ -68,6 +75,8 @@ Cafes live in `app/data/cafes.json`. Each cafe has:
   "name": "Oddish Family Hub",
   "chapter": "jogja",
   "map_location": "Jl Umbul Permai",
+  "imageUrl": "/events/oddish-family-hub.jpg",
+  "mapUrl": "https://maps.app.goo.gl/...",
   "espresso_price": "Rp18.000",
   "wifi_speed": "100",
   "has_ac": true,
@@ -76,6 +85,8 @@ Cafes live in `app/data/cafes.json`. Each cafe has:
   ...
 }
 ```
+
+Events can link to a cafe via `cafeId`. When an event doesn't have its own `imageUrl` or `mapUrl`, the linked cafe's values are used as fallbacks.
 
 ## Deployment
 

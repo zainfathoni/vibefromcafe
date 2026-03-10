@@ -3,6 +3,8 @@ export interface Cafe {
   name: string;
   chapter: string;
   map_location: string | null;
+  imageUrl?: string;
+  mapUrl?: string;
   espresso_price: string | null;
   cappuccino_price: string | null;
   americano_price: string | null;

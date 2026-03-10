@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
-import type { Event } from "../data/types";
+import cafes from "../data/cafes.json";
+import type { Cafe, Event } from "../data/types";
+
+const cafesById = new Map((cafes as Cafe[]).map((c) => [c.slug, c]));
 
 export const meta: MetaFunction = () => [
   { title: "Events — Vibe From Cafe" },
@@ -37,6 +40,18 @@ function formatEventTime(time: string) {
   }
 
   return `${hours}:${minutes} WIB`;
+}
+
+function resolveEventImage(event: Event): string | undefined {
+  if (event.imageUrl) return event.imageUrl;
+  if (event.cafeId) return cafesById.get(event.cafeId)?.imageUrl;
+  return undefined;
+}
+
+function resolveEventMapUrl(event: Event): string | undefined {
+  if (event.mapUrl) return event.mapUrl;
+  if (event.cafeId) return cafesById.get(event.cafeId)?.mapUrl;
+  return undefined;
 }
 
 export default function Events() {
@@ -104,13 +119,16 @@ export default function Events() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
+          {events.map((event) => {
+            const imageUrl = resolveEventImage(event);
+            const mapUrl = resolveEventMapUrl(event);
+            return (
             <article
               key={event.id}
               className="overflow-hidden rounded-2xl border border-vfc-border bg-vfc-surface transition-colors hover:border-vfc-yellow/80"
             >
-              {event.imageUrl ? (
-                <img src={event.imageUrl} alt={event.title} className="h-44 w-full object-cover" />
+              {imageUrl ? (
+                <img src={imageUrl} alt={event.title} className="h-44 w-full object-cover" />
               ) : (
                 <div className="flex h-44 w-full items-center justify-center bg-vfc-black">
                   <svg className="h-10 w-10 text-vfc-yellow/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,8 +153,8 @@ export default function Events() {
                   ) : (
                     <span>{event.location}</span>
                   )}
-                  {event.mapUrl && (
-                    <a href={event.mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-vfc-muted transition-colors hover:text-vfc-yellow">
+                  {mapUrl && (
+                    <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-vfc-muted transition-colors hover:text-vfc-yellow">
                       <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -160,7 +178,8 @@ export default function Events() {
                 )}
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
