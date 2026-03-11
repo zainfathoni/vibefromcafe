@@ -55,8 +55,8 @@ interface EventsResponse {
 const STATUS_OPTIONS: InvitationStatus[] = [
   "signed_up",
   "invited",
-  "approved",
   "joined",
+  "approved",
   "rejected",
 ];
 

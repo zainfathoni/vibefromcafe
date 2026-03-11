@@ -21,16 +21,16 @@ const DEFAULT_WHATSAPP_INVITE_MESSAGE =
 const SUBMISSION_STATUSES: SubmissionStatus[] = [
   "signed_up",
   "invited",
-  "approved",
   "joined",
+  "approved",
   "rejected",
 ];
 
 const STATUS_FLOW: Record<SubmissionStatus, SubmissionStatus[]> = {
   signed_up: ["signed_up", "invited"],
-  invited: ["invited", "approved"],
-  approved: ["approved", "joined", "rejected"],
-  joined: ["joined"],
+  invited: ["invited", "joined"],
+  joined: ["joined", "approved", "rejected"],
+  approved: ["approved"],
   rejected: ["rejected"],
 };
 

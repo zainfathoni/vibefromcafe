@@ -36,9 +36,9 @@ type MockWhatsappInvite = {
 
 const MOCK_STATUS_FLOW: Record<string, string[]> = {
   signed_up: ["signed_up", "invited"],
-  invited: ["invited", "approved"],
-  approved: ["approved", "joined", "rejected"],
-  joined: ["joined"],
+  invited: ["invited", "joined"],
+  joined: ["joined", "approved", "rejected"],
+  approved: ["approved"],
   rejected: ["rejected"],
 };
 

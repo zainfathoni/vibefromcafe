@@ -135,7 +135,7 @@ describe("admin submissions api", () => {
     expect(body.submission.invited_at).toBeTruthy();
   });
 
-  it("moves invited to approved and records approver metadata", async () => {
+  it("moves joined to approved and records approver metadata", async () => {
     const kv = new MockKvNamespace();
     kv.seed("submission:test-2", {
       id: "test-2",
@@ -144,7 +144,7 @@ describe("admin submissions api", () => {
       role: "Engineer",
       whatsapp: "628111222444",
       referralSource: "instagram",
-      invitationStatus: "invited",
+      invitationStatus: "joined",
       invited_by: "admin@vfc.id",
       invited_at: "2025-01-01T10:00:00.000Z",
       createdAt: "2025-01-01T09:00:00.000Z",

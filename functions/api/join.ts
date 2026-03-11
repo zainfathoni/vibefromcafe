@@ -16,8 +16,8 @@ export type InvitationStatus = "pending" | "invited" | "joined" | "declined";
 export type SubmissionStatus =
   | "signed_up"
   | "invited"
-  | "approved"
   | "joined"
+  | "approved"
   | "rejected";
 
 export interface Submission {
