@@ -227,5 +227,13 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
 
   await env.VFC_SUBMISSIONS.put(key, JSON.stringify(updated));
 
-  return Response.json({ success: true, submission: updated });
+  // Debug: include auth detection info (remove after confirming)
+  const debugAuth = {
+    hasCfEmail: !!request.headers.get("cf-access-authenticated-user-email"),
+    hasCfName: !!request.headers.get("cf-access-authenticated-user-name"),
+    hasJwt: !!request.headers.get("Cf-Access-Jwt-Assertion"),
+    resolvedInviter: inviter,
+  };
+
+  return Response.json({ success: true, submission: updated, debugAuth });
 };
