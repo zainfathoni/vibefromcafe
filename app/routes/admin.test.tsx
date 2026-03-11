@@ -21,7 +21,7 @@ type MockSubmission = {
   whatsapp?: string;
   referralSource?: string;
   referralName?: string;
-  invitationStatus?: "signed_up" | "invited" | "approved" | "joined" | "rejected";
+  invitationStatus?: "signed_up" | "invited" | "approved" | "requested_to_join" | "rejected";
   invited_by?: string;
   invited_at?: string;
   approved_by?: string;
@@ -36,8 +36,8 @@ type MockWhatsappInvite = {
 
 const MOCK_STATUS_FLOW: Record<string, string[]> = {
   signed_up: ["signed_up", "invited"],
-  invited: ["invited", "joined"],
-  joined: ["joined", "approved", "rejected"],
+  invited: ["invited", "requested_to_join"],
+  joined: ["requested_to_join", "approved", "rejected"],
   approved: ["approved"],
   rejected: ["rejected"],
 };

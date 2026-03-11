@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-type InvitationStatus = "signed_up" | "invited" | "approved" | "joined" | "rejected";
+type InvitationStatus = "signed_up" | "invited" | "approved" | "requested_to_join" | "rejected";
 
 interface WhatsappInviteConfig {
   groupInviteUrl: string;
@@ -55,7 +55,7 @@ interface EventsResponse {
 const STATUS_OPTIONS: InvitationStatus[] = [
   "signed_up",
   "invited",
-  "joined",
+  "requested_to_join",
   "approved",
   "rejected",
 ];

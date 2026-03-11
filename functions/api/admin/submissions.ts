@@ -21,15 +21,15 @@ const DEFAULT_WHATSAPP_INVITE_MESSAGE =
 const SUBMISSION_STATUSES: SubmissionStatus[] = [
   "signed_up",
   "invited",
-  "joined",
+  "requested_to_join",
   "approved",
   "rejected",
 ];
 
 const STATUS_FLOW: Record<SubmissionStatus, SubmissionStatus[]> = {
   signed_up: ["signed_up", "invited"],
-  invited: ["invited", "joined"],
-  joined: ["joined", "approved", "rejected"],
+  invited: ["invited", "requested_to_join"],
+  requested_to_join: ["requested_to_join", "approved", "rejected"],
   approved: ["approved"],
   rejected: ["rejected"],
 };
@@ -63,6 +63,10 @@ function parseSubmissionStatus(value: unknown): SubmissionStatus | null {
 
   if (value === "pending") {
     return "signed_up";
+  }
+
+  if (value === "joined") {
+    return "requested_to_join";
   }
 
   if (value === "declined") {
@@ -159,7 +163,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
     return Response.json(
       {
         error:
-          "invitationStatus must be one of: signed_up, invited, approved, joined, rejected (legacy: pending, declined also accepted)",
+          "invitationStatus must be one of: signed_up, invited, requested_to_join, approved, rejected (legacy: pending, joined, declined also accepted)",
       },
       { status: 400 },
     );

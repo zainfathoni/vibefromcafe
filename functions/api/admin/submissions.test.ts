@@ -144,7 +144,7 @@ describe("admin submissions api", () => {
       role: "Engineer",
       whatsapp: "628111222444",
       referralSource: "instagram",
-      invitationStatus: "joined",
+      invitationStatus: "requested_to_join",
       invited_by: "admin@vfc.id",
       invited_at: "2025-01-01T10:00:00.000Z",
       createdAt: "2025-01-01T09:00:00.000Z",

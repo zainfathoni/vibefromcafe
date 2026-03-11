@@ -11,12 +11,12 @@ interface SubmissionBody {
   referralName?: string;
 }
 
-export type InvitationStatus = "pending" | "invited" | "joined" | "declined";
+export type InvitationStatus = "pending" | "invited" | "requested_to_join" | "declined";
 
 export type SubmissionStatus =
   | "signed_up"
   | "invited"
-  | "joined"
+  | "requested_to_join"
   | "approved"
   | "rejected";
 
