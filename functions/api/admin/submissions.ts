@@ -45,12 +45,11 @@ function deriveInviter(request: Request) {
     return name;
   }
 
-  const providedInviter = request.headers.get("x-admin-inviter")?.trim();
-  if (providedInviter) {
-    return providedInviter;
-  }
-
   return "admin";
+}
+
+function getAllowedNextStatuses(current: SubmissionStatus): SubmissionStatus[] {
+  return STATUS_FLOW[current] ?? [current];
 }
 
 function parseSubmissionStatus(value: unknown): SubmissionStatus | null {
@@ -124,7 +123,11 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
     for (const submission of batch) {
       if (submission) {
-        submissions.push(normalizeSubmission(submission));
+        const normalized = normalizeSubmission(submission);
+        submissions.push({
+          ...normalized,
+          allowedNextStatuses: getAllowedNextStatuses(normalized.invitationStatus),
+        });
       }
     }
 
@@ -156,7 +159,7 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
     return Response.json(
       {
         error:
-          "invitationStatus must be one of: signed_up, invited, approved, joined, rejected",
+          "invitationStatus must be one of: signed_up, invited, approved, joined, rejected (legacy: pending, declined also accepted)",
       },
       { status: 400 },
     );

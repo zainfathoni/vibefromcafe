@@ -34,6 +34,14 @@ type MockWhatsappInvite = {
   messageTemplate?: string;
 };
 
+const MOCK_STATUS_FLOW: Record<string, string[]> = {
+  signed_up: ["signed_up", "invited"],
+  invited: ["invited", "approved"],
+  approved: ["approved", "joined", "rejected"],
+  joined: ["joined"],
+  rejected: ["rejected"],
+};
+
 type MockEvent = {
   id: string;
   title: string;
@@ -91,7 +99,10 @@ function mockAdminApis({
         mockResponse(
           submissionsOk
             ? {
-                submissions: [...submissionsStore.values()],
+                submissions: [...submissionsStore.values()].map((s) => ({
+                  ...s,
+                  allowedNextStatuses: MOCK_STATUS_FLOW[s.invitationStatus ?? "signed_up"] ?? ["signed_up"],
+                })),
                 whatsappInvite,
               }
             : { error: submissionsError },

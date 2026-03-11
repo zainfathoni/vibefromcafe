@@ -29,6 +29,7 @@ export interface Submission {
   referralSource: string;
   referralName?: string;
   invitationStatus: SubmissionStatus;
+  allowedNextStatuses?: SubmissionStatus[];
   invited_by?: string;
   invited_at?: string;
   approved_by?: string;

@@ -28,6 +28,7 @@ interface Submission {
   referralSource: string;
   referralName?: string;
   invitationStatus: InvitationStatus;
+  allowedNextStatuses?: InvitationStatus[];
   invited_by?: string;
   invited_at?: string;
   approved_by?: string;
@@ -58,14 +59,6 @@ const STATUS_OPTIONS: InvitationStatus[] = [
   "joined",
   "rejected",
 ];
-
-const STATUS_FLOW: Record<InvitationStatus, InvitationStatus[]> = {
-  signed_up: ["signed_up", "invited"],
-  invited: ["invited", "approved"],
-  approved: ["approved", "joined", "rejected"],
-  joined: ["joined"],
-  rejected: ["rejected"],
-};
 
 const DEFAULT_WHATSAPP_INVITE_TEMPLATE =
   "Hi {{name}}, welcome to Vibe From Cafe. Join our WhatsApp community here: {{group_link}}";
@@ -292,8 +285,8 @@ export default function Admin() {
     void updateInvitationStatus(submission.id, "invited", { keepalive: true });
   }
 
-  function getStatusOptions(currentStatus: InvitationStatus) {
-    return STATUS_FLOW[currentStatus] ?? STATUS_OPTIONS;
+  function getStatusOptions(submission: Submission) {
+    return submission.allowedNextStatuses ?? STATUS_OPTIONS;
   }
 
   return (
@@ -405,7 +398,7 @@ export default function Admin() {
                           disabled={isUpdating}
                           className="min-w-32 rounded-md border border-vfc-border bg-vfc-black px-3 py-1.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow disabled:cursor-not-allowed disabled:opacity-70"
                         >
-                          {getStatusOptions(submission.invitationStatus).map((status) => (
+                          {getStatusOptions(submission).map((status) => (
                             <option key={status} value={status}>
                               {formatLabel(status)}
                             </option>
