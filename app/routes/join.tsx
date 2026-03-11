@@ -31,6 +31,7 @@ const initialForm: InterestForm = {
 const REFERRAL_SOURCES = [
   { value: "friend", label: "A friend" },
   { value: "instagram", label: "Instagram" },
+  { value: "threads", label: "Threads" },
   { value: "twitter", label: "X (Twitter)" },
   { value: "github", label: "GitHub" },
   { value: "other", label: "Other" },

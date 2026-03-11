@@ -66,6 +66,7 @@ const DEFAULT_WHATSAPP_INVITE_TEMPLATE =
 const REFERRAL_SOURCE_LABELS: Record<string, string> = {
   friend: "A friend",
   instagram: "Instagram",
+  threads: "Threads",
   twitter: "X (Twitter)",
   github: "GitHub",
   other: "Other",
