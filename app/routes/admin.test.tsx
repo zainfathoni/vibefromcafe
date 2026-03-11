@@ -21,8 +21,17 @@ type MockSubmission = {
   whatsapp?: string;
   referralSource?: string;
   referralName?: string;
-  invitationStatus?: "pending" | "invited" | "joined" | "declined";
+  invitationStatus?: "signed_up" | "invited" | "approved" | "joined" | "rejected";
+  invited_by?: string;
+  invited_at?: string;
+  approved_by?: string;
+  approved_at?: string;
   createdAt: string;
+};
+
+type MockWhatsappInvite = {
+  groupInviteUrl?: string;
+  messageTemplate?: string;
 };
 
 type MockEvent = {
@@ -40,6 +49,7 @@ type MockAdminApisOptions = {
   submissions?: MockSubmission[];
   submissionsOk?: boolean;
   submissionsError?: string;
+  whatsappInvite?: MockWhatsappInvite;
   events?: MockEvent[];
   eventsOk?: boolean;
   eventsError?: string;
@@ -56,24 +66,58 @@ function mockAdminApis({
   submissions = [],
   submissionsOk = true,
   submissionsError = "Failed to load submissions",
+  whatsappInvite = {
+    groupInviteUrl: "https://chat.whatsapp.com/default-invite",
+    messageTemplate:
+      "Hi {{name}}, welcome to Vibe From Cafe. Join our WhatsApp community here: {{group_link}}",
+  },
   events = [],
   eventsOk = true,
   eventsError = "Failed to load events",
 }: MockAdminApisOptions = {}) {
-  const fetchMock = vi.fn((input: RequestInfo | URL) => {
+  const submissionsStore = new Map(submissions.map((submission) => [submission.id, submission]));
+
+  const fetchMock = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
     const url =
       typeof input === "string"
         ? input
         : input instanceof URL
           ? input.toString()
           : input.url;
+    const method = init?.method ?? "GET";
 
-    if (url.includes("/api/admin/submissions")) {
+    if (url === "/api/admin/submissions" && method === "GET") {
       return Promise.resolve(
         mockResponse(
-          submissionsOk ? { submissions } : { error: submissionsError },
+          submissionsOk
+            ? {
+                submissions: [...submissionsStore.values()],
+                whatsappInvite,
+              }
+            : { error: submissionsError },
           submissionsOk,
         ),
+      );
+    }
+
+    if (url.includes("/api/admin/submissions/") && method === "PATCH") {
+      const id = url.split("/api/admin/submissions/")[1];
+      const current = submissionsStore.get(id);
+
+      if (!current) {
+        return Promise.resolve(mockResponse({ error: "Submission not found" }, false));
+      }
+
+      const body = typeof init?.body === "string" ? JSON.parse(init.body) : {};
+      const updated = {
+        ...current,
+        invitationStatus: body.invitationStatus,
+      };
+
+      submissionsStore.set(id, updated);
+
+      return Promise.resolve(
+        mockResponse({ success: true, submission: updated }),
       );
     }
 
@@ -90,6 +134,7 @@ function mockAdminApis({
   }) as unknown as typeof fetch;
 
   vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
 }
 
 describe("admin route", () => {
@@ -123,8 +168,8 @@ describe("admin route", () => {
 
     expect(within(row).getByText("Yogyakarta")).toBeInTheDocument();
     expect(within(row).getByText("Developer")).toBeInTheDocument();
-    expect(within(row).getAllByText("-")).toHaveLength(3);
-    expect(within(row).getByRole("combobox")).toHaveValue("pending");
+    expect(within(row).getAllByText("-")).toHaveLength(5);
+    expect(within(row).getByRole("combobox")).toHaveValue("signed_up");
   });
 
   it("renders submissions with complete data correctly", async () => {
@@ -160,6 +205,124 @@ describe("admin route", () => {
     expect(within(row).getByRole("combobox")).toHaveValue("invited");
   });
 
+  it("builds a wa.me invite link from configurable template and group URL", async () => {
+    mockAdminApis({
+      submissions: [
+        {
+          id: "invite-link-1",
+          name: "Invite Target",
+          city: "Bandung",
+          role: "Builder",
+          whatsapp: "0812-3456-789",
+          referralSource: "instagram",
+          invitationStatus: "signed_up",
+          createdAt: "2025-01-02T11:00:00.000Z",
+        },
+      ],
+      whatsappInvite: {
+        groupInviteUrl: "https://chat.whatsapp.com/test-group-link",
+        messageTemplate: "Halo {{name}}, gabung grup: {{group_link}}",
+      },
+    });
+
+    renderAdmin();
+
+    const whatsappLink = await screen.findByRole("link", { name: "0812-3456-789" });
+    expect(whatsappLink).toHaveAttribute("target", "_blank");
+    expect(whatsappLink).toHaveAttribute(
+      "href",
+      `https://wa.me/628123456789?text=${encodeURIComponent("Halo Invite Target, gabung grup: https://chat.whatsapp.com/test-group-link")}`,
+    );
+  });
+
+  it("marks signed-up submissions as invited when WhatsApp number is clicked", async () => {
+    const fetchMock = mockAdminApis({
+      submissions: [
+        {
+          id: "invite-click-1",
+          name: "Click Invite",
+          city: "Yogyakarta",
+          role: "Engineer",
+          whatsapp: "628120000111",
+          referralSource: "friend",
+          invitationStatus: "signed_up",
+          createdAt: "2025-01-07T10:00:00.000Z",
+        },
+      ],
+    });
+
+    renderAdmin();
+
+    const whatsappLink = await screen.findByRole("link", { name: "628120000111" });
+    await userEvent.click(whatsappLink);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/admin/submissions/invite-click-1",
+      expect.objectContaining({
+        method: "PATCH",
+        body: JSON.stringify({ invitationStatus: "invited" }),
+      }),
+    );
+    expect(await screen.findByRole("combobox")).toHaveValue("invited");
+  });
+
+  it("shows invited and approved audit fields", async () => {
+    mockAdminApis({
+      submissions: [
+        {
+          id: "audit-1",
+          name: "Audit User",
+          city: "Jakarta",
+          role: "Operator",
+          whatsapp: "628123123123",
+          referralSource: "instagram",
+          invitationStatus: "approved",
+          invited_by: "inviter@vfc.id",
+          invited_at: "2025-01-02T11:00:00.000Z",
+          approved_by: "approver@vfc.id",
+          approved_at: "2025-01-03T12:30:00.000Z",
+          createdAt: "2025-01-01T10:00:00.000Z",
+        },
+      ],
+    });
+
+    renderAdmin();
+
+    const row = (await screen.findByText("Audit User")).closest("tr");
+    expect(row).not.toBeNull();
+    if (!row) {
+      return;
+    }
+
+    expect(within(row).getByText(/inviter@vfc.id/)).toBeInTheDocument();
+    expect(within(row).getByText(/approver@vfc.id/)).toBeInTheDocument();
+  });
+
+  it("shows only valid next statuses for each submission", async () => {
+    mockAdminApis({
+      submissions: [
+        {
+          id: "flow-1",
+          name: "Flow User",
+          city: "Jakarta",
+          role: "Maker",
+          whatsapp: "628123000111",
+          referralSource: "instagram",
+          invitationStatus: "signed_up",
+          createdAt: "2025-01-02T11:00:00.000Z",
+        },
+      ],
+    });
+
+    renderAdmin();
+
+    const statusSelect = await screen.findByRole("combobox");
+    const options = within(statusSelect).getAllByRole("option");
+    const values = options.map((option) => option.getAttribute("value"));
+
+    expect(values).toEqual(["signed_up", "invited"]);
+  });
+
   it("shows referral name when referral source is friend and name is present", async () => {
     mockAdminApis({
       submissions: [
@@ -171,7 +334,7 @@ describe("admin route", () => {
         whatsapp: "628987654321",
         referralSource: "friend",
         referralName: "Alex",
-        invitationStatus: "pending",
+        invitationStatus: "signed_up",
         createdAt: "2025-01-03T12:00:00.000Z",
       },
       ],
@@ -199,7 +362,7 @@ describe("admin route", () => {
         role: "Engineer",
         whatsapp: "628555000111",
         referralSource: "friend",
-        invitationStatus: "pending",
+        invitationStatus: "signed_up",
         createdAt: "2025-01-04T13:00:00.000Z",
       },
       ],
@@ -214,7 +377,7 @@ describe("admin route", () => {
     }
 
     expect(within(noNameRow).getByText("A friend")).toBeInTheDocument();
-    expect(within(noNameRow).getByText("-")).toBeInTheDocument();
+    expect(within(noNameRow).getAllByText("-").length).toBeGreaterThan(0);
   });
 
   it("formats unknown referral source values", async () => {
@@ -227,7 +390,7 @@ describe("admin route", () => {
         role: "PM",
         whatsapp: "628111222333",
         referralSource: "newsletter_signup",
-        invitationStatus: "pending",
+        invitationStatus: "signed_up",
         createdAt: "2025-01-05T14:00:00.000Z",
       },
       ],

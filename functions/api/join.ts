@@ -13,6 +13,13 @@ interface SubmissionBody {
 
 export type InvitationStatus = "pending" | "invited" | "joined" | "declined";
 
+export type SubmissionStatus =
+  | "signed_up"
+  | "invited"
+  | "approved"
+  | "joined"
+  | "rejected";
+
 export interface Submission {
   id: string;
   name: string;
@@ -21,7 +28,11 @@ export interface Submission {
   whatsapp: string;
   referralSource: string;
   referralName?: string;
-  invitationStatus: InvitationStatus;
+  invitationStatus: SubmissionStatus;
+  invited_by?: string;
+  invited_at?: string;
+  approved_by?: string;
+  approved_at?: string;
   createdAt: string;
 }
 
@@ -52,7 +63,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     ...(referralSource === "friend" && referralName?.trim()
       ? { referralName: referralName.trim() }
       : {}),
-    invitationStatus: "pending",
+    invitationStatus: "signed_up",
     createdAt: new Date().toISOString(),
   };
 

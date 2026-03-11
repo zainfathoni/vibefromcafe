@@ -12,7 +12,12 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-type InvitationStatus = "pending" | "invited" | "joined" | "declined";
+type InvitationStatus = "signed_up" | "invited" | "approved" | "joined" | "rejected";
+
+interface WhatsappInviteConfig {
+  groupInviteUrl: string;
+  messageTemplate: string;
+}
 
 interface Submission {
   id: string;
@@ -23,11 +28,16 @@ interface Submission {
   referralSource: string;
   referralName?: string;
   invitationStatus: InvitationStatus;
+  invited_by?: string;
+  invited_at?: string;
+  approved_by?: string;
+  approved_at?: string;
   createdAt: string;
 }
 
 interface SubmissionsResponse {
   submissions?: Submission[];
+  whatsappInvite?: Partial<WhatsappInviteConfig>;
   error?: string;
 }
 
@@ -41,7 +51,24 @@ interface EventsResponse {
   error?: string;
 }
 
-const STATUS_OPTIONS: InvitationStatus[] = ["pending", "invited", "joined", "declined"];
+const STATUS_OPTIONS: InvitationStatus[] = [
+  "signed_up",
+  "invited",
+  "approved",
+  "joined",
+  "rejected",
+];
+
+const STATUS_FLOW: Record<InvitationStatus, InvitationStatus[]> = {
+  signed_up: ["signed_up", "invited"],
+  invited: ["invited", "approved"],
+  approved: ["approved", "joined", "rejected"],
+  joined: ["joined"],
+  rejected: ["rejected"],
+};
+
+const DEFAULT_WHATSAPP_INVITE_TEMPLATE =
+  "Hi {{name}}, welcome to Vibe From Cafe. Join our WhatsApp community here: {{group_link}}";
 
 const REFERRAL_SOURCE_LABELS: Record<string, string> = {
   friend: "A friend",
@@ -75,6 +102,69 @@ function formatSubmittedAt(createdAt: string) {
   });
 }
 
+function formatStatusAudit(by?: string, at?: string) {
+  if (!by && !at) {
+    return "-";
+  }
+
+  const label = by ?? "admin";
+  if (!at) {
+    return label;
+  }
+
+  return `${label} • ${formatSubmittedAt(at)}`;
+}
+
+function normalizeWhatsAppNumber(value?: string) {
+  const digitsOnly = (value ?? "").replace(/\D/g, "");
+  if (!digitsOnly) {
+    return "";
+  }
+
+  if (digitsOnly.startsWith("0")) {
+    return `62${digitsOnly.slice(1)}`;
+  }
+
+  if (digitsOnly.startsWith("8")) {
+    return `62${digitsOnly}`;
+  }
+
+  return digitsOnly;
+}
+
+function renderInviteMessage(
+  template: string,
+  submission: Submission,
+  groupInviteUrl: string,
+) {
+  const includesGroupLinkToken = template.includes("{{group_link}}");
+  const rendered = template
+    .replaceAll("{{name}}", submission.name)
+    .replaceAll("{{phone}}", submission.whatsapp)
+    .replaceAll("{{group_link}}", groupInviteUrl);
+
+  return includesGroupLinkToken ? rendered : `${rendered}\n${groupInviteUrl}`;
+}
+
+function buildWhatsappInviteUrl(
+  submission: Submission,
+  inviteConfig: WhatsappInviteConfig,
+) {
+  const normalizedPhone = normalizeWhatsAppNumber(submission.whatsapp);
+  const groupInviteUrl = inviteConfig.groupInviteUrl.trim();
+
+  if (!normalizedPhone || !groupInviteUrl) {
+    return null;
+  }
+
+  const message = renderInviteMessage(
+    inviteConfig.messageTemplate,
+    submission,
+    groupInviteUrl,
+  );
+  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
+}
+
 function formatEventSchedule(event: Event) {
   const date = new Date(`${event.date}T00:00:00`);
   const readableDate = Number.isNaN(date.getTime())
@@ -90,6 +180,10 @@ function formatEventSchedule(event: Event) {
 
 export default function Admin() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [whatsappInviteConfig, setWhatsappInviteConfig] = useState<WhatsappInviteConfig>({
+    groupInviteUrl: "",
+    messageTemplate: DEFAULT_WHATSAPP_INVITE_TEMPLATE,
+  });
   const [submissionsLoading, setSubmissionsLoading] = useState(true);
   const [submissionsError, setSubmissionsError] = useState<string | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
@@ -110,6 +204,12 @@ export default function Admin() {
       }
 
       setSubmissions(data.submissions ?? []);
+      setWhatsappInviteConfig({
+        groupInviteUrl: data.whatsappInvite?.groupInviteUrl?.trim() ?? "",
+        messageTemplate:
+          data.whatsappInvite?.messageTemplate?.trim() ||
+          DEFAULT_WHATSAPP_INVITE_TEMPLATE,
+      });
     } catch (err) {
       setSubmissionsError(err instanceof Error ? err.message : "Failed to load submissions");
     } finally {
@@ -144,13 +244,18 @@ export default function Admin() {
     void loadEvents();
   }, [loadEvents, loadSubmissions]);
 
-  async function updateInvitationStatus(id: string, invitationStatus: InvitationStatus) {
+  async function updateInvitationStatus(
+    id: string,
+    invitationStatus: InvitationStatus,
+    options?: { keepalive?: boolean },
+  ) {
     setSubmissionsError(null);
     setUpdatingById((current) => ({ ...current, [id]: true }));
 
     try {
       const response = await fetch(`/api/admin/submissions/${id}`, {
         method: "PATCH",
+        keepalive: options?.keepalive,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ invitationStatus }),
       });
@@ -177,6 +282,18 @@ export default function Admin() {
         return next;
       });
     }
+  }
+
+  function inviteFromWhatsappClick(submission: Submission) {
+    if (submission.invitationStatus !== "signed_up") {
+      return;
+    }
+
+    void updateInvitationStatus(submission.id, "invited", { keepalive: true });
+  }
+
+  function getStatusOptions(currentStatus: InvitationStatus) {
+    return STATUS_FLOW[currentStatus] ?? STATUS_OPTIONS;
   }
 
   return (
@@ -210,8 +327,14 @@ export default function Admin() {
           <span className="font-semibold text-vfc-white">{submissions.length}</span>
         </div>
 
+        {!whatsappInviteConfig.groupInviteUrl && (
+          <div className="border-b border-vfc-border px-4 py-3 text-sm text-amber-300">
+            Set <code>WHATSAPP_GROUP_INVITE_URL</code> in the environment to enable one-click WhatsApp invites.
+          </div>
+        )}
+
         <div className="overflow-x-auto">
-          <table className="min-w-[980px] w-full text-left text-sm">
+          <table className="min-w-[1280px] w-full text-left text-sm">
             <thead className="bg-vfc-black/70 text-xs uppercase tracking-wide text-vfc-muted">
               <tr>
                 <th className="px-4 py-3 font-medium">Name</th>
@@ -221,6 +344,8 @@ export default function Admin() {
                 <th className="px-4 py-3 font-medium">Referral Source</th>
                 <th className="px-4 py-3 font-medium">Referral Name</th>
                 <th className="px-4 py-3 font-medium">Invitation Status</th>
+                <th className="px-4 py-3 font-medium">Invited</th>
+                <th className="px-4 py-3 font-medium">Approved</th>
                 <th className="px-4 py-3 font-medium">Submitted At</th>
               </tr>
             </thead>
@@ -228,31 +353,49 @@ export default function Admin() {
             <tbody>
               {submissionsLoading ? (
                 <tr>
-                  <td className="px-4 py-6 text-vfc-muted" colSpan={8}>
+                  <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
                     Loading submissions…
                   </td>
                 </tr>
               ) : submissions.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-vfc-muted" colSpan={8}>
+                  <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
                     No submissions found.
                   </td>
                 </tr>
               ) : (
                 submissions.map((submission) => {
                   const isUpdating = Boolean(updatingById[submission.id]);
+                  const whatsappInviteUrl = buildWhatsappInviteUrl(
+                    submission,
+                    whatsappInviteConfig,
+                  );
 
                   return (
                     <tr key={submission.id} className="border-t border-vfc-border/70 align-top">
                       <td className="px-4 py-3 font-medium text-vfc-white">{submission.name}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.city}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.role}</td>
-                      <td className="px-4 py-3 text-vfc-white/90">{submission.whatsapp || "-"}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">
+                        {submission.whatsapp && whatsappInviteUrl ? (
+                          <a
+                            href={whatsappInviteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => inviteFromWhatsappClick(submission)}
+                            className="text-vfc-yellow hover:underline"
+                          >
+                            {submission.whatsapp}
+                          </a>
+                        ) : (
+                          submission.whatsapp || "-"
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.referralSource ? formatReferralSource(submission.referralSource) : "-"}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.referralName || "-"}</td>
                       <td className="px-4 py-3">
                         <select
-                          value={submission.invitationStatus ?? "pending"}
+                          value={submission.invitationStatus ?? "signed_up"}
                           onChange={(event) =>
                             void updateInvitationStatus(
                               submission.id,
@@ -262,12 +405,18 @@ export default function Admin() {
                           disabled={isUpdating}
                           className="min-w-32 rounded-md border border-vfc-border bg-vfc-black px-3 py-1.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow disabled:cursor-not-allowed disabled:opacity-70"
                         >
-                          {STATUS_OPTIONS.map((status) => (
+                          {getStatusOptions(submission.invitationStatus).map((status) => (
                             <option key={status} value={status}>
                               {formatLabel(status)}
                             </option>
                           ))}
                         </select>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">
+                        {formatStatusAudit(submission.invited_by, submission.invited_at)}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">
+                        {formatStatusAudit(submission.approved_by, submission.approved_at)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">
                         {formatSubmittedAt(submission.createdAt)}
