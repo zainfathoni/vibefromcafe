@@ -61,7 +61,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     role: role.trim(),
     whatsapp: whatsapp.trim(),
     referralSource: referralSource.trim(),
-    ...(referralSource === "friend" && referralName?.trim()
+    ...((referralSource === "friend" || referralSource === "other") && referralName?.trim()
       ? { referralName: referralName.trim() }
       : {}),
     invitationStatus: "signed_up",

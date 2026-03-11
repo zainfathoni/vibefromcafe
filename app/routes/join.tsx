@@ -171,6 +171,19 @@ export default function Join() {
               </label>
             )}
 
+            {form.referralSource === "other" && (
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-vfc-white">How did you find us?</span>
+                <input
+                  type="text"
+                  value={form.referralName}
+                  onChange={(event) => updateField("referralName", event.target.value)}
+                  className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+                  placeholder="e.g. Google search, blog post, event"
+                />
+              </label>
+            )}
+
             <p className="text-sm text-vfc-muted">
               WhatsApp community access is invite-only. This form helps us prioritize onboarding.
             </p>
