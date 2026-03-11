@@ -31,6 +31,7 @@ const initialForm: InterestForm = {
 const REFERRAL_SOURCES = [
   { value: "friend", label: "A friend" },
   { value: "instagram", label: "Instagram" },
+  { value: "threads", label: "Threads" },
   { value: "twitter", label: "X (Twitter)" },
   { value: "github", label: "GitHub" },
   { value: "other", label: "Other" },
@@ -167,6 +168,19 @@ export default function Join() {
                   onChange={(event) => updateField("referralName", event.target.value)}
                   className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
                   placeholder="Their name or WhatsApp handle"
+                />
+              </label>
+            )}
+
+            {form.referralSource === "other" && (
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-vfc-white">How did you find us?</span>
+                <input
+                  type="text"
+                  value={form.referralName}
+                  onChange={(event) => updateField("referralName", event.target.value)}
+                  className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+                  placeholder="e.g. Google search, blog post, event"
                 />
               </label>
             )}

@@ -88,6 +88,25 @@ Cafes live in `app/data/cafes.json`. Each cafe has:
 
 Events can link to a cafe via `cafeId`. When an event doesn't have its own `imageUrl` or `mapUrl`, the linked cafe's values are used as fallbacks.
 
+## Admin: Inviting Members
+
+When new signups come in, admins can invite them to the WhatsApp group in one click:
+
+1. Go to the **Admin** page (protected by Cloudflare Access)
+2. Find the signup in the list — their phone number is a clickable **Invite** button
+3. Click it → WhatsApp opens with a prefilled message containing the group invite link
+4. Hit **Send** in WhatsApp — done!
+
+The signup status updates automatically: `signed_up` → `invited` → `approved` → `joined`
+
+### Environment Variables
+
+| Variable | Required | Description |
+| -------- | -------- | ----------- |
+| `ADMIN_SECRET` | Yes | Secret for admin authentication |
+| `WHATSAPP_GROUP_INVITE_URL` | Yes | WhatsApp group invite link (set in Cloudflare dashboard, **encrypt** this) |
+| `WHATSAPP_INVITE_MESSAGE_TEMPLATE` | No | Custom message template — supports `{{name}}`, `{{phone}}`, `{{group_link}}` placeholders. Default is set in `wrangler.toml` |
+
 ## Deployment
 
 Built for [Cloudflare Pages](https://pages.cloudflare.com/). Config in `wrangler.toml`.
