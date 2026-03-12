@@ -6,7 +6,7 @@ export const meta: MetaFunction = () => [
   {
     name: "description",
     content:
-      "Join Vibe From Cafe and express interest in Vibe Coding, the first active community theme.",
+      "Join Vibe From Cafe support system for tech workers navigating the AI shift through learning, building, and trusted referrals.",
   },
 ];
 
@@ -77,16 +77,16 @@ export default function Join() {
       <div className="mb-12 text-center">
         <h1 className="mb-4 text-3xl font-bold text-vfc-white">Join Vibe From Cafe</h1>
         <p className="mx-auto max-w-xl text-lg text-vfc-muted">
-          Vibe Coding is our first active theme. Fill the interest form and we'll reach out when new chapter activities open.
+          Kamu nggak sendirian menghadapi AI shift. Isi form ini buat gabung ke circle tech workers yang belajar, build, dan grow bareng.
         </p>
       </div>
 
       <div className="mb-10 rounded-2xl border border-vfc-border bg-vfc-surface p-6">
         {submitted ? (
           <div className="text-center">
-            <h2 className="mb-3 text-2xl font-semibold text-vfc-yellow">Thanks for your interest!</h2>
+            <h2 className="mb-3 text-2xl font-semibold text-vfc-yellow">Thanks, you&apos;re in the queue!</h2>
             <p className="text-vfc-muted">
-              We received your details and will contact you for future Vibe From Cafe updates.
+              We received your details. Tim VFC bakal reach out pas batch berikutnya dibuka.
             </p>
           </div>
         ) : (
@@ -186,7 +186,8 @@ export default function Join() {
             )}
 
             <p className="text-sm text-vfc-muted">
-              WhatsApp community access is invite-only. This form helps us prioritize onboarding.
+              WhatsApp access tetap invite-only dan referral system tetap dijaga.
+              This form helps us keep onboarding trusted dan relevan.
             </p>
 
             {error && (
@@ -213,7 +214,7 @@ export default function Join() {
         >
           <div>
             <h2 className="text-lg font-semibold text-vfc-white group-hover:text-vfc-yellow">X (Twitter)</h2>
-            <p className="text-sm text-vfc-muted">Follow @vibefromcafe for chapter updates.</p>
+            <p className="text-sm text-vfc-muted">Follow @vibefromcafe for chapter updates and AI support sessions.</p>
           </div>
           <span className="text-vfc-muted group-hover:text-vfc-yellow">&rarr;</span>
         </a>
@@ -226,7 +227,7 @@ export default function Join() {
         >
           <div>
             <h2 className="text-lg font-semibold text-vfc-white group-hover:text-vfc-yellow">Instagram</h2>
-            <p className="text-sm text-vfc-muted">Follow @vibefromcafe for cafe stories and snapshots.</p>
+            <p className="text-sm text-vfc-muted">Follow @vibefromcafe for cafe stories, event moments, and community highlights.</p>
           </div>
           <span className="text-vfc-muted group-hover:text-vfc-yellow">&rarr;</span>
         </a>

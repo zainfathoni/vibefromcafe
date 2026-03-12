@@ -5,11 +5,11 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "Vibe Coding From Cafe — Chapter Yogyakarta" },
+  { title: "VFC Jogja — Chapter Yogyakarta" },
   {
     name: "description",
     content:
-      "Vibe Coding From Cafe — Chapter Yogyakarta is the first active theme chapter under Vibe From Cafe.",
+      "VFC Jogja is the first active chapter under Vibe From Cafe, where tech workers learn AI together from real cafe workspaces.",
   },
 ];
 
@@ -55,9 +55,9 @@ export default function ChapterJogja() {
               Vibe Coding Jogja
             </h1>
             <p className="max-w-2xl text-lg text-vfc-muted">
-              This is the first active chapter theme under Vibe From Cafe.
-              What began as a local coding circle has grown into a community
-              exploring the best cafes for AI-assisted coding in Yogyakarta.
+              This is the first active chapter under Vibe From Cafe. What began
+              as a local coding circle has grown into a support system for tech
+              workers exploring AI hands-on from real cafe workspaces in Jogja.
             </p>
           </div>
         </div>
@@ -100,16 +100,16 @@ export default function ChapterJogja() {
 
         {/* Join CTA */}
         <div className="rounded-2xl border border-vfc-border bg-vfc-surface p-8 text-center">
-          <h2 className="text-2xl font-bold mb-3">Join Vibe Coding Jogja</h2>
+          <h2 className="text-2xl font-bold mb-3">Join the Jogja Support Circle</h2>
           <p className="mb-6 max-w-md mx-auto text-vfc-muted">
-            Connect with builders in Jogja, share cafe recommendations,
-            and join future invite-only community sessions.
+            Connect with builders in Jogja, share cafe recommendations, and
+            join invite-only sessions focused on AI adoption and career growth.
           </p>
           <Link
             to="/join"
             className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
           >
-            Express Interest
+            Join the Community
           </Link>
         </div>
       </div>

@@ -10,7 +10,8 @@ export const meta: MetaFunction = () => [
   { title: "Events — Vibe From Cafe" },
   {
     name: "description",
-    content: "Community events by Vibe From Cafe, starting with Vibe Coding sessions and meetups.",
+    content:
+      "Community events by Vibe From Cafe to help tech workers adopt AI, build together, and grow careers through chapter meetups.",
   },
 ];
 
@@ -99,7 +100,8 @@ export default function Events() {
         <div>
           <h1 className="text-3xl font-bold text-vfc-white">Community Events</h1>
           <p className="mt-2 max-w-2xl text-vfc-muted">
-            Join VFC coding sessions, coffee meetups, and open demos across our chapter spaces.
+            Join VFC AI adoption sessions, coffee meetups, and open demos across
+            our chapter spaces.
           </p>
         </div>
         <button

@@ -6,7 +6,8 @@ export const meta: MetaFunction = () => [
   { title: "Chapters — Vibe From Cafe" },
   {
     name: "description",
-    content: "Explore Vibe From Cafe theme chapters across Indonesia, starting with Vibe Coding.",
+    content:
+      "Explore Vibe From Cafe chapters across Indonesia where tech workers learn AI together, grow careers, and stay connected.",
   },
 ];
 
@@ -15,7 +16,8 @@ export default function Chapters() {
     <div className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-3xl font-bold text-vfc-white mb-2">Chapters</h1>
       <p className="text-vfc-muted mb-10">
-        Vibe From Cafe is growing across Indonesia with theme-based chapters. Vibe Coding is the first active one.
+        Vibe From Cafe is growing across Indonesia with chapter spaces for tech
+        workers navigating the AI shift together.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -34,7 +36,8 @@ export default function Chapters() {
           </h2>
           <p className="mb-3 text-sm text-vfc-muted">{cafes.length}+ cafes reviewed</p>
           <p className="mb-4 text-sm text-vfc-muted">
-            The first VFC chapter. A thriving community of vibe coders in the cultural heart of Java.
+            The first VFC chapter. A thriving support circle for builders and
+            tech workers in the cultural heart of Java.
           </p>
           <span className="text-sm font-medium text-vfc-yellow">
             Explore Jogja &rarr;
@@ -46,7 +49,8 @@ export default function Chapters() {
           <h2 className="mb-2 text-2xl font-bold text-vfc-white/70">Jakarta</h2>
           <p className="mb-3 text-sm text-vfc-muted">Coming soon</p>
           <p className="text-sm text-vfc-muted">
-            The capital city's vibe coding scene is booming. We're scouting cafes now.
+            The capital's tech scene is moving fast with AI. We're scouting
+            cafes and local collaborators now.
           </p>
         </div>
 
@@ -55,7 +59,8 @@ export default function Chapters() {
           <h2 className="mb-2 text-2xl font-bold text-vfc-white/70">Bandung</h2>
           <p className="mb-3 text-sm text-vfc-muted">Coming soon</p>
           <p className="text-sm text-vfc-muted">
-            Known for its creative scene and cool climate — a natural fit for vibe coders.
+            Known for its creative maker culture and cool climate &mdash; a
+            natural fit for builders who love to experiment.
           </p>
         </div>
       </div>

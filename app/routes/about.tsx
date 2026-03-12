@@ -6,7 +6,7 @@ export const meta: MetaFunction = () => [
   {
     name: "description",
     content:
-      "Learn about Vibe From Cafe, a community built from cafes across Indonesia, with Vibe Coding as the first active theme.",
+      "Learn how Vibe From Cafe evolved from cafe recommendations into a support system for tech workers navigating the AI shift.",
   },
 ];
 
@@ -19,31 +19,45 @@ export default function About() {
         <div className="mb-8 rounded-xl border border-vfc-border bg-vfc-surface p-6">
           <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Our Story</h2>
           <p className="mb-4 text-vfc-muted">
-            Vibe From Cafe started as a community of people sharing productive cafe spots in Jogja.
-            The first theme we organized around was Vibe Coding: builders using AI and modern tools
-            from real-world cafe workspaces.
+            Vibe From Cafe bermula dari kebiasaan sederhana: berbagi rekomendasi
+            cafe produktif di Jogja biar kerja makin fokus.
           </p>
           <p className="mb-4 text-vfc-muted">
-            What began as recommendations quickly became a structured community effort.
-            We realized people needed reliable, verified information on cafes where real work can happen,
-            not just aesthetic spots.
+            Dari ngobrol bareng di meja cafe, topiknya makin sering ke AI.
+            Banyak pekerja tech antusias tapi juga bingung harus mulai dari mana,
+            atau takut ketinggalan sama pergeseran yang cepat banget.
           </p>
           <p className="text-vfc-muted">
-            Every cafe on Vibe From Cafe is reviewed by community members. WiFi speeds are measured,
-            amenity info is verified, and recommendations stay transparent.
+            Dari situ VFC berkembang: bukan cuma direktori cafe, tapi sistem
+            pendukung buat orang-orang tech supaya bisa merangkul AI, belajar
+            bareng, dan tumbuh bareng. Cafe tetap rumah kita buat ketemu,
+            ngobrol, dan eksekusi.
           </p>
         </div>
 
         <div className="mb-8 rounded-xl border border-vfc-border bg-vfc-surface p-6">
-          <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Community Themes</h2>
-          <p className="mb-4 text-vfc-muted">
-            Vibe Coding is the first active theme in Vibe From Cafe.
-            Over time, we plan to expand into more themes like Marketing, Learning,
-            and other creative/professional communities that thrive in cafe environments.
-          </p>
+          <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Community Focus</h2>
+          <ul className="mb-4 space-y-3 text-vfc-muted">
+            <li className="flex items-start gap-3">
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
+              <span><strong>AI adoption &amp; hands-on learning</strong> — bukan teori doang, tapi praktik langsung.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
+              <span><strong>Builder&apos;s disposition</strong> — side projects, experimentation, dan love of making things.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
+              <span><strong>Career growth in the AI era</strong> — bantu level up role, portfolio, dan confidence.</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="mt-0.5 font-bold text-vfc-yellow">&#10003;</span>
+              <span><strong>Organic talent networking</strong> — koneksi terjadi natural lewat collaboration dan trust.</span>
+            </li>
+          </ul>
           <p className="text-vfc-muted">
-            Our chapter model stays community-driven: locals curate local spots,
-            and each theme can adapt to the way people actually work in each city.
+            Chapter model, events, referral system, dan cafe directory tetap jadi
+            sarana utama biar support system ini kerasa nyata di kehidupan harian.
           </p>
         </div>
 
