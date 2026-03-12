@@ -24,18 +24,31 @@ const REQUIRED_HEADERS = [
   "Info Tambahan",
 ];
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, "..");
 const CAFES_JSON_PATH = path.join(PROJECT_ROOT, "app/data/cafes.json");
 
-main().catch((error) => {
-  console.error(error instanceof Error ? error.message : String(error));
-  process.exit(1);
-});
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+  main().catch((error) => {
+    console.error(error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  });
+}
 
-async function main() {
-  const csvUrl = process.env.CAFES_SHEET_CSV_URL ?? DEFAULT_CSV_URL;
-  const csvText = await fetchCsv(csvUrl);
+export async function main() {
+  await syncCafesFromSheet();
+}
+
+export async function syncCafesFromSheet({
+  csvUrl = process.env.CAFES_SHEET_CSV_URL ?? DEFAULT_CSV_URL,
+  cafesJsonPath = CAFES_JSON_PATH,
+  fetchImpl = fetch,
+  readFileImpl = readFile,
+  writeFileImpl = writeFile,
+  log = console.log,
+} = {}) {
+  const csvText = await fetchCsv(csvUrl, fetchImpl);
   const rows = parseCsv(csvText);
 
   if (rows.length < 2) {
@@ -50,23 +63,24 @@ async function main() {
     .map((row) => toRecord(header, row))
     .filter((row) => row.Nama);
 
-  const currentRaw = await readFile(CAFES_JSON_PATH, "utf8");
+  const currentRaw = await readFileImpl(cafesJsonPath, "utf8");
   const currentCafes = JSON.parse(currentRaw);
 
   const cafes = transformRows(records, currentCafes);
   const nextRaw = `${JSON.stringify(cafes, null, 2)}\n`;
 
   if (normalizeNewlines(currentRaw) === normalizeNewlines(nextRaw)) {
-    console.log("cafes.json is already up to date.");
-    return;
+    log("cafes.json is already up to date.");
+    return { status: "upToDate", cafes };
   }
 
-  await writeFile(CAFES_JSON_PATH, nextRaw, "utf8");
-  console.log(`Updated app/data/cafes.json with ${cafes.length} cafes.`);
+  await writeFileImpl(cafesJsonPath, nextRaw, "utf8");
+  log(`Updated app/data/cafes.json with ${cafes.length} cafes.`);
+  return { status: "updated", cafes };
 }
 
-async function fetchCsv(csvUrl) {
-  const response = await fetch(csvUrl, {
+export async function fetchCsv(csvUrl, fetchImpl = fetch) {
+  const response = await fetchImpl(csvUrl, {
     headers: { Accept: "text/csv" },
   });
 
@@ -102,7 +116,7 @@ function toRecord(header, row) {
   return record;
 }
 
-function transformRows(rows, currentCafes) {
+export function transformRows(rows, currentCafes) {
   const byName = new Map(
     currentCafes.map((cafe) => [normalizeLookup(cafe.name), cafe]),
   );
@@ -150,7 +164,7 @@ function transformRows(rows, currentCafes) {
   });
 }
 
-function parseYesNo(value) {
+export function parseYesNo(value) {
   const normalized = toNullableString(value)?.toLowerCase();
 
   if (!normalized) {
@@ -168,7 +182,7 @@ function parseYesNo(value) {
   return null;
 }
 
-function normalizePrice(value) {
+export function normalizePrice(value) {
   const normalized = toNullableString(value);
 
   if (!normalized) {
@@ -177,6 +191,7 @@ function normalizePrice(value) {
 
   return normalized
     .replace(/,00$/, "")
+    .replace(/,/g, "")
     .replace(/^rp\s*/i, "Rp")
     .replace(/^Rp\s+/, "Rp");
 }
@@ -202,7 +217,7 @@ function normalizeNewlines(value) {
   return value.replace(/\r\n/g, "\n");
 }
 
-function slugify(value) {
+export function slugify(value) {
   return value
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -211,7 +226,7 @@ function slugify(value) {
     .replace(/(^-|-$)/g, "");
 }
 
-function parseCsv(text) {
+export function parseCsv(text) {
   const rows = [];
   let row = [];
   let cell = "";
