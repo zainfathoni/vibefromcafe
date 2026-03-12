@@ -6,6 +6,7 @@
     "dev": "react-router dev",
     "build": "react-router build",
     "start": "react-router-serve ./build/server/index.js",
+    "sync:cafes": "node scripts/sync-cafes-from-sheet.mjs",
     "typecheck": "react-router typegen && tsc",
     "test": "vitest run"
   },
