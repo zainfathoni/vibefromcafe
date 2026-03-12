@@ -75,7 +75,7 @@ export default function Join() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <div className="mb-12 text-center">
-        <h1 className="mb-4 text-3xl font-bold text-vfc-white">Join the VFC Support System</h1>
+        <h1 className="mb-4 text-3xl font-bold text-vfc-white">Join Vibe From Cafe</h1>
         <p className="mx-auto max-w-xl text-lg text-vfc-muted">
           Kamu nggak sendirian menghadapi AI shift. Isi form ini buat gabung ke circle tech workers yang belajar, build, dan grow bareng.
         </p>
@@ -199,7 +199,7 @@ export default function Join() {
               disabled={loading}
               className="inline-flex rounded-lg bg-vfc-yellow px-6 py-2.5 font-semibold text-vfc-black transition-colors hover:bg-yellow-300 disabled:cursor-not-allowed disabled:bg-vfc-border disabled:text-vfc-muted"
             >
-              {loading ? "Submitting…" : "Join Support System"}
+              {loading ? "Submitting…" : "Express Interest"}
             </button>
           </form>
         )}
