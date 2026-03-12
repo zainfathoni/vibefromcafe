@@ -24,13 +24,14 @@ export default function About() {
           </p>
           <p className="mb-4 text-vfc-muted">
             Dari ngobrol bareng di meja cafe, topiknya makin sering ke AI.
-            Banyak tech workers excited tapi juga bingung harus mulai dari mana,
+            Banyak pekerja tech antusias tapi juga bingung harus mulai dari mana,
             atau takut ketinggalan sama pergeseran yang cepat banget.
           </p>
           <p className="text-vfc-muted">
-            Di situ VFC evolve: bukan cuma directory cafe, tapi support system
-            buat orang-orang tech supaya bisa embrace AI, belajar bareng, dan
-            grow bareng. Cafe tetap rumah kita buat ketemu, ngobrol, dan eksekusi.
+            Dari situ VFC berkembang: bukan cuma direktori cafe, tapi sistem
+            pendukung buat orang-orang tech supaya bisa merangkul AI, belajar
+            bareng, dan tumbuh bareng. Cafe tetap rumah kita buat ketemu,
+            ngobrol, dan eksekusi.
           </p>
         </div>
 
