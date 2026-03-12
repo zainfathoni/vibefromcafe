@@ -19,8 +19,8 @@ export default function About() {
         <div className="mb-8 rounded-xl border border-vfc-border bg-vfc-surface p-6">
           <h2 className="mb-4 text-xl font-semibold text-vfc-yellow">Our Story</h2>
           <p className="mb-4 text-vfc-muted">
-            Vibe From Cafe started dari kebiasaan simple: sharing productive cafe
-            spots in Jogja biar kerja makin fokus.
+            Vibe From Cafe bermula dari kebiasaan sederhana: berbagi rekomendasi
+            cafe produktif di Jogja biar kerja makin fokus.
           </p>
           <p className="mb-4 text-vfc-muted">
             Dari ngobrol bareng di meja cafe, topiknya makin sering ke AI.
