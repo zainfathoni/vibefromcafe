@@ -122,7 +122,7 @@ export default function About() {
           to="/join"
           className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
         >
-          Join the Support System
+          Join the Community
         </Link>
       </div>
     </div>

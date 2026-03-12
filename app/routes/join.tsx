@@ -86,7 +86,7 @@ export default function Join() {
           <div className="text-center">
             <h2 className="mb-3 text-2xl font-semibold text-vfc-yellow">Thanks, you&apos;re in the queue!</h2>
             <p className="text-vfc-muted">
-              We received your details. Tim VFC bakal reach out pas onboarding support system batch berikutnya dibuka.
+              We received your details. Tim VFC bakal reach out pas batch berikutnya dibuka.
             </p>
           </div>
         ) : (
@@ -186,8 +186,8 @@ export default function Join() {
             )}
 
             <p className="text-sm text-vfc-muted">
-              WhatsApp access tetap invite-only dan referral system tetap di-enforce.
-              This form helps us keep onboarding trusted dan high-signal.
+              WhatsApp access tetap invite-only dan referral system tetap dijaga.
+              This form helps us keep onboarding trusted dan relevan.
             </p>
 
             {error && (

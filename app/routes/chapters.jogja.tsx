@@ -5,7 +5,7 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "VFC Jogja — AI Builder Chapter" },
+  { title: "VFC Jogja — Chapter Yogyakarta" },
   {
     name: "description",
     content:
@@ -70,7 +70,7 @@ export default function ChapterJogja() {
           </div>
           <div className="rounded-xl border border-vfc-border bg-vfc-surface p-5 text-center">
             <p className="text-3xl font-bold text-vfc-yellow">1</p>
-            <p className="text-sm text-vfc-muted">Active support chapter</p>
+            <p className="text-sm text-vfc-muted">Active theme chapter</p>
           </div>
           <div className="rounded-xl border border-vfc-border bg-vfc-surface p-5 text-center">
             <p className="text-3xl font-bold text-vfc-yellow">Growing</p>
@@ -109,7 +109,7 @@ export default function ChapterJogja() {
             to="/join"
             className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
           >
-            Join Support System
+            Join the Community
           </Link>
         </div>
       </div>
