@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const DEFAULT_CSV_URL =
   "https://docs.google.com/spreadsheets/d/1brxuvXq8PZD-EsUlxf6h0Vpl8mif81vxw-OgmqrJYK0/export?format=csv";
 
-const REQUIRED_HEADERS = [
+export const REQUIRED_HEADERS = [
   "Nama",
   "Peta",
   "Harga Espresso",

@@ -6,27 +6,13 @@ import {
   normalizePrice,
   parseCsv,
   parseYesNo,
+  REQUIRED_HEADERS,
   slugify,
   syncCafesFromSheet,
   transformRows,
 } from "./sync-cafes-from-sheet.mjs";
 
-const SHEET_HEADERS = [
-  "Nama",
-  "Peta",
-  "Harga Espresso",
-  "Harga Cappucino",
-  "Harga Americano",
-  "SpeedTest (mbps)",
-  "Background Musik",
-  "Pengunjung Sepi",
-  "Musholla",
-  "Tempat main anak",
-  "Ada Private Room",
-  "Ada Ruang AC",
-  "Colokan listrik",
-  "Info Tambahan",
-];
+const SHEET_HEADERS = REQUIRED_HEADERS;
 
 function makeSheetRow(overrides: Record<string, string> = {}) {
   return {
