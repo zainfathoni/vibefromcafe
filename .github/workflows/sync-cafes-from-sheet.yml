@@ -1,0 +1,45 @@
+name: Sync Cafes From Google Sheets
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-cafes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync cafes.json from Google Sheets
+        run: npm run sync:cafes
+
+      - name: Create pull request for data changes
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6
+        with:
+          branch: chore/auto-sync-cafes-json
+          delete-branch: true
+          commit-message: "chore(data): sync cafes.json from Google Sheets"
+          title: "chore(data): sync cafes.json from Google Sheets"
+          body: |
+            ## Summary
+            - fetch latest cafe directory rows from the Google Sheets CSV export
+            - transform rows into `app/data/types.ts` `Cafe` shape
+            - update `app/data/cafes.json` when differences are detected
+
+            This PR was created automatically by `.github/workflows/sync-cafes-from-sheet.yml`.
