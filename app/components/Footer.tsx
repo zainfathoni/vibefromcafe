@@ -8,7 +8,8 @@ export default function Footer() {
           <div>
             <h3 className="font-bold text-lg text-vfc-yellow mb-3">Vibe From Cafe</h3>
             <p className="text-sm text-vfc-muted">
-              A community built from cafes across Indonesia, with Vibe Coding as the first active theme.
+              A support system for tech workers navigating the AI shift &mdash;
+              sambil ngopi bareng.
             </p>
           </div>
 

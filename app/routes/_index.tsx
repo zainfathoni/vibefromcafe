@@ -5,11 +5,11 @@ import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
 export const meta: MetaFunction = () => [
-  { title: "Vibe From Cafe — Community Across Indonesia" },
+  { title: "Vibe From Cafe — Navigate the AI Shift Together" },
   {
     name: "description",
     content:
-      "Vibe From Cafe is a community built from cafes across Indonesia, with Vibe Coding as the first active theme.",
+      "Vibe From Cafe is a support system for tech workers navigating the AI shift — belajar bareng, build side projects, and level up careers sambil ngopi.",
   },
 ];
 
@@ -35,13 +35,13 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto text-center">
           <img src="/logos/vfc-logo.jpg" alt="Vibe From Cafe" className="h-30 w-auto mx-auto mb-8 rounded-xl" />
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            Build fast, ship often, and keep
-            <span className="text-vfc-yellow"> coding</span> in flow.
+            Navigate the <span className="text-vfc-yellow">AI shift</span> &mdash;
+            together.
           </h1>
           <p className="text-lg text-vfc-muted mb-8 max-w-2xl mx-auto">
-            Vibe From Cafe is where people gather, build, and share from cafes.
-            Vibe Coding is our first active theme, with real WiFi speeds, power
-            outlets, and vibes reviewed by the community.
+            VFC is a community of tech workers who embrace AI instead of fearing
+            it. We learn together, build together, and support each other through
+            the biggest shift in our industry &mdash; sambil ngopi di cafe favorit.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -54,7 +54,7 @@ export default function Home() {
               to="/join"
               className="inline-block rounded-lg border-2 border-vfc-yellow px-8 py-3 font-semibold text-vfc-yellow transition-colors hover:bg-vfc-yellow hover:text-vfc-black"
             >
-              Join the Community
+              Join the Support System
             </Link>
           </div>
         </div>
@@ -87,7 +87,8 @@ export default function Home() {
             Upcoming Events
           </h2>
           <p className="text-vfc-muted mb-6">
-            Vibe coding sessions, community meetups, and more — coming soon.
+            Hands-on AI adoption sessions, builder meetups, and career growth
+            circles &mdash; coming soon.
           </p>
           <Link
             to="/events"
@@ -115,8 +116,8 @@ export default function Home() {
               {cafes.length}+ cafes reviewed
             </p>
             <p className="text-vfc-muted text-sm">
-              The first VFC chapter. A thriving community of vibe coders in
-              the heart of Java.
+              The first VFC chapter. Tech workers and builders learning AI
+              together in the heart of Java.
             </p>
           </Link>
 
@@ -140,17 +141,17 @@ export default function Home() {
       <section className="border-y border-vfc-border bg-vfc-surface py-16 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl font-bold mb-4">
-            Join the Vibe From Cafe community
+            Kamu nggak harus navigate the AI shift sendirian
           </h2>
           <p className="text-vfc-muted mb-8">
-            Connect with fellow vibe coders, share your favorite cafe spots,
-            and find your next coding workspace.
+            Join VFC support system buat belajar bareng, bangun side projects,
+            dan tumbuh di era AI sambil tetap keep the cafe vibes alive.
           </p>
           <Link
             to="/join"
             className="inline-block rounded-lg bg-vfc-yellow px-8 py-3 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
           >
-            Express Interest
+            Join the Support System
           </Link>
         </div>
       </section>

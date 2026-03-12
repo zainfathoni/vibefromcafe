@@ -11,7 +11,7 @@ export const meta: Route.MetaFunction = ({ data }) => {
     { title: `${data.cafe.name} — Vibe From Cafe` },
     {
       name: "description",
-      content: `${data.cafe.name} in ${data.cafe.map_location ?? "Jogja"} — WiFi, amenities, and prices for vibe coders.`,
+      content: `${data.cafe.name} in ${data.cafe.map_location ?? "Jogja"} — WiFi, amenities, and prices for tech workers and builders.`,
     },
   ];
 };

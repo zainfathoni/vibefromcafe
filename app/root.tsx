@@ -11,9 +11,9 @@ import Footer from "./components/Footer";
 import "./app.css";
 
 const SITE_URL = "https://vibefromcafe.id/";
-const SITE_TITLE = "Vibe From Cafe — Community Across Indonesia";
+const SITE_TITLE = "Vibe From Cafe — Navigate the AI Shift Together";
 const SITE_DESCRIPTION =
-  "Vibe From Cafe is a community built from cafes across Indonesia, with Vibe Coding as the first active theme.";
+  "Vibe From Cafe is a support system for tech workers navigating the AI shift — belajar bareng, build side projects, and grow careers sambil ngopi di cafe favorit.";
 const OG_IMAGE_URL = `${SITE_URL}og-image.png`;
 
 export const meta: MetaFunction = () => [
