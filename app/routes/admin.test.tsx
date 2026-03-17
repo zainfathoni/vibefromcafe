@@ -499,7 +499,7 @@ describe("admin route", () => {
     const searchInput = await screen.findByPlaceholderText("Search cafes…");
     await userEvent.type(searchInput, "bean garden");
 
-    expect(screen.getByText("The Bean Garden Palagan")).toBeInTheDocument();
+    expect(screen.getAllByText("The Bean Garden Palagan").length).toBeGreaterThan(0);
     expect(screen.getByText("1 matching")).toBeInTheDocument();
   });
 
@@ -508,7 +508,9 @@ describe("admin route", () => {
     renderAdmin();
 
     // The Bean Garden Palagan has imageUrl and mapUrl
-    const row = (await screen.findByText("The Bean Garden Palagan")).closest("tr");
+    // Use getAllByText since the cafe name also appears in map_location column
+    const nameElements = await screen.findAllByText("The Bean Garden Palagan");
+    const row = nameElements[0].closest("tr");
     expect(row).not.toBeNull();
     if (!row) return;
 
