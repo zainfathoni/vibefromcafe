@@ -348,7 +348,7 @@ export default function Admin() {
   ).length;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-10 md:py-14">
+    <div className="mx-auto w-full px-4 py-10 md:py-14 2xl:px-8">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-vfc-white">Submissions Admin</h1>
@@ -424,7 +424,7 @@ export default function Admin() {
         )}
 
         <div className="overflow-x-auto">
-          <table className="min-w-[1280px] w-full text-left text-sm">
+          <table className="min-w-[960px] w-full text-left text-sm">
             <thead className="bg-vfc-black/70 text-xs uppercase tracking-wide text-vfc-muted">
               <tr>
                 <th className="px-4 py-3 font-medium">Name</th>
