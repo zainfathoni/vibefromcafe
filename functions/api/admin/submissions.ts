@@ -34,6 +34,17 @@ const STATUS_FLOW: Record<SubmissionStatus, SubmissionStatus[]> = {
   rejected: ["rejected"],
 };
 
+function extractEmailFromJwt(jwt: string): string | null {
+  try {
+    const payload = jwt.split(".")[1];
+    if (!payload) return null;
+    const decoded = JSON.parse(atob(payload));
+    return decoded.email?.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
 function deriveInviter(request: Request) {
   const email = request.headers.get("cf-access-authenticated-user-email")?.trim();
   if (email) {
@@ -43,6 +54,13 @@ function deriveInviter(request: Request) {
   const name = request.headers.get("cf-access-authenticated-user-name")?.trim();
   if (name) {
     return name;
+  }
+
+  // Fallback: extract email from Cloudflare Access JWT
+  const jwt = request.headers.get("Cf-Access-Jwt-Assertion")?.trim();
+  if (jwt) {
+    const jwtEmail = extractEmailFromJwt(jwt);
+    if (jwtEmail) return jwtEmail;
   }
 
   return "admin";
@@ -209,5 +227,13 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
 
   await env.VFC_SUBMISSIONS.put(key, JSON.stringify(updated));
 
-  return Response.json({ success: true, submission: updated });
+  // Debug: include auth detection info (remove after confirming)
+  const debugAuth = {
+    hasCfEmail: !!request.headers.get("cf-access-authenticated-user-email"),
+    hasCfName: !!request.headers.get("cf-access-authenticated-user-name"),
+    hasJwt: !!request.headers.get("Cf-Access-Jwt-Assertion"),
+    resolvedInviter: inviter,
+  };
+
+  return Response.json({ success: true, submission: updated, debugAuth });
 };
