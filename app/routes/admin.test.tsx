@@ -517,4 +517,125 @@ describe("admin route", () => {
     expect(within(row).getByText("Yes")).toBeInTheDocument();
     expect(within(row).getByText("Link")).toBeInTheDocument();
   });
+
+  describe("status filters", () => {
+    const MIXED_SUBMISSIONS: MockSubmission[] = [
+      { id: "s1", name: "Alice", city: "Yogyakarta", role: "Dev", invitationStatus: "signed_up", createdAt: "2025-01-01T00:00:00Z" },
+      { id: "s2", name: "Bob", city: "Jakarta", role: "Designer", invitationStatus: "invited", createdAt: "2025-01-02T00:00:00Z" },
+      { id: "s3", name: "Charlie", city: "Bandung", role: "PM", invitationStatus: "requested_to_join", createdAt: "2025-01-03T00:00:00Z" },
+      { id: "s4", name: "Diana", city: "Surabaya", role: "Engineer", invitationStatus: "approved", createdAt: "2025-01-04T00:00:00Z" },
+      { id: "s5", name: "Eve", city: "Solo", role: "Writer", invitationStatus: "rejected", createdAt: "2025-01-05T00:00:00Z" },
+    ];
+
+    it("shows all submissions by default", async () => {
+      mockAdminApis({ submissions: MIXED_SUBMISSIONS });
+      renderAdmin();
+
+      expect(await screen.findByText("Alice")).toBeInTheDocument();
+      expect(screen.getByText("Bob")).toBeInTheDocument();
+      expect(screen.getByText("Charlie")).toBeInTheDocument();
+      expect(screen.getByText("Diana")).toBeInTheDocument();
+      expect(screen.getByText("Eve")).toBeInTheDocument();
+    });
+
+    it("filters to only Needs Action (signed_up + requested_to_join)", async () => {
+      mockAdminApis({ submissions: MIXED_SUBMISSIONS });
+      renderAdmin();
+
+      await screen.findByText("Alice");
+      await userEvent.click(screen.getByRole("button", { name: /Needs Action/i }));
+
+      expect(screen.getByText("Alice")).toBeInTheDocument();
+      expect(screen.getByText("Charlie")).toBeInTheDocument();
+      expect(screen.queryByText("Bob")).not.toBeInTheDocument();
+      expect(screen.queryByText("Diana")).not.toBeInTheDocument();
+      expect(screen.queryByText("Eve")).not.toBeInTheDocument();
+      expect(screen.getByText("2 of 5")).toBeInTheDocument();
+    });
+
+    it("filters to a single status", async () => {
+      mockAdminApis({ submissions: MIXED_SUBMISSIONS });
+      renderAdmin();
+
+      await screen.findByText("Alice");
+      await userEvent.click(screen.getByRole("button", { name: /^Approved/i }));
+
+      expect(screen.getByText("Diana")).toBeInTheDocument();
+      expect(screen.queryByText("Alice")).not.toBeInTheDocument();
+      expect(screen.getByText("1 of 5")).toBeInTheDocument();
+    });
+
+    it("shows empty filter state when no submissions match", async () => {
+      mockAdminApis({
+        submissions: [
+          { id: "s1", name: "Alice", city: "Yogyakarta", role: "Dev", invitationStatus: "signed_up", createdAt: "2025-01-01T00:00:00Z" },
+        ],
+      });
+      renderAdmin();
+
+      await screen.findByText("Alice");
+      await userEvent.click(screen.getByRole("button", { name: /^Rejected/i }));
+
+      expect(screen.getByText("No submissions match the selected filter.")).toBeInTheDocument();
+    });
+
+    it("shows per-filter count badges", async () => {
+      mockAdminApis({ submissions: MIXED_SUBMISSIONS });
+      renderAdmin();
+
+      await screen.findByText("Alice");
+
+      // The "All" button should show count 5
+      const allButton = screen.getByRole("button", { name: /^All/i });
+      expect(allButton).toHaveTextContent("5");
+
+      // The "Needs Action" button should show count 2
+      const needsActionButton = screen.getByRole("button", { name: /Needs Action/i });
+      expect(needsActionButton).toHaveTextContent("2");
+    });
+
+    it("returns to all submissions when clicking All filter", async () => {
+      mockAdminApis({ submissions: MIXED_SUBMISSIONS });
+      renderAdmin();
+
+      await screen.findByText("Alice");
+      await userEvent.click(screen.getByRole("button", { name: /^Approved/i }));
+      expect(screen.queryByText("Alice")).not.toBeInTheDocument();
+
+      await userEvent.click(screen.getByRole("button", { name: /^All/i }));
+      expect(screen.getByText("Alice")).toBeInTheDocument();
+      expect(screen.getByText("Bob")).toBeInTheDocument();
+    });
+
+    it("treats legacy submissions without invitationStatus as signed_up in filters", async () => {
+      mockAdminApis({
+        submissions: [
+          { id: "legacy-1", name: "Legacy User", city: "Yogyakarta", role: "Dev", createdAt: "2025-01-01T00:00:00Z" },
+        ],
+      });
+      renderAdmin();
+
+      await screen.findByText("Legacy User");
+      await userEvent.click(screen.getByRole("button", { name: /Needs Action/i }));
+
+      expect(screen.getByText("Legacy User")).toBeInTheDocument();
+    });
+
+    it("filter buttons have aria-pressed attribute", async () => {
+      mockAdminApis({ submissions: MIXED_SUBMISSIONS });
+      renderAdmin();
+
+      await screen.findByText("Alice");
+
+      const allButton = screen.getByRole("button", { name: /^All/i });
+      expect(allButton).toHaveAttribute("aria-pressed", "true");
+
+      const approvedButton = screen.getByRole("button", { name: /^Approved/i });
+      expect(approvedButton).toHaveAttribute("aria-pressed", "false");
+
+      await userEvent.click(approvedButton);
+      expect(approvedButton).toHaveAttribute("aria-pressed", "true");
+      expect(allButton).toHaveAttribute("aria-pressed", "false");
+    });
+  });
 });

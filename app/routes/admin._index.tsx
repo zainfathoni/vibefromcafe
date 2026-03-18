@@ -52,43 +52,46 @@ interface EventsResponse {
   error?: string;
 }
 
-const STATUS_OPTIONS: InvitationStatus[] = [
-  "signed_up",
-  "invited",
-  "requested_to_join",
-  "approved",
-  "rejected",
-];
+interface StatusMeta {
+  label: string;
+  bg: string;
+  text: string;
+  border: string;
+  needsAction: boolean;
+}
+
+const STATUS_META: Record<InvitationStatus, StatusMeta> = {
+  signed_up: { label: "Signed Up", bg: "bg-amber-900/40", text: "text-amber-300", border: "border-amber-500/50", needsAction: true },
+  invited: { label: "Invited", bg: "bg-blue-900/40", text: "text-blue-300", border: "border-blue-500/50", needsAction: false },
+  requested_to_join: { label: "Requested to Join", bg: "bg-purple-900/40", text: "text-purple-300", border: "border-purple-500/50", needsAction: true },
+  approved: { label: "Approved", bg: "bg-green-900/40", text: "text-green-300", border: "border-green-500/50", needsAction: false },
+  rejected: { label: "Rejected", bg: "bg-red-900/40", text: "text-red-300", border: "border-red-500/50", needsAction: false },
+};
+
+const STATUS_OPTIONS = Object.keys(STATUS_META) as InvitationStatus[];
+
+const NEEDS_ACTION_STATUSES = STATUS_OPTIONS.filter((s) => STATUS_META[s].needsAction);
 
 type StatusFilter = InvitationStatus | "all" | "needs_action";
 
 const STATUS_FILTER_OPTIONS: { value: StatusFilter; label: string }[] = [
   { value: "all", label: "All" },
   { value: "needs_action", label: "🔔 Needs Action" },
-  { value: "signed_up", label: "Signed Up" },
-  { value: "invited", label: "Invited" },
-  { value: "requested_to_join", label: "Requested to Join" },
-  { value: "approved", label: "Approved" },
-  { value: "rejected", label: "Rejected" },
+  ...STATUS_OPTIONS.map((s) => ({ value: s as StatusFilter, label: STATUS_META[s].label })),
 ];
 
-const NEEDS_ACTION_STATUSES: InvitationStatus[] = ["signed_up", "requested_to_join"];
-
-const STATUS_COLORS: Record<InvitationStatus, { bg: string; text: string; border: string }> = {
-  signed_up: { bg: "bg-amber-900/40", text: "text-amber-300", border: "border-amber-500/50" },
-  invited: { bg: "bg-blue-900/40", text: "text-blue-300", border: "border-blue-500/50" },
-  requested_to_join: { bg: "bg-purple-900/40", text: "text-purple-300", border: "border-purple-500/50" },
-  approved: { bg: "bg-green-900/40", text: "text-green-300", border: "border-green-500/50" },
-  rejected: { bg: "bg-red-900/40", text: "text-red-300", border: "border-red-500/50" },
-};
+/** Normalize missing/null invitationStatus to "signed_up" for legacy submissions. */
+function normalizeStatus(status?: InvitationStatus | null): InvitationStatus {
+  return status ?? "signed_up";
+}
 
 function StatusBadge({ status }: { status: InvitationStatus }) {
-  const colors = STATUS_COLORS[status] ?? STATUS_COLORS.signed_up;
+  const meta = STATUS_META[status] ?? STATUS_META.signed_up;
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${colors.bg} ${colors.text} ${colors.border}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${meta.bg} ${meta.text} ${meta.border}`}
     >
-      {formatLabel(status)}
+      {meta.label}
     </span>
   );
 }
@@ -325,21 +328,23 @@ export default function Admin() {
   }
 
   const filteredSubmissions = submissions.filter((s) => {
+    const status = normalizeStatus(s.invitationStatus);
     if (statusFilter === "all") return true;
     if (statusFilter === "needs_action")
-      return NEEDS_ACTION_STATUSES.includes(s.invitationStatus);
-    return s.invitationStatus === statusFilter;
+      return NEEDS_ACTION_STATUSES.includes(status);
+    return status === statusFilter;
   });
 
   const statusCounts = submissions.reduce<Record<string, number>>(
     (acc, s) => {
-      acc[s.invitationStatus] = (acc[s.invitationStatus] ?? 0) + 1;
+      const status = normalizeStatus(s.invitationStatus);
+      acc[status] = (acc[status] ?? 0) + 1;
       return acc;
     },
     {},
   );
   const needsActionCount = submissions.filter((s) =>
-    NEEDS_ACTION_STATUSES.includes(s.invitationStatus),
+    NEEDS_ACTION_STATUSES.includes(normalizeStatus(s.invitationStatus)),
   ).length;
 
   return (
@@ -381,8 +386,9 @@ export default function Admin() {
             <button
               key={option.value}
               type="button"
+              aria-pressed={isActive}
               onClick={() => setStatusFilter(option.value)}
-              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-vfc-yellow/60 ${
                 isActive
                   ? "border-vfc-yellow bg-vfc-yellow/15 text-vfc-yellow"
                   : "border-vfc-border bg-vfc-surface text-vfc-muted hover:border-vfc-yellow/50 hover:text-vfc-white"
@@ -495,7 +501,7 @@ export default function Admin() {
                           >
                             {getStatusOptions(submission).map((status) => (
                               <option key={status} value={status}>
-                                {formatLabel(status)}
+                                {STATUS_META[status]?.label ?? formatLabel(status)}
                               </option>
                             ))}
                           </select>
