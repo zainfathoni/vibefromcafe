@@ -192,7 +192,10 @@ function buildWhatsappInviteUrl(
     submission,
     groupInviteUrl,
   );
-  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
+  // Strip emoji — wa.me preview page mangles them into "?" diamonds
+  const emojiPattern = /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu;
+  const sanitized = message.replace(emojiPattern, "").replace(/ {2,}/g, " ").trim();
+  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(sanitized)}`;
 }
 
 function formatEventSchedule(event: Event) {
