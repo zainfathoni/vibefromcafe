@@ -52,13 +52,49 @@ interface EventsResponse {
   error?: string;
 }
 
-const STATUS_OPTIONS: InvitationStatus[] = [
-  "signed_up",
-  "invited",
-  "requested_to_join",
-  "approved",
-  "rejected",
+interface StatusMeta {
+  label: string;
+  bg: string;
+  text: string;
+  border: string;
+  needsAction: boolean;
+}
+
+const STATUS_META: Record<InvitationStatus, StatusMeta> = {
+  signed_up: { label: "Signed Up", bg: "bg-amber-900/40", text: "text-amber-300", border: "border-amber-500/50", needsAction: true },
+  invited: { label: "Invited", bg: "bg-blue-900/40", text: "text-blue-300", border: "border-blue-500/50", needsAction: false },
+  requested_to_join: { label: "Requested to Join", bg: "bg-purple-900/40", text: "text-purple-300", border: "border-purple-500/50", needsAction: true },
+  approved: { label: "Approved", bg: "bg-green-900/40", text: "text-green-300", border: "border-green-500/50", needsAction: false },
+  rejected: { label: "Rejected", bg: "bg-red-900/40", text: "text-red-300", border: "border-red-500/50", needsAction: false },
+};
+
+const STATUS_OPTIONS = Object.keys(STATUS_META) as InvitationStatus[];
+
+const NEEDS_ACTION_STATUSES = STATUS_OPTIONS.filter((s) => STATUS_META[s].needsAction);
+
+type StatusFilter = InvitationStatus | "all" | "needs_action";
+
+const STATUS_FILTER_OPTIONS: { value: StatusFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "needs_action", label: "🔔 Needs Action" },
+  ...STATUS_OPTIONS.map((s) => ({ value: s as StatusFilter, label: STATUS_META[s].label })),
 ];
+
+/** Normalize missing/null invitationStatus to "signed_up" for legacy submissions. */
+function normalizeStatus(status?: InvitationStatus | null): InvitationStatus {
+  return status ?? "signed_up";
+}
+
+function StatusBadge({ status }: { status: InvitationStatus }) {
+  const meta = STATUS_META[status] ?? STATUS_META.signed_up;
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${meta.bg} ${meta.text} ${meta.border}`}
+    >
+      {meta.label}
+    </span>
+  );
+}
 
 const DEFAULT_WHATSAPP_INVITE_TEMPLATE =
   "Hi {{name}}, welcome to Vibe From Cafe. Join our WhatsApp community here: {{group_link}}";
@@ -156,7 +192,10 @@ function buildWhatsappInviteUrl(
     submission,
     groupInviteUrl,
   );
-  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
+  // Strip emoji — wa.me preview page mangles them into "?" diamonds
+  const emojiPattern = /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu;
+  const sanitized = message.replace(emojiPattern, "").replace(/ {2,}/g, " ").trim();
+  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(sanitized)}`;
 }
 
 function formatEventSchedule(event: Event) {
@@ -180,6 +219,7 @@ export default function Admin() {
   });
   const [submissionsLoading, setSubmissionsLoading] = useState(true);
   const [submissionsError, setSubmissionsError] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [events, setEvents] = useState<Event[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [eventsError, setEventsError] = useState<string | null>(null);
@@ -290,8 +330,28 @@ export default function Admin() {
     return submission.allowedNextStatuses ?? STATUS_OPTIONS;
   }
 
+  const filteredSubmissions = submissions.filter((s) => {
+    const status = normalizeStatus(s.invitationStatus);
+    if (statusFilter === "all") return true;
+    if (statusFilter === "needs_action")
+      return NEEDS_ACTION_STATUSES.includes(status);
+    return status === statusFilter;
+  });
+
+  const statusCounts = submissions.reduce<Record<string, number>>(
+    (acc, s) => {
+      const status = normalizeStatus(s.invitationStatus);
+      acc[status] = (acc[status] ?? 0) + 1;
+      return acc;
+    },
+    {},
+  );
+  const needsActionCount = submissions.filter((s) =>
+    NEEDS_ACTION_STATUSES.includes(normalizeStatus(s.invitationStatus)),
+  ).length;
+
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-10 md:py-14">
+    <div className="mx-auto w-full px-4 py-10 md:py-14 2xl:px-8">
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-vfc-white">Submissions Admin</h1>
@@ -315,10 +375,49 @@ export default function Admin() {
         </div>
       )}
 
+      <div className="mb-4 flex flex-wrap gap-2">
+        {STATUS_FILTER_OPTIONS.map((option) => {
+          const isActive = statusFilter === option.value;
+          const count =
+            option.value === "all"
+              ? submissions.length
+              : option.value === "needs_action"
+                ? needsActionCount
+                : statusCounts[option.value] ?? 0;
+
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={isActive}
+              onClick={() => setStatusFilter(option.value)}
+              className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-vfc-yellow/60 ${
+                isActive
+                  ? "border-vfc-yellow bg-vfc-yellow/15 text-vfc-yellow"
+                  : "border-vfc-border bg-vfc-surface text-vfc-muted hover:border-vfc-yellow/50 hover:text-vfc-white"
+              }`}
+            >
+              {option.label}
+              <span
+                className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold leading-none ${
+                  isActive ? "bg-vfc-yellow/25 text-vfc-yellow" : "bg-vfc-border text-vfc-muted"
+                }`}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       <div className="rounded-2xl border border-vfc-border bg-vfc-surface">
         <div className="flex items-center justify-between border-b border-vfc-border px-4 py-3 text-sm text-vfc-muted">
-          <span>Total submissions</span>
-          <span className="font-semibold text-vfc-white">{submissions.length}</span>
+          <span>{statusFilter === "all" ? "Total submissions" : "Showing"}</span>
+          <span className="font-semibold text-vfc-white">
+            {statusFilter === "all"
+              ? submissions.length
+              : `${filteredSubmissions.length} of ${submissions.length}`}
+          </span>
         </div>
 
         {!whatsappInviteConfig.groupInviteUrl && (
@@ -328,7 +427,7 @@ export default function Admin() {
         )}
 
         <div className="overflow-x-auto">
-          <table className="min-w-[1280px] w-full text-left text-sm">
+          <table className="min-w-[960px] w-full text-left text-sm">
             <thead className="bg-vfc-black/70 text-xs uppercase tracking-wide text-vfc-muted">
               <tr>
                 <th className="px-4 py-3 font-medium">Name</th>
@@ -351,14 +450,16 @@ export default function Admin() {
                     Loading submissions…
                   </td>
                 </tr>
-              ) : submissions.length === 0 ? (
+              ) : filteredSubmissions.length === 0 ? (
                 <tr>
                   <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
-                    No submissions found.
+                    {submissions.length === 0
+                      ? "No submissions found."
+                      : "No submissions match the selected filter."}
                   </td>
                 </tr>
               ) : (
-                submissions.map((submission) => {
+                filteredSubmissions.map((submission) => {
                   const isUpdating = Boolean(updatingById[submission.id]);
                   const whatsappInviteUrl = buildWhatsappInviteUrl(
                     submission,
@@ -388,23 +489,26 @@ export default function Admin() {
                       <td className="px-4 py-3 text-vfc-white/90">{submission.referralSource ? formatReferralSource(submission.referralSource) : "-"}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.referralName || "-"}</td>
                       <td className="px-4 py-3">
-                        <select
-                          value={submission.invitationStatus ?? "signed_up"}
-                          onChange={(event) =>
-                            void updateInvitationStatus(
-                              submission.id,
-                              event.target.value as InvitationStatus,
-                            )
-                          }
-                          disabled={isUpdating}
-                          className="min-w-32 rounded-md border border-vfc-border bg-vfc-black px-3 py-1.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow disabled:cursor-not-allowed disabled:opacity-70"
-                        >
-                          {getStatusOptions(submission).map((status) => (
-                            <option key={status} value={status}>
-                              {formatLabel(status)}
-                            </option>
-                          ))}
-                        </select>
+                        <div className="flex items-center gap-2">
+                          <StatusBadge status={submission.invitationStatus ?? "signed_up"} />
+                          <select
+                            value={submission.invitationStatus ?? "signed_up"}
+                            onChange={(event) =>
+                              void updateInvitationStatus(
+                                submission.id,
+                                event.target.value as InvitationStatus,
+                              )
+                            }
+                            disabled={isUpdating}
+                            className="min-w-32 rounded-md border border-vfc-border bg-vfc-black px-3 py-1.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow disabled:cursor-not-allowed disabled:opacity-70"
+                          >
+                            {getStatusOptions(submission).map((status) => (
+                              <option key={status} value={status}>
+                                {STATUS_META[status]?.label ?? formatLabel(status)}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">
                         {formatStatusAudit(submission.invited_by, submission.invited_at)}
