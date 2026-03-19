@@ -650,14 +650,14 @@
     "notes": null
   },
   {
-    "slug": "omore",
-    "name": "Omore",
+    "slug": "omore-coffee",
+    "name": "Omore Coffee",
     "chapter": "jogja",
-    "map_location": "Palagan",
+    "map_location": "OMORE Coffee",
     "espresso_price": null,
     "cappuccino_price": "Rp28.000",
     "americano_price": null,
-    "wifi_speed": "88",
+    "wifi_speed": "221:327",
     "background_music": true,
     "quiet_vibes": false,
     "has_prayer_room": false,
