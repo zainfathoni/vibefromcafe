@@ -63,18 +63,18 @@ export default function ChapterJogja() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-12">
-          <div className="rounded-xl border border-vfc-border bg-vfc-surface p-5 text-center">
-            <p className="text-3xl font-bold text-vfc-yellow">{jogjaCafes.length}</p>
-            <p className="text-sm text-vfc-muted">Cafes reviewed</p>
+        <div className="grid grid-cols-3 gap-3 mb-12">
+          <div className="rounded-xl border border-vfc-border bg-vfc-surface p-4 text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-vfc-yellow">{jogjaCafes.length}</p>
+            <p className="text-xs sm:text-sm text-vfc-muted">Cafes reviewed</p>
           </div>
-          <div className="rounded-xl border border-vfc-border bg-vfc-surface p-5 text-center">
-            <p className="text-3xl font-bold text-vfc-yellow">1</p>
-            <p className="text-sm text-vfc-muted">Active theme chapter</p>
+          <div className="rounded-xl border border-vfc-border bg-vfc-surface p-4 text-center">
+            <p className="text-2xl sm:text-3xl font-bold text-vfc-yellow">1</p>
+            <p className="text-xs sm:text-sm text-vfc-muted">Active theme chapter</p>
           </div>
-          <div className="rounded-xl border border-vfc-border bg-vfc-surface p-5 text-center">
-            <p className="text-3xl font-bold text-vfc-yellow">Growing</p>
-            <p className="text-sm text-vfc-muted">Community</p>
+          <div className="rounded-xl border border-vfc-border bg-vfc-surface p-4 text-center">
+            <p className="text-xl sm:text-3xl font-bold text-vfc-yellow break-words">Growing</p>
+            <p className="text-xs sm:text-sm text-vfc-muted">Community</p>
           </div>
         </div>
 
