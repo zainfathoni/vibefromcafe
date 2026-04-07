@@ -16,7 +16,14 @@ export default function Nav() {
     <nav className="sticky top-0 z-50 border-b border-vfc-border bg-vfc-black/95 text-vfc-white backdrop-blur">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/logos/vfc-logo.jpg" alt="Vibe From Cafe" className="h-10 w-auto rounded" />
+          <img
+            src="/logos/vfc-logo-240.jpg"
+            srcSet="/logos/vfc-logo-240.jpg 1x, /logos/vfc-logo-480.jpg 2x"
+            alt="Vibe From Cafe"
+            className="h-10 w-10 rounded"
+            width={40}
+            height={40}
+          />
           <span className="font-semibold tracking-wide hidden sm:block">
             <span className="text-vfc-yellow">VFC</span> Indonesia
           </span>

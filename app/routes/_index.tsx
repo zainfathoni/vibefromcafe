@@ -33,7 +33,15 @@ export default function Home() {
       <section className="relative overflow-hidden bg-vfc-black py-24 px-4 text-vfc-white">
         <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-vfc-yellow/15 blur-3xl" />
         <div className="relative max-w-4xl mx-auto text-center">
-          <img src="/logos/vfc-logo.jpg" alt="Vibe From Cafe" className="h-30 w-auto mx-auto mb-8 rounded-xl" />
+          <img
+            src="/logos/vfc-logo-480.jpg"
+            srcSet="/logos/vfc-logo-240.jpg 240w, /logos/vfc-logo-480.jpg 480w"
+            sizes="120px"
+            alt="Vibe From Cafe"
+            className="h-30 w-30 mx-auto mb-8 rounded-xl"
+            width={120}
+            height={120}
+          />
           <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
             Navigate the <span className="text-vfc-yellow">AI shift</span> &mdash;
             together.
