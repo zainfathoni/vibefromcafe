@@ -63,7 +63,7 @@ export default function ChapterJogja() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
           <div className="rounded-xl border border-vfc-border bg-vfc-surface p-5 text-center">
             <p className="text-3xl font-bold text-vfc-yellow">{jogjaCafes.length}</p>
             <p className="text-sm text-vfc-muted">Cafes reviewed</p>
