@@ -31,12 +31,12 @@ export default function CafeCard({ cafe }: { cafe: Cafe }) {
       to={`/cafes/${cafe.slug}`}
       className="group block rounded-xl border border-vfc-border bg-vfc-surface p-5 transition-all hover:-translate-y-0.5 hover:border-vfc-yellow hover:shadow-[0_0_24px_rgba%28245%2C196%2C0%2C0.18%29]"
     >
-      <h3 className="mb-2 font-semibold text-vfc-white group-hover:text-vfc-yellow">
+      <h3 className="mb-2 font-semibold text-vfc-white group-hover:text-vfc-yellow truncate">
         {cafe.name}
       </h3>
 
       {cafe.map_location && (
-        <p className="mb-3 text-sm text-vfc-muted">{cafe.map_location}</p>
+        <p className="mb-3 text-sm text-vfc-muted truncate">{cafe.map_location}</p>
       )}
 
       <div className="flex flex-wrap gap-1.5 mb-3">
