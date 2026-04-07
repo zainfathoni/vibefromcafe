@@ -13,6 +13,7 @@
 
 body {
   @apply bg-vfc-black text-vfc-white font-sans antialiased;
+  overflow-x: hidden;
 }
 
 a {
