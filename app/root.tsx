@@ -40,11 +40,35 @@ export const links: LinksFunction = () => [
     href: "https://fonts.gstatic.com",
     crossOrigin: "anonymous",
   },
+  // Preload LCP image (hero logo) to reduce LCP time
   {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap",
+    rel: "preload",
+    as: "image",
+    href: "/logos/vfc-logo-480.jpg",
   },
 ];
+
+function GoogleFonts() {
+  return (
+    <>
+      {/* Load Google Fonts asynchronously to avoid render-blocking */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        media="print"
+        onLoad={(e) => {
+          (e.currentTarget as HTMLLinkElement).media = "all";
+        }}
+      />
+      <noscript>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        />
+      </noscript>
+    </>
+  );
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -56,6 +80,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <Meta />
         <Links />
+        <GoogleFonts />
       </head>
       <body className="min-h-screen flex flex-col">
         <Nav />
