@@ -10,6 +10,14 @@ export const meta: MetaFunction = () => [
   },
 ];
 
+function slugifyEventId(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
+
 const initialForm: EventForm = {
   id: "",
   title: "",
@@ -28,9 +36,18 @@ export default function AdminEventsNew() {
   const [form, setForm] = useState<EventForm>(initialForm);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [idTouched, setIdTouched] = useState(false);
 
   function updateField<K extends keyof EventForm>(key: K, value: EventForm[K]) {
-    setForm((current) => ({ ...current, [key]: value }));
+    setForm((current) => {
+      const next = { ...current, [key]: value };
+
+      if (!idTouched && (key === "title" || key === "date")) {
+        next.id = slugifyEventId(`${key === "title" ? value : next.title}-${key === "date" ? value : next.date}`);
+      }
+
+      return next;
+    });
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -99,11 +116,14 @@ export default function AdminEventsNew() {
             type="text"
             required
             value={form.id}
-            onChange={(event) => updateField("id", event.target.value)}
+            onChange={(event) => {
+              setIdTouched(true);
+              updateField("id", event.target.value);
+            }}
             className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
             placeholder="vibe-coding-night-2026-04-12"
           />
-          <p className="mt-2 text-xs text-vfc-muted">Used in the URL hash. Lowercase letters, numbers, and hyphens only.</p>
+          <p className="mt-2 text-xs text-vfc-muted">Auto-suggested from title and date. You can still override it. Lowercase letters, numbers, and hyphens only.</p>
         </label>
 
         <label className="block">
