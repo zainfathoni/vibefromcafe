@@ -11,6 +11,7 @@ export const meta: MetaFunction = () => [
 ];
 
 const initialForm: EventForm = {
+  id: "",
   title: "",
   description: "",
   date: "",
@@ -38,6 +39,7 @@ export default function AdminEventsNew() {
     setError(null);
 
     const payload = {
+      id: form.id,
       title: form.title,
       description: form.description,
       date: form.date,
@@ -91,6 +93,19 @@ export default function AdminEventsNew() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-vfc-border bg-vfc-surface p-6">
+        <label className="block">
+          <span className="mb-2 block text-sm font-medium text-vfc-white">Event ID</span>
+          <input
+            type="text"
+            required
+            value={form.id}
+            onChange={(event) => updateField("id", event.target.value)}
+            className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+            placeholder="vibe-coding-night-2026-04-12"
+          />
+          <p className="mt-2 text-xs text-vfc-muted">Used in the URL hash. Lowercase letters, numbers, and hyphens only.</p>
+        </label>
+
         <label className="block">
           <span className="mb-2 block text-sm font-medium text-vfc-white">Title</span>
           <input

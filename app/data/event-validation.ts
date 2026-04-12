@@ -1,6 +1,7 @@
 import type { Event } from "./types";
 
 export type EventInput = {
+  id?: string;
   title?: string;
   description?: string;
   date?: string;
@@ -14,6 +15,15 @@ export type EventInput = {
 
 const DATE_FORMAT_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_FORMAT_REGEX = /^\d{2}:\d{2}$/;
+const EVENT_ID_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function slugifyEventId(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+}
 
 function normalizeString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -49,6 +59,19 @@ export function parseEventInput(body: unknown, requireAllFields: boolean) {
 
   const payload = body as Record<string, unknown>;
   const input: EventInput = {};
+
+  if ("id" in payload) {
+    const id = slugifyEventId(normalizeString(payload.id));
+    if (!id) {
+      return { error: "id must contain letters or numbers" };
+    }
+
+    if (!EVENT_ID_REGEX.test(id)) {
+      return { error: "id must contain only lowercase letters, numbers, and hyphens" };
+    }
+
+    input.id = id;
+  }
 
   const title = normalizeString(payload.title);
   if (title) {
@@ -128,7 +151,7 @@ export function applyEventInput(event: Event, input: EventInput): Event {
   return {
     ...event,
     ...input,
-    id: event.id,
+    id: input.id ?? event.id,
     createdAt: event.createdAt,
     tags: input.tags ?? event.tags,
   };
