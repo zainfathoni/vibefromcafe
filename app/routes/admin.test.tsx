@@ -246,17 +246,55 @@ describe("admin route", () => {
     );
   });
 
-  it("marks signed-up submissions as invited when WhatsApp number is clicked", async () => {
+  it.each([
+    ["signed_up", "invited"],
+    ["invited", "requested_to_join"],
+    ["requested_to_join", "approved"],
+  ] as const)(
+    "moves %s submissions to %s when WhatsApp number is clicked",
+    async (startingStatus, expectedStatus) => {
+      const fetchMock = mockAdminApis({
+        submissions: [
+          {
+            id: `invite-click-${startingStatus}`,
+            name: "Click Invite",
+            city: "Yogyakarta",
+            role: "Engineer",
+            whatsapp: "628120000111",
+            referralSource: "friend",
+            invitationStatus: startingStatus,
+            createdAt: "2025-01-07T10:00:00.000Z",
+          },
+        ],
+      });
+
+      renderAdmin();
+
+      const whatsappLink = await screen.findByRole("link", { name: "628120000111" });
+      await userEvent.click(whatsappLink);
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `/api/admin/submissions/invite-click-${startingStatus}`,
+        expect.objectContaining({
+          method: "PATCH",
+          body: JSON.stringify({ invitationStatus: expectedStatus }),
+        }),
+      );
+      expect(await screen.findByRole("combobox")).toHaveValue(expectedStatus);
+    },
+  );
+
+  it("does not update approved submissions when WhatsApp number is clicked", async () => {
     const fetchMock = mockAdminApis({
       submissions: [
         {
-          id: "invite-click-1",
-          name: "Click Invite",
+          id: "invite-click-approved",
+          name: "Already Approved",
           city: "Yogyakarta",
           role: "Engineer",
           whatsapp: "628120000111",
           referralSource: "friend",
-          invitationStatus: "signed_up",
+          invitationStatus: "approved",
           createdAt: "2025-01-07T10:00:00.000Z",
         },
       ],
@@ -267,14 +305,11 @@ describe("admin route", () => {
     const whatsappLink = await screen.findByRole("link", { name: "628120000111" });
     await userEvent.click(whatsappLink);
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      "/api/admin/submissions/invite-click-1",
-      expect.objectContaining({
-        method: "PATCH",
-        body: JSON.stringify({ invitationStatus: "invited" }),
-      }),
+    expect(fetchMock).not.toHaveBeenCalledWith(
+      "/api/admin/submissions/invite-click-approved",
+      expect.objectContaining({ method: "PATCH" }),
     );
-    expect(await screen.findByRole("combobox")).toHaveValue("invited");
+    expect(await screen.findByRole("combobox")).toHaveValue("approved");
   });
 
   it("shows invited and approved audit fields", async () => {
