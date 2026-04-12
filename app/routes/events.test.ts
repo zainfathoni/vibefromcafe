@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveEventImage, resolveEventMapUrl } from "./events._index";
+import { getHashTargetId, resolveEventImage, resolveEventMapUrl } from "./events._index";
 import type { Event } from "../data/types";
 
 function makeEvent(overrides: Partial<Event> = {}): Event {
@@ -46,6 +46,18 @@ describe("resolveEventImage", () => {
   it("allows relative paths for imageUrl", () => {
     const event = makeEvent({ imageUrl: "/events/photo.jpg" });
     expect(resolveEventImage(event)).toBe("/events/photo.jpg");
+  });
+});
+
+describe("getHashTargetId", () => {
+  it("returns null for empty hashes", () => {
+    expect(getHashTargetId("")).toBeNull();
+    expect(getHashTargetId("#")).toBeNull();
+  });
+
+  it("returns the decoded id for valid hashes", () => {
+    expect(getHashTargetId("#vfc-jogja-bukber-2026")).toBe("vfc-jogja-bukber-2026");
+    expect(getHashTargetId("#hello%20world")).toBe("hello world");
   });
 });
 

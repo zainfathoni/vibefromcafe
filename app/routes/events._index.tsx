@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import type { MetaFunction } from "react-router";
 import cafes from "../data/cafes.json";
 import type { Cafe, Event } from "../data/types";
@@ -65,7 +65,17 @@ export function resolveEventMapUrl(event: Event): string | undefined {
   return isSafeUrl(url) ? url : undefined;
 }
 
+export function getHashTargetId(hash: string): string | null {
+  if (!hash || hash === "#") {
+    return null;
+  }
+
+  const decoded = decodeURIComponent(hash.slice(1)).trim();
+  return decoded || null;
+}
+
 export default function Events() {
+  const location = useLocation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -93,6 +103,25 @@ export default function Events() {
   useEffect(() => {
     void loadEvents();
   }, [loadEvents]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    const targetId = getHashTargetId(location.hash);
+    if (!targetId) {
+      return;
+    }
+
+    const target = document.getElementById(targetId);
+    if (!target) {
+      return;
+    }
+
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    target.focus({ preventScroll: true });
+  }, [events, loading, location.hash]);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
@@ -137,7 +166,9 @@ export default function Events() {
             return (
             <article
               key={event.id}
-              className="overflow-hidden rounded-2xl border border-vfc-border bg-vfc-surface transition-colors hover:border-vfc-yellow/80"
+              id={event.id}
+              tabIndex={-1}
+              className="scroll-mt-24 overflow-hidden rounded-2xl border border-vfc-border bg-vfc-surface transition-colors hover:border-vfc-yellow/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-vfc-yellow/70"
             >
               {imageUrl ? (
                 <img src={imageUrl} alt={event.title} className="h-44 w-full object-cover" />
