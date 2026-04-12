@@ -650,14 +650,14 @@
     "notes": null
   },
   {
-    "slug": "omore",
-    "name": "Omore",
+    "slug": "omore-coffee",
+    "name": "Omore Coffee",
     "chapter": "jogja",
-    "map_location": "Palagan",
+    "map_location": "OMORE Coffee",
     "espresso_price": null,
     "cappuccino_price": "Rp28.000",
     "americano_price": null,
-    "wifi_speed": "88",
+    "wifi_speed": "221:327",
     "background_music": true,
     "quiet_vibes": false,
     "has_prayer_room": false,
@@ -989,6 +989,24 @@
     "has_private_room": null,
     "has_ac": true,
     "has_power_outlets": true,
+    "notes": null
+  },
+  {
+    "slug": "bloomery-cake-patisserie-jakal",
+    "name": "Bloomery Cake & Patisserie Jakal",
+    "chapter": "jogja",
+    "map_location": "https://maps.app.goo.gl/vE7AGX68orWqyHcj6?g_st=ic",
+    "espresso_price": null,
+    "cappuccino_price": null,
+    "americano_price": "Rp25.000",
+    "wifi_speed": "https://www.speedtest.net/result/i/7024932493",
+    "background_music": true,
+    "quiet_vibes": true,
+    "has_prayer_room": true,
+    "has_kids_area": false,
+    "has_private_room": false,
+    "has_ac": true,
+    "has_power_outlets": null,
     "notes": null
   }
 ]
