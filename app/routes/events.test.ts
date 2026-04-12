@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { resolveEventImage, resolveEventMapUrl } from "./events._index";
+import { describe, expect, it, vi } from "vitest";
+import { focusEventFromHash, getEventHashSelector, resolveEventImage, resolveEventMapUrl } from "./events._index";
 import type { Event } from "../data/types";
 
 function makeEvent(overrides: Partial<Event> = {}): Event {
@@ -73,5 +73,41 @@ describe("resolveEventMapUrl", () => {
   it("rejects data: URLs", () => {
     const event = makeEvent({ mapUrl: "data:text/html,<script>alert(1)</script>" });
     expect(resolveEventMapUrl(event)).toBeUndefined();
+  });
+});
+
+describe("getEventHashSelector", () => {
+  it("returns a selector for safe hashes", () => {
+    expect(getEventHashSelector("#event-1")).toBe("#event-1");
+  });
+
+  it("rejects unsafe hashes", () => {
+    expect(getEventHashSelector("#bad selector")).toBeNull();
+    expect(getEventHashSelector("javascript:alert(1)")).toBeNull();
+  });
+});
+
+describe("focusEventFromHash", () => {
+  it("focuses the matching event card", () => {
+    const element = document.createElement("article");
+    element.id = "event-1";
+    element.dataset.eventCard = "true";
+    element.tabIndex = -1;
+    element.scrollIntoView = vi.fn();
+    document.body.appendChild(element);
+
+    const result = focusEventFromHash("#event-1");
+
+    expect(result).toBe(true);
+    expect(element.scrollIntoView).toHaveBeenCalled();
+    expect(document.activeElement).toBe(element);
+  });
+
+  it("ignores hashes that do not match event cards", () => {
+    const element = document.createElement("article");
+    element.id = "not-an-event";
+    document.body.appendChild(element);
+
+    expect(focusEventFromHash("#not-an-event")).toBe(false);
   });
 });
