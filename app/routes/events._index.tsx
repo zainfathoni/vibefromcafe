@@ -52,17 +52,17 @@ function isSafeUrl(url: string): boolean {
   }
 }
 
-export function getEventHashSelector(hash: string): string | null {
+export function getEventIdFromHash(hash: string): string | null {
   if (!hash.startsWith("#") || hash.length < 2) {
     return null;
   }
 
-  const decodedHash = decodeURIComponent(hash.slice(1));
-  if (!/^[A-Za-z0-9_-]+$/.test(decodedHash)) {
+  const decodedHash = decodeURIComponent(hash.slice(1)).trim();
+  if (!decodedHash) {
     return null;
   }
 
-  return `#${decodedHash}`;
+  return decodedHash;
 }
 
 export function focusEventFromHash(hash: string) {
@@ -70,12 +70,12 @@ export function focusEventFromHash(hash: string) {
     return false;
   }
 
-  const selector = getEventHashSelector(hash);
-  if (!selector) {
+  const eventId = getEventIdFromHash(hash);
+  if (!eventId) {
     return false;
   }
 
-  const target = document.querySelector(selector);
+  const target = document.getElementById(eventId);
   if (!(target instanceof HTMLElement) || !target.dataset.eventCard) {
     return false;
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { focusEventFromHash, getEventHashSelector, resolveEventImage, resolveEventMapUrl } from "./events._index";
+import { focusEventFromHash, getEventIdFromHash, resolveEventImage, resolveEventMapUrl } from "./events._index";
 import type { Event } from "../data/types";
 
 function makeEvent(overrides: Partial<Event> = {}): Event {
@@ -76,14 +76,15 @@ describe("resolveEventMapUrl", () => {
   });
 });
 
-describe("getEventHashSelector", () => {
-  it("returns a selector for safe hashes", () => {
-    expect(getEventHashSelector("#event-1")).toBe("#event-1");
+describe("getEventIdFromHash", () => {
+  it("returns an id for valid hashes", () => {
+    expect(getEventIdFromHash("#event-1")).toBe("event-1");
+    expect(getEventIdFromHash("#2b563565-cb1c-47e8-aa9c-23621d91ac42")).toBe("2b563565-cb1c-47e8-aa9c-23621d91ac42");
   });
 
-  it("rejects unsafe hashes", () => {
-    expect(getEventHashSelector("#bad selector")).toBeNull();
-    expect(getEventHashSelector("javascript:alert(1)")).toBeNull();
+  it("rejects empty or invalid hashes", () => {
+    expect(getEventIdFromHash("#")).toBeNull();
+    expect(getEventIdFromHash("javascript:alert(1)")).toBeNull();
   });
 });
 
