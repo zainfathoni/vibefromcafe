@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { resolveEventImage, resolveEventMapUrl } from "./events._index";
+import { describe, expect, it, vi } from "vitest";
+import { focusEventFromHash, getEventIdFromHash, resolveEventImage, resolveEventMapUrl } from "./events._index";
 import type { Event } from "../data/types";
 
 function makeEvent(overrides: Partial<Event> = {}): Event {
@@ -73,5 +73,42 @@ describe("resolveEventMapUrl", () => {
   it("rejects data: URLs", () => {
     const event = makeEvent({ mapUrl: "data:text/html,<script>alert(1)</script>" });
     expect(resolveEventMapUrl(event)).toBeUndefined();
+  });
+});
+
+describe("getEventIdFromHash", () => {
+  it("returns an id for valid hashes", () => {
+    expect(getEventIdFromHash("#event-1")).toBe("event-1");
+    expect(getEventIdFromHash("#2b563565-cb1c-47e8-aa9c-23621d91ac42")).toBe("2b563565-cb1c-47e8-aa9c-23621d91ac42");
+  });
+
+  it("rejects empty or invalid hashes", () => {
+    expect(getEventIdFromHash("#")).toBeNull();
+    expect(getEventIdFromHash("javascript:alert(1)")).toBeNull();
+  });
+});
+
+describe("focusEventFromHash", () => {
+  it("focuses the matching event card", () => {
+    const element = document.createElement("article");
+    element.id = "event-1";
+    element.dataset.eventCard = "true";
+    element.tabIndex = -1;
+    element.scrollIntoView = vi.fn();
+    document.body.appendChild(element);
+
+    const result = focusEventFromHash("#event-1");
+
+    expect(result).toBe(true);
+    expect(element.scrollIntoView).toHaveBeenCalled();
+    expect(document.activeElement).toBe(element);
+  });
+
+  it("ignores hashes that do not match event cards", () => {
+    const element = document.createElement("article");
+    element.id = "not-an-event";
+    document.body.appendChild(element);
+
+    expect(focusEventFromHash("#not-an-event")).toBe(false);
   });
 });

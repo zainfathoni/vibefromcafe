@@ -1,5 +1,5 @@
 import { parseEventInput } from "../../../../app/data/event-validation";
-import { getAllEvents, saveEvent } from "../../../../app/data/events-store";
+import { getAllEvents, getEventById, saveEvent } from "../../../../app/data/events-store";
 import type { Event } from "../../../../app/data/types";
 import { requireAdmin } from "../auth";
 
@@ -43,8 +43,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     );
   }
 
+  const eventId = parsed.input.id ?? `${(parsed.input.title ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").replace(/-{2,}/g, "-")}-${parsed.input.date ?? ""}`;
+
+  if (!eventId) {
+    return Response.json({ error: "id is required" } satisfies CreateEventResponse, { status: 400 });
+  }
+
+  const existing = await getEventById(env, eventId);
+  if (existing) {
+    return Response.json({ error: "An event with this id already exists" } satisfies CreateEventResponse, { status: 409 });
+  }
+
   const event: Event = {
-    id: crypto.randomUUID(),
+    id: eventId,
     title: parsed.input.title ?? "",
     description: parsed.input.description ?? "",
     date: parsed.input.date ?? "",

@@ -52,6 +52,39 @@ function isSafeUrl(url: string): boolean {
   }
 }
 
+export function getEventIdFromHash(hash: string): string | null {
+  if (!hash.startsWith("#") || hash.length < 2) {
+    return null;
+  }
+
+  const decodedHash = decodeURIComponent(hash.slice(1)).trim();
+  if (!decodedHash) {
+    return null;
+  }
+
+  return decodedHash;
+}
+
+export function focusEventFromHash(hash: string) {
+  if (typeof document === "undefined") {
+    return false;
+  }
+
+  const eventId = getEventIdFromHash(hash);
+  if (!eventId) {
+    return false;
+  }
+
+  const target = document.getElementById(eventId);
+  if (!(target instanceof HTMLElement) || !target.dataset.eventCard) {
+    return false;
+  }
+
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+  target.focus({ preventScroll: true });
+  return true;
+}
+
 export function resolveEventImage(event: Event): string | undefined {
   const url = event.imageUrl || (event.cafeId ? cafesById.get(event.cafeId)?.imageUrl : undefined);
   if (!url) return undefined;
@@ -64,6 +97,7 @@ export function resolveEventMapUrl(event: Event): string | undefined {
   if (!url) return undefined;
   return isSafeUrl(url) ? url : undefined;
 }
+
 
 export default function Events() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -93,6 +127,32 @@ export default function Events() {
   useEffect(() => {
     void loadEvents();
   }, [loadEvents]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    const focusCurrentHash = () => {
+      focusEventFromHash(window.location.hash);
+    };
+
+    focusCurrentHash();
+    window.addEventListener("hashchange", focusCurrentHash);
+    return () => window.removeEventListener("hashchange", focusCurrentHash);
+  }, [loading, events]);
+
+  const copyEventLink = async (eventId: string) => {
+    const url = `${window.location.origin}${window.location.pathname}#${eventId}`;
+
+    if (window.navigator.clipboard && window.isSecureContext) {
+      try {
+        await window.navigator.clipboard.writeText(url);
+      } catch {
+        // Ignore clipboard failures, the hash navigation still works.
+      }
+    }
+  };
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-12 md:py-16">
@@ -137,7 +197,10 @@ export default function Events() {
             return (
             <article
               key={event.id}
-              className="overflow-hidden rounded-2xl border border-vfc-border bg-vfc-surface transition-colors hover:border-vfc-yellow/80"
+              id={event.id}
+              data-event-card="true"
+              tabIndex={-1}
+              className="overflow-hidden rounded-2xl border border-vfc-border bg-vfc-surface outline-none transition-colors hover:border-vfc-yellow/80 focus:border-vfc-yellow focus:ring-2 focus:ring-vfc-yellow/40 focus:ring-offset-2 focus:ring-offset-vfc-black"
             >
               {imageUrl ? (
                 <img src={imageUrl} alt={event.title} className="h-44 w-full object-cover" />
@@ -152,7 +215,19 @@ export default function Events() {
               <div className="space-y-4 p-5">
                 <div>
                   <p className="text-xs uppercase tracking-wide text-vfc-yellow">{formatEventDate(event.date)} • {formatEventTime(event.time)}</p>
-                  <h2 className="mt-2 text-xl font-semibold text-vfc-white">{event.title}</h2>
+                  <div className="mt-2 flex items-start justify-between gap-3">
+                    <h2 className="text-xl font-semibold text-vfc-white">{event.title}</h2>
+                    <a
+                      href={`#${event.id}`}
+                      aria-label={`Link to ${event.title}`}
+                      onClick={() => {
+                        void copyEventLink(event.id);
+                      }}
+                      className="shrink-0 text-vfc-muted transition-colors hover:text-vfc-yellow focus:text-vfc-yellow focus:outline-none"
+                    >
+                      #
+                    </a>
+                  </div>
                 </div>
 
                 <p className="text-sm leading-relaxed text-vfc-muted">{event.description}</p>

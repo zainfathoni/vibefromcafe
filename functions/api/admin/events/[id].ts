@@ -60,6 +60,16 @@ export const onRequestPut: PagesFunction<Env> = async ({ request, env, params })
   }
 
   const updated = applyEventInput(current, parsed.input);
+
+  if (updated.id !== current.id) {
+    const existing = await getEventById(env, updated.id);
+    if (existing) {
+      return Response.json({ error: "An event with this id already exists" }, { status: 409 });
+    }
+
+    await removeEvent(env, current.id);
+  }
+
   await saveEvent(env, updated);
 
   return Response.json({ event: updated });
