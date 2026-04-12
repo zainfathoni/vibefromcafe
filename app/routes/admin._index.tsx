@@ -318,12 +318,32 @@ export default function Admin() {
     }
   }
 
+  function getOptimisticWhatsappClickStatus(submission: Submission): InvitationStatus | null {
+    const currentStatus = normalizeStatus(submission.invitationStatus);
+
+    if (currentStatus === "signed_up") {
+      return "invited";
+    }
+
+    if (currentStatus === "invited") {
+      return "requested_to_join";
+    }
+
+    if (currentStatus === "requested_to_join") {
+      return "approved";
+    }
+
+    return null;
+  }
+
   function inviteFromWhatsappClick(submission: Submission) {
-    if (submission.invitationStatus !== "signed_up") {
+    const nextStatus = getOptimisticWhatsappClickStatus(submission);
+
+    if (!nextStatus) {
       return;
     }
 
-    void updateInvitationStatus(submission.id, "invited", { keepalive: true });
+    void updateInvitationStatus(submission.id, nextStatus, { keepalive: true });
   }
 
   function getStatusOptions(submission: Submission) {
