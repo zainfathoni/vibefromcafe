@@ -5,6 +5,8 @@ pages_build_output_dir = "build/client"
 [vars]
 WHATSAPP_INVITE_MESSAGE_TEMPLATE = "Halo {{name}}! Selamat datang di Vibe From Cafe. Yuk gabung ke grup komunitas kami di sini: {{group_link}}"
 
-[[kv_namespaces]]
-binding = "VFC_SUBMISSIONS"
-id = "7bd0071895c547758ba95a323592bf4b"
+[[d1_databases]]
+binding = "DB"
+database_name = "vfc_db"
+database_id = "c38417f6-43df-4e6d-ae2b-8fa8c60ef571"
+migrations_dir = "migrations"

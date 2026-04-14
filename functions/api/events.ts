@@ -1,7 +1,7 @@
 import { getAllEvents } from "../../app/data/events-store";
 
 interface Env {
-  VFC_SUBMISSIONS: KVNamespace;
+  DB: D1Database;
 }
 
 export const onRequestGet: PagesFunction<Env> = async ({ env }) => {

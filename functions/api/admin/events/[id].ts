@@ -3,7 +3,7 @@ import { getEventById, removeEvent, saveEvent } from "../../../../app/data/event
 import { requireAdmin } from "../auth";
 
 interface Env {
-  VFC_SUBMISSIONS: KVNamespace;
+  DB: D1Database;
   ADMIN_SECRET?: string;
 }
 

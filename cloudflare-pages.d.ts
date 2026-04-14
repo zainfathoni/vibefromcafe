@@ -24,6 +24,25 @@ interface KVNamespaceListResult<Metadata = unknown> {
   cursor?: string;
 }
 
+interface D1Result<T = Record<string, unknown>> {
+  results: T[];
+  success: boolean;
+  meta: Record<string, unknown>;
+}
+
+interface D1PreparedStatement {
+  bind(...values: unknown[]): D1PreparedStatement;
+  run<T = Record<string, unknown>>(): Promise<D1Result<T>>;
+  first<T = Record<string, unknown>>(): Promise<T | null>;
+  all<T = Record<string, unknown>>(): Promise<D1Result<T>>;
+}
+
+interface D1Database {
+  prepare(query: string): D1PreparedStatement;
+  batch<T = Record<string, unknown>>(statements: D1PreparedStatement[]): Promise<D1Result<T>[]>;
+  exec(query: string): Promise<D1Result>;
+}
+
 interface KVNamespace {
   get(key: string): Promise<string | null>;
   get(key: string, type: "text"): Promise<string | null>;

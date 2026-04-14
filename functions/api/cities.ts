@@ -1,5 +1,5 @@
 interface Env {
-  VFC_SUBMISSIONS: KVNamespace;
+  DB: D1Database;
 }
 
 export interface City {
@@ -8,25 +8,14 @@ export interface City {
   whatsapp_link: string;
 }
 
-export const onRequestGet: PagesFunction<Env> = async (context) => {
-  const { env } = context;
-
-  const [citiesRaw, generalWaLink] = await Promise.all([
-    env.VFC_SUBMISSIONS.get("cities"),
-    env.VFC_SUBMISSIONS.get("general_whatsapp_link"),
+export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
+  const [citiesResult, settingRow] = await Promise.all([
+    env.DB.prepare("SELECT id, name, whatsapp_link FROM cities ORDER BY name ASC").all<City>(),
+    env.DB.prepare("SELECT value FROM settings WHERE key = 'general_whatsapp_link'").first<{ value: string }>(),
   ]);
 
-  let cities: City[] = [];
-  if (citiesRaw) {
-    try {
-      cities = JSON.parse(citiesRaw) as City[];
-    } catch {
-      // Return empty array if data is malformed
-    }
-  }
-
   return Response.json({
-    cities,
-    general_whatsapp_link: generalWaLink ?? "",
+    cities: citiesResult.results,
+    general_whatsapp_link: settingRow?.value ?? "",
   });
 };

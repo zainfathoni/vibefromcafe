@@ -1,5 +1,5 @@
 interface Env {
-  VFC_SUBMISSIONS: KVNamespace;
+  DB: D1Database;
 }
 
 interface City {
@@ -8,34 +8,29 @@ interface City {
   whatsapp_link: string;
 }
 
-async function readCities(env: Env): Promise<City[]> {
-  const raw = await env.VFC_SUBMISSIONS.get("cities");
-  if (!raw) return [];
-  try { return JSON.parse(raw) as City[]; } catch { return []; }
-}
-
 function isValidCity(c: unknown): c is City {
+  if (typeof c !== "object" || c === null) return false;
+  const city = c as Record<string, unknown>;
   return (
-    typeof c === "object" &&
-    c !== null &&
-    typeof (c as City).id === "string" &&
-    (c as City).id.trim() !== "" &&
-    typeof (c as City).name === "string" &&
-    (c as City).name.trim() !== "" &&
-    typeof (c as City).whatsapp_link === "string"
+    typeof city.id === "string" && city.id.trim() !== "" &&
+    typeof city.name === "string" && city.name.trim() !== "" &&
+    (city.whatsapp_link === undefined || typeof city.whatsapp_link === "string")
   );
 }
 
-export const onRequestGet: PagesFunction<Env> = async (context) => {
-  return Response.json({ cities: await readCities(context.env) });
+export const onRequestGet: PagesFunction<Env> = async ({ env }) => {
+  const { results } = await env.DB
+    .prepare("SELECT id, name, whatsapp_link FROM cities ORDER BY name ASC")
+    .all<City>();
+  return Response.json({ cities: results });
 };
 
 // Accepts the full updated cities array — client owns the merge/delete logic.
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
-
+export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   let body: unknown;
-  try { body = await request.json(); } catch {
+  try {
+    body = await request.json();
+  } catch {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
@@ -48,6 +43,19 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const cities = body as City[];
-  await env.VFC_SUBMISSIONS.put("cities", JSON.stringify(cities));
+  const ids = cities.map((c) => c.id.trim());
+  if (new Set(ids).size !== ids.length) {
+    return Response.json({ error: "City ids must be unique" }, { status: 400 });
+  }
+
+  // Replace all cities atomically
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM cities"),
+    ...cities.map((c) =>
+      env.DB.prepare("INSERT INTO cities (id, name, whatsapp_link) VALUES (?, ?, ?)")
+        .bind(c.id.trim(), c.name.trim(), (c.whatsapp_link ?? "").trim())
+    ),
+  ]);
+
   return Response.json({ success: true, cities });
 };
