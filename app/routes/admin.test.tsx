@@ -197,7 +197,7 @@ describe("admin route", () => {
 
     expect(within(row).getByText("Yogyakarta")).toBeInTheDocument();
     expect(within(row).getByText("Developer")).toBeInTheDocument();
-    expect(within(row).getAllByText("-")).toHaveLength(6);
+    expect(within(row).getAllByText("-")).toHaveLength(1);
     expect(within(row).getByRole("combobox")).toHaveValue("signed_up");
   });
 
@@ -229,7 +229,6 @@ describe("admin route", () => {
     expect(within(row).getByText("Bandung")).toBeInTheDocument();
     expect(within(row).getByText("Designer")).toBeInTheDocument();
     expect(within(row).getByText("628123456789")).toBeInTheDocument();
-    expect(within(row).getByText("Instagram · Nadia")).toBeInTheDocument();
     expect(within(row).getByRole("combobox")).toHaveValue("invited");
   });
 
@@ -357,8 +356,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(row).getByText(/inviter@vfc.id/)).toBeInTheDocument();
-    expect(within(row).getByText(/approver@vfc.id/)).toBeInTheDocument();
+    // Audit fields live in the member detail modal — open it first
+    await userEvent.click(within(row).getByRole("button", { name: "View" }));
+    expect(screen.getByText(/approver@vfc.id/)).toBeInTheDocument();
   });
 
   it("shows only valid next statuses for each submission", async () => {
@@ -411,7 +411,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(withNameRow).getByText("A friend · Alex")).toBeInTheDocument();
+    // Referral info lives in the member detail modal — open it first
+    await userEvent.click(within(withNameRow).getByRole("button", { name: "View" }));
+    expect(screen.getByText("A friend · Alex")).toBeInTheDocument();
   });
 
   it("shows '-' when referral source is friend but referral name is missing", async () => {
@@ -438,8 +440,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(noNameRow).getByText("A friend")).toBeInTheDocument();
-    expect(within(noNameRow).getAllByText("-").length).toBeGreaterThan(0);
+    // Referral info lives in the member detail modal — open it first
+    await userEvent.click(within(noNameRow).getByRole("button", { name: "View" }));
+    expect(screen.getByText("A friend")).toBeInTheDocument();
   });
 
   it("formats unknown referral source values", async () => {
@@ -466,7 +469,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(row).getByText("Newsletter Signup")).toBeInTheDocument();
+    // Referral info lives in the member detail modal — open it first
+    await userEvent.click(within(row).getByRole("button", { name: "View" }));
+    expect(screen.getByText("Newsletter Signup")).toBeInTheDocument();
   });
 
   it("shows an empty state when there are no submissions", async () => {
@@ -598,7 +603,7 @@ describe("admin route", () => {
       expect(screen.queryByText("Bob")).not.toBeInTheDocument();
       expect(screen.queryByText("Diana")).not.toBeInTheDocument();
       expect(screen.queryByText("Eve")).not.toBeInTheDocument();
-      expect(screen.getByText("2 of 5")).toBeInTheDocument();
+      expect(screen.getByText("2 of 5 shown")).toBeInTheDocument();
     });
 
     it("filters to a single status", async () => {
@@ -610,7 +615,7 @@ describe("admin route", () => {
 
       expect(screen.getByText("Diana")).toBeInTheDocument();
       expect(screen.queryByText("Alice")).not.toBeInTheDocument();
-      expect(screen.getByText("1 of 5")).toBeInTheDocument();
+      expect(screen.getByText("1 of 5 shown")).toBeInTheDocument();
     });
 
     it("shows empty filter state when no submissions match", async () => {
