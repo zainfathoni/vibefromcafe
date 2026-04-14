@@ -3,12 +3,30 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import Admin from "./admin._index";
+import AdminSubmissions from "./admin.submissions";
+import AdminEvents from "./admin.events._index";
+import AdminCafes from "./admin.cafes";
 
 function renderAdmin() {
   render(
     <MemoryRouter>
-      <Admin />
+      <AdminSubmissions />
+    </MemoryRouter>,
+  );
+}
+
+function renderEvents() {
+  render(
+    <MemoryRouter>
+      <AdminEvents />
+    </MemoryRouter>,
+  );
+}
+
+function renderCafes() {
+  render(
+    <MemoryRouter>
+      <AdminCafes />
     </MemoryRouter>,
   );
 }
@@ -486,7 +504,7 @@ describe("admin route", () => {
       ],
     });
 
-    renderAdmin();
+    renderEvents();
 
     expect(await screen.findByText("Vibe Coding Night #4")).toBeInTheDocument();
     expect(screen.getByText("Bilik Kayu Heritage, Yogyakarta")).toBeInTheDocument();
@@ -498,7 +516,7 @@ describe("admin route", () => {
       events: [],
     });
 
-    renderAdmin();
+    renderEvents();
 
     expect(await screen.findByText("No events found.")).toBeInTheDocument();
   });
@@ -509,7 +527,7 @@ describe("admin route", () => {
       eventsError: "Events API unavailable",
     });
 
-    renderAdmin();
+    renderEvents();
 
     expect(
       await screen.findByText("Failed to load events: Events API unavailable"),
@@ -517,19 +535,17 @@ describe("admin route", () => {
   });
 
   it("renders cafes directory section with cafe data", async () => {
-    mockAdminApis();
-    renderAdmin();
+    renderCafes();
 
-    expect(await screen.findByText("Cafes Directory")).toBeInTheDocument();
+    expect(screen.getByText("Cafes Directory")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Search cafes…")).toBeInTheDocument();
     expect(screen.getByText("Total cafes")).toBeInTheDocument();
   });
 
   it("filters cafes by search input", async () => {
-    mockAdminApis();
-    renderAdmin();
+    renderCafes();
 
-    const searchInput = await screen.findByPlaceholderText("Search cafes…");
+    const searchInput = screen.getByPlaceholderText("Search cafes…");
     await userEvent.type(searchInput, "bean garden");
 
     expect(screen.getAllByText("The Bean Garden Palagan").length).toBeGreaterThan(0);
@@ -537,12 +553,11 @@ describe("admin route", () => {
   });
 
   it("shows image and map status for cafes with those fields", async () => {
-    mockAdminApis();
-    renderAdmin();
+    renderCafes();
 
     // The Bean Garden Palagan has imageUrl and mapUrl
     // Use getAllByText since the cafe name also appears in map_location column
-    const nameElements = await screen.findAllByText("The Bean Garden Palagan");
+    const nameElements = screen.getAllByText("The Bean Garden Palagan");
     const row = nameElements[0].closest("tr");
     expect(row).not.toBeNull();
     if (!row) return;
