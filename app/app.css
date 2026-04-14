@@ -11,6 +11,16 @@
   --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
+/* Light theme overrides — applied when <html data-theme="light"> */
+html[data-theme="light"] {
+  --color-vfc-black: #f9fafb;
+  --color-vfc-white: #0f0f0f;
+  --color-vfc-surface: #ffffff;
+  --color-vfc-border: #e2e4e9;
+  --color-vfc-muted: #717784;
+  --color-vfc-yellow: #c9a000;
+}
+
 body {
   @apply bg-vfc-black text-vfc-white font-sans antialiased;
   overflow-x: hidden;

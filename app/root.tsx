@@ -70,6 +70,9 @@ function GoogleFonts() {
   );
 }
 
+// Runs before React hydrates to avoid a flash of the wrong theme.
+const THEME_INIT_SCRIPT = `(function(){var t=localStorage.getItem('vfc-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);})();`;
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -78,6 +81,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        {/* eslint-disable-next-line react/no-danger */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <Meta />
         <Links />
         <GoogleFonts />
