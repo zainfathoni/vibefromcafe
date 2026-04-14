@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import type { MetaFunction } from "react-router";
 
 export const meta: MetaFunction = () => [
@@ -136,6 +137,96 @@ function StatusBadge({ status }: { status: InvitationStatus }) {
   );
 }
 
+function DetailRow({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div>
+      <dt className="mb-0.5 text-[11px] font-medium uppercase tracking-wide text-vfc-muted">{label}</dt>
+      <dd className="text-sm text-vfc-white">{value || <span className="text-vfc-muted">—</span>}</dd>
+    </div>
+  );
+}
+
+function MemberModal({ member, onClose }: { member: Submission; onClose: () => void }) {
+  const referralLabel = member.referral
+    ? formatReferralSource(member.referral)
+    : member.referralSource
+      ? [formatReferralSource(member.referralSource), member.referralName].filter(Boolean).join(" · ")
+      : null;
+  const roleLabel = member.role_other ? `${member.role} — ${member.role_other}` : member.role;
+  const statusMeta = STATUS_META[normalizeStatus(member.invitationStatus)] ?? STATUS_META.signed_up;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      onClick={onClose}
+    >
+      <div
+        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl border border-vfc-border bg-vfc-surface shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between border-b border-vfc-border px-6 py-5">
+          <div>
+            <h2 className="text-lg font-bold text-vfc-white">{member.name}</h2>
+            <span className={`mt-1.5 inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusMeta.bg} ${statusMeta.text} ${statusMeta.border}`}>
+              {statusMeta.label}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-vfc-muted transition-colors hover:bg-vfc-black/50 hover:text-vfc-white"
+            aria-label="Close"
+          >
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-5 px-6 py-5">
+          <DetailRow label="City" value={member.city} />
+          <DetailRow label="WhatsApp" value={
+            member.whatsapp
+              ? <a href={`https://wa.me/${member.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="text-vfc-yellow hover:underline">{member.whatsapp}</a>
+              : null
+          } />
+          <DetailRow label="Role" value={roleLabel} />
+          <DetailRow label="Company" value={
+            member.company
+              ? <>{member.company}{member.is_freelancer && <span className="ml-1.5 text-xs text-vfc-muted">(freelance)</span>}</>
+              : null
+          } />
+          <DetailRow label="How Heard" value={referralLabel} />
+          <DetailRow label="Submitted" value={formatDate(member.createdAt)} />
+          {member.invited_by && <DetailRow label="Invited by" value={formatAudit(member.invited_by, member.invited_at)} />}
+          {member.approved_by && <DetailRow label="Approved by" value={formatAudit(member.approved_by, member.approved_at)} />}
+        </dl>
+
+        {/* Motivations */}
+        {member.motivations?.length ? (
+          <div className="border-t border-vfc-border px-6 py-5">
+            <p className="mb-3 text-[11px] font-medium uppercase tracking-wide text-vfc-muted">Motivations</p>
+            <div className="flex flex-wrap gap-2">
+              {member.motivations.map((m) => (
+                <span key={m} className="rounded-full border border-vfc-border bg-vfc-black px-3 py-1 text-xs text-vfc-white">
+                  {m}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {/* Footer */}
+        <div className="border-t border-vfc-border px-6 py-4">
+          <p className="text-[11px] text-vfc-muted">ID: {member.id}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AdminSubmissions() {
@@ -148,6 +239,7 @@ export default function AdminSubmissions() {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [updatingById, setUpdatingById] = useState<Record<string, boolean>>({});
+  const [viewMember, setViewMember] = useState<Submission | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -296,14 +388,15 @@ export default function AdminSubmissions() {
                 <th className="px-5 py-3 font-medium">Invited</th>
                 <th className="px-5 py-3 font-medium">Approved</th>
                 <th className="px-5 py-3 font-medium">Submitted</th>
+                <th className="px-5 py-3 font-medium"></th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td className="px-5 py-8 text-vfc-muted" colSpan={11}>Loading…</td></tr>
+                <tr><td className="px-5 py-8 text-vfc-muted" colSpan={12}>Loading…</td></tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td className="px-5 py-8 text-vfc-muted" colSpan={11}>
+                  <td className="px-5 py-8 text-vfc-muted" colSpan={12}>
                     {submissions.length === 0 ? "No submissions found." : "No submissions match the selected filter."}
                   </td>
                 </tr>
@@ -377,6 +470,15 @@ export default function AdminSubmissions() {
                     <td className="whitespace-nowrap px-5 py-3.5 text-xs text-vfc-white/70">{formatAudit(s.invited_by, s.invited_at)}</td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-xs text-vfc-white/70">{formatAudit(s.approved_by, s.approved_at)}</td>
                     <td className="whitespace-nowrap px-5 py-3.5 text-xs text-vfc-white/70">{formatDate(s.createdAt)}</td>
+                    <td className="px-5 py-3.5">
+                      <button
+                        type="button"
+                        onClick={() => setViewMember(s)}
+                        className="rounded-md border border-vfc-border px-3 py-1.5 text-xs font-medium text-vfc-muted transition-colors hover:border-vfc-yellow hover:text-vfc-yellow"
+                      >
+                        View
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
@@ -384,6 +486,8 @@ export default function AdminSubmissions() {
           </table>
         </div>
       </div>
+
+      {viewMember && <MemberModal member={viewMember} onClose={() => setViewMember(null)} />}
     </div>
   );
 }

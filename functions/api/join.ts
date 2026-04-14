@@ -126,7 +126,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     whatsapp: whatsapp.trim(),
     motivations: motivations.filter(Boolean),
     referral: referral.trim(),
-    invitationStatus: "signed_up",
+    invitationStatus: "approved",
     createdAt: now,
   };
 
