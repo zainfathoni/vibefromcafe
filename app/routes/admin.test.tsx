@@ -179,7 +179,7 @@ describe("admin route", () => {
 
     expect(within(row).getByText("Yogyakarta")).toBeInTheDocument();
     expect(within(row).getByText("Developer")).toBeInTheDocument();
-    expect(within(row).getAllByText("-")).toHaveLength(5);
+    expect(within(row).getAllByText("-")).toHaveLength(6);
     expect(within(row).getByRole("combobox")).toHaveValue("signed_up");
   });
 
@@ -211,8 +211,7 @@ describe("admin route", () => {
     expect(within(row).getByText("Bandung")).toBeInTheDocument();
     expect(within(row).getByText("Designer")).toBeInTheDocument();
     expect(within(row).getByText("628123456789")).toBeInTheDocument();
-    expect(within(row).getByText("Instagram")).toBeInTheDocument();
-    expect(within(row).getByText("Nadia")).toBeInTheDocument();
+    expect(within(row).getByText("Instagram · Nadia")).toBeInTheDocument();
     expect(within(row).getByRole("combobox")).toHaveValue("invited");
   });
 
@@ -394,8 +393,7 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(withNameRow).getByText("A friend")).toBeInTheDocument();
-    expect(within(withNameRow).getByText("Alex")).toBeInTheDocument();
+    expect(within(withNameRow).getByText("A friend · Alex")).toBeInTheDocument();
   });
 
   it("shows '-' when referral source is friend but referral name is missing", async () => {
