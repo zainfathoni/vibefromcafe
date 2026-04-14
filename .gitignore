@@ -8,3 +8,6 @@ build
 .envrc
 cafe
 .envrc
+
+
+wrangler.jsonc
