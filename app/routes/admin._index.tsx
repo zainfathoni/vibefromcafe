@@ -23,9 +23,17 @@ interface Submission {
   id: string;
   name: string;
   city: string;
+  city_id?: string;
   role: string;
+  role_other?: string;
+  company?: string;
+  is_freelancer?: boolean;
   whatsapp: string;
-  referralSource: string;
+  motivations?: string[];
+  // New form field
+  referral?: string;
+  // Legacy fields from old form
+  referralSource?: string;
   referralName?: string;
   invitationStatus: InvitationStatus;
   allowedNextStatuses?: InvitationStatus[];
@@ -447,15 +455,16 @@ export default function Admin() {
         )}
 
         <div className="overflow-x-auto">
-          <table className="min-w-[960px] w-full text-left text-sm">
+          <table className="min-w-[1200px] w-full text-left text-sm">
             <thead className="bg-vfc-black/70 text-xs uppercase tracking-wide text-vfc-muted">
               <tr>
                 <th className="px-4 py-3 font-medium">Name</th>
                 <th className="px-4 py-3 font-medium">City</th>
                 <th className="px-4 py-3 font-medium">Role</th>
+                <th className="px-4 py-3 font-medium">Company</th>
                 <th className="px-4 py-3 font-medium">WhatsApp</th>
-                <th className="px-4 py-3 font-medium">Referral Source</th>
-                <th className="px-4 py-3 font-medium">Referral Name</th>
+                <th className="px-4 py-3 font-medium">Motivations</th>
+                <th className="px-4 py-3 font-medium">How Heard</th>
                 <th className="px-4 py-3 font-medium">Invitation Status</th>
                 <th className="px-4 py-3 font-medium">Invited</th>
                 <th className="px-4 py-3 font-medium">Approved</th>
@@ -466,13 +475,13 @@ export default function Admin() {
             <tbody>
               {submissionsLoading ? (
                 <tr>
-                  <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
+                  <td className="px-4 py-6 text-vfc-muted" colSpan={11}>
                     Loading submissions…
                   </td>
                 </tr>
               ) : filteredSubmissions.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
+                  <td className="px-4 py-6 text-vfc-muted" colSpan={11}>
                     {submissions.length === 0
                       ? "No submissions found."
                       : "No submissions match the selected filter."}
@@ -485,12 +494,34 @@ export default function Admin() {
                     submission,
                     whatsappInviteConfig,
                   );
+                  const roleLabel = submission.role_other
+                    ? `${submission.role} — ${submission.role_other}`
+                    : submission.role;
+                  const howHeard = submission.referral
+                    ? formatReferralSource(submission.referral)
+                    : submission.referralSource
+                      ? [formatReferralSource(submission.referralSource), submission.referralName]
+                          .filter(Boolean)
+                          .join(" · ")
+                      : "-";
 
                   return (
                     <tr key={submission.id} className="border-t border-vfc-border/70 align-top">
                       <td className="px-4 py-3 font-medium text-vfc-white">{submission.name}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{submission.city}</td>
-                      <td className="px-4 py-3 text-vfc-white/90">{submission.role}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{roleLabel}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">
+                        {submission.company ? (
+                          <span>
+                            {submission.company}
+                            {submission.is_freelancer && (
+                              <span className="ml-1.5 text-xs text-vfc-muted">(freelance)</span>
+                            )}
+                          </span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-vfc-white/90">
                         {submission.whatsapp && whatsappInviteUrl ? (
                           <a
@@ -506,8 +537,23 @@ export default function Admin() {
                           submission.whatsapp || "-"
                         )}
                       </td>
-                      <td className="px-4 py-3 text-vfc-white/90">{submission.referralSource ? formatReferralSource(submission.referralSource) : "-"}</td>
-                      <td className="px-4 py-3 text-vfc-white/90">{submission.referralName || "-"}</td>
+                      <td className="px-4 py-3">
+                        {submission.motivations?.length ? (
+                          <div className="flex max-w-xs flex-wrap gap-1">
+                            {submission.motivations.map((m) => (
+                              <span
+                                key={m}
+                                className="rounded-full border border-vfc-border bg-vfc-black px-2 py-0.5 text-xs text-vfc-muted"
+                              >
+                                {m}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-vfc-muted">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-vfc-white/90">{howHeard}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <StatusBadge status={submission.invitationStatus ?? "signed_up"} />
