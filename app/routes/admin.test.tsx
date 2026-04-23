@@ -3,12 +3,30 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import Admin from "./admin._index";
+import AdminSubmissions from "./admin.submissions";
+import AdminEvents from "./admin.events._index";
+import AdminCafes from "./admin.cafes";
 
 function renderAdmin() {
   render(
     <MemoryRouter>
-      <Admin />
+      <AdminSubmissions />
+    </MemoryRouter>,
+  );
+}
+
+function renderEvents() {
+  render(
+    <MemoryRouter>
+      <AdminEvents />
+    </MemoryRouter>,
+  );
+}
+
+function renderCafes() {
+  render(
+    <MemoryRouter>
+      <AdminCafes />
     </MemoryRouter>,
   );
 }
@@ -179,7 +197,7 @@ describe("admin route", () => {
 
     expect(within(row).getByText("Yogyakarta")).toBeInTheDocument();
     expect(within(row).getByText("Developer")).toBeInTheDocument();
-    expect(within(row).getAllByText("-")).toHaveLength(5);
+    expect(within(row).getAllByText("-")).toHaveLength(1);
     expect(within(row).getByRole("combobox")).toHaveValue("signed_up");
   });
 
@@ -211,8 +229,6 @@ describe("admin route", () => {
     expect(within(row).getByText("Bandung")).toBeInTheDocument();
     expect(within(row).getByText("Designer")).toBeInTheDocument();
     expect(within(row).getByText("628123456789")).toBeInTheDocument();
-    expect(within(row).getByText("Instagram")).toBeInTheDocument();
-    expect(within(row).getByText("Nadia")).toBeInTheDocument();
     expect(within(row).getByRole("combobox")).toHaveValue("invited");
   });
 
@@ -340,8 +356,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(row).getByText(/inviter@vfc.id/)).toBeInTheDocument();
-    expect(within(row).getByText(/approver@vfc.id/)).toBeInTheDocument();
+    // Audit fields live in the member detail modal — open it first
+    await userEvent.click(within(row).getByRole("button", { name: "View" }));
+    expect(screen.getByText(/approver@vfc.id/)).toBeInTheDocument();
   });
 
   it("shows only valid next statuses for each submission", async () => {
@@ -394,8 +411,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(withNameRow).getByText("A friend")).toBeInTheDocument();
-    expect(within(withNameRow).getByText("Alex")).toBeInTheDocument();
+    // Referral info lives in the member detail modal — open it first
+    await userEvent.click(within(withNameRow).getByRole("button", { name: "View" }));
+    expect(screen.getByText("A friend · Alex")).toBeInTheDocument();
   });
 
   it("shows '-' when referral source is friend but referral name is missing", async () => {
@@ -422,8 +440,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(noNameRow).getByText("A friend")).toBeInTheDocument();
-    expect(within(noNameRow).getAllByText("-").length).toBeGreaterThan(0);
+    // Referral info lives in the member detail modal — open it first
+    await userEvent.click(within(noNameRow).getByRole("button", { name: "View" }));
+    expect(screen.getByText("A friend")).toBeInTheDocument();
   });
 
   it("formats unknown referral source values", async () => {
@@ -450,7 +469,9 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(row).getByText("Newsletter Signup")).toBeInTheDocument();
+    // Referral info lives in the member detail modal — open it first
+    await userEvent.click(within(row).getByRole("button", { name: "View" }));
+    expect(screen.getByText("Newsletter Signup")).toBeInTheDocument();
   });
 
   it("shows an empty state when there are no submissions", async () => {
@@ -488,7 +509,7 @@ describe("admin route", () => {
       ],
     });
 
-    renderAdmin();
+    renderEvents();
 
     expect(await screen.findByText("Vibe Coding Night #4")).toBeInTheDocument();
     expect(screen.getByText("Bilik Kayu Heritage, Yogyakarta")).toBeInTheDocument();
@@ -500,7 +521,7 @@ describe("admin route", () => {
       events: [],
     });
 
-    renderAdmin();
+    renderEvents();
 
     expect(await screen.findByText("No events found.")).toBeInTheDocument();
   });
@@ -511,7 +532,7 @@ describe("admin route", () => {
       eventsError: "Events API unavailable",
     });
 
-    renderAdmin();
+    renderEvents();
 
     expect(
       await screen.findByText("Failed to load events: Events API unavailable"),
@@ -519,19 +540,17 @@ describe("admin route", () => {
   });
 
   it("renders cafes directory section with cafe data", async () => {
-    mockAdminApis();
-    renderAdmin();
+    renderCafes();
 
-    expect(await screen.findByText("Cafes Directory")).toBeInTheDocument();
+    expect(screen.getByText("Cafes Directory")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Search cafes…")).toBeInTheDocument();
     expect(screen.getByText("Total cafes")).toBeInTheDocument();
   });
 
   it("filters cafes by search input", async () => {
-    mockAdminApis();
-    renderAdmin();
+    renderCafes();
 
-    const searchInput = await screen.findByPlaceholderText("Search cafes…");
+    const searchInput = screen.getByPlaceholderText("Search cafes…");
     await userEvent.type(searchInput, "bean garden");
 
     expect(screen.getAllByText("The Bean Garden Palagan").length).toBeGreaterThan(0);
@@ -539,12 +558,11 @@ describe("admin route", () => {
   });
 
   it("shows image and map status for cafes with those fields", async () => {
-    mockAdminApis();
-    renderAdmin();
+    renderCafes();
 
     // The Bean Garden Palagan has imageUrl and mapUrl
     // Use getAllByText since the cafe name also appears in map_location column
-    const nameElements = await screen.findAllByText("The Bean Garden Palagan");
+    const nameElements = screen.getAllByText("The Bean Garden Palagan");
     const row = nameElements[0].closest("tr");
     expect(row).not.toBeNull();
     if (!row) return;
@@ -585,7 +603,7 @@ describe("admin route", () => {
       expect(screen.queryByText("Bob")).not.toBeInTheDocument();
       expect(screen.queryByText("Diana")).not.toBeInTheDocument();
       expect(screen.queryByText("Eve")).not.toBeInTheDocument();
-      expect(screen.getByText("2 of 5")).toBeInTheDocument();
+      expect(screen.getByText("2 of 5 shown")).toBeInTheDocument();
     });
 
     it("filters to a single status", async () => {
@@ -597,7 +615,7 @@ describe("admin route", () => {
 
       expect(screen.getByText("Diana")).toBeInTheDocument();
       expect(screen.queryByText("Alice")).not.toBeInTheDocument();
-      expect(screen.getByText("1 of 5")).toBeInTheDocument();
+      expect(screen.getByText("1 of 5 shown")).toBeInTheDocument();
     });
 
     it("shows empty filter state when no submissions match", async () => {

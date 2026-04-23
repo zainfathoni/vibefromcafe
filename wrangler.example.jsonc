@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vfc-web",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-02-04",
+  "observability": {
+    "enabled": true
+  },
+  "pages_build_output_dir": "build/client",
+
+  "kv_namespaces": [
+    {
+      "binding": "VFC_SUBMISSIONS",
+"preview_id": "YOUR_PREVIEW_NAMESPACE_ID",
+"id": "YOUR_PRODUCTION_NAMESPACE_ID"
+    }
+  ]
+}

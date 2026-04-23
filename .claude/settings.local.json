@@ -12,5 +12,9 @@
       "Bash(npm test:*)",
       "Bash(lsof -ti:5173 2>/dev/null)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "chrome-devtools"
+  ],
+  "enableAllProjectMcpServers": true
 }
