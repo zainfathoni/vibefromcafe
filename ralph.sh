@@ -13,6 +13,11 @@ PLAN_PATH=${RALPH_PLAN_PATH:-}
 EPIC_ID=${RALPH_EPIC_ID:-}
 TICKET_STATE_SCRIPT="$SCRIPT_DIR/scripts/ralph_ticket_state.py"
 
+if ! command -v tk >/dev/null 2>&1; then
+  printf 'Ticket CLI not found: tk\n' >&2
+  exit 1
+fi
+
 if [ ! -f "$TICKET_STATE_SCRIPT" ]; then
   printf 'Ralph ticket helper not found: %s\n' "$TICKET_STATE_SCRIPT" >&2
   exit 1
