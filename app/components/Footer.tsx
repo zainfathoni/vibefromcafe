@@ -42,6 +42,11 @@ export default function Footer() {
                   GitHub (@vibefromcafe)
                 </a>
               </li>
+              <li>
+                <a href="https://github.com/zainfathoni/vibefromcafe" target="_blank" rel="noopener noreferrer" className="text-vfc-muted hover:text-vfc-yellow">
+                  Source code
+                </a>
+              </li>
             </ul>
           </div>
         </div>
