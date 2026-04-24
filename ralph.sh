@@ -6,17 +6,47 @@ MAX_ITERATIONS=${1:-25}
 SLEEP_SECONDS=${RALPH_SLEEP_SECONDS:-2}
 ITERATION_TIMEOUT_SECONDS=${RALPH_ITERATION_TIMEOUT_SECONDS:-1200}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RUNNER=${RALPH_RUNNER:-opencode}
+RUNNER=${RALPH_RUNNER:-}
 MODEL=${RALPH_MODEL:-openai/gpt-5.4}
 NOTE=${RALPH_NOTE:-}
-PLAN_PATH=${RALPH_PLAN_PATH:-docs/plans/2026-04-18-repo-transfer-to-vibefromcafe-web.md}
+PLAN_PATH=${RALPH_PLAN_PATH:-}
 EPIC_ID=${RALPH_EPIC_ID:-}
-LABEL=${RALPH_LABEL:-}
+TICKET_STATE_SCRIPT="$SCRIPT_DIR/scripts/ralph_ticket_state.py"
 
-if ! command -v "$RUNNER" >/dev/null 2>&1; then
-  printf 'Runner not found: %s\n' "$RUNNER" >&2
+if ! command -v tk >/dev/null 2>&1; then
+  printf 'Ticket CLI not found: tk\n' >&2
   exit 1
 fi
+
+if [ ! -f "$TICKET_STATE_SCRIPT" ]; then
+  printf 'Ralph ticket helper not found: %s\n' "$TICKET_STATE_SCRIPT" >&2
+  exit 1
+fi
+
+resolve_runner() {
+  if [ -n "$RUNNER" ]; then
+    if ! command -v "$RUNNER" >/dev/null 2>&1; then
+      printf 'Runner not found: %s\n' "$RUNNER" >&2
+      exit 1
+    fi
+    return
+  fi
+
+  if command -v opencode >/dev/null 2>&1; then
+    RUNNER=opencode
+    return
+  fi
+
+  if command -v omp >/dev/null 2>&1; then
+    RUNNER=omp
+    return
+  fi
+
+  printf 'No supported Ralph runner found. Install opencode or omp, or set RALPH_RUNNER.\n' >&2
+  exit 1
+}
+
+resolve_runner
 
 if [ "$ITERATION_TIMEOUT_SECONDS" -gt 0 ]; then
   printf 'Starting Ralph with %s - Max iterations: %s - Timeout: %ss\n' "$RUNNER" "$MAX_ITERATIONS" "$ITERATION_TIMEOUT_SECONDS"
@@ -122,126 +152,58 @@ build_opencode_env_prefix() {
   OPENCODE_ENV_PREFIX=("${env_cmd[@]}")
 }
 
-json_issue_count() {
-  python3 -c 'import json, sys; data = json.load(sys.stdin); issues = data.get("issues", data) if isinstance(data, dict) else data; print(len(issues))'
-}
-
-json_issue_id_at_index() {
-  local index=$1
-  python3 -c 'import json, sys; index = int(sys.argv[1]); data = json.load(sys.stdin); issues = data.get("issues", data) if isinstance(data, dict) else data; print(issues[index]["id"] if len(issues) > index else "")' "$index"
-}
-
-json_issue_ids() {
-  python3 -c 'import json, sys; data = json.load(sys.stdin); issues = data.get("issues", data) if isinstance(data, dict) else data; print("\n".join(issue["id"] for issue in issues))'
-}
-
-json_first_parent() {
-  python3 -c 'import json, sys; data = json.load(sys.stdin); issues = data.get("issues", data) if isinstance(data, dict) else data; print(issues[0].get("parent", "") if issues else "")'
-}
-
-build_ready_command() {
-  READY_CMD=(br ready --json)
-  if [ -n "$LABEL" ]; then
-    READY_CMD+=(--label "$LABEL")
-  fi
-}
-
-build_active_epics_command() {
-  ACTIVE_EPICS_CMD=(br list --type epic --status open --status in_progress --json)
-  if [ -n "$LABEL" ]; then
-    ACTIVE_EPICS_CMD+=(--label "$LABEL")
-  fi
-}
-
 resolve_epic_id() {
-  local active_epics_json
-  local existing_parent
-  local found_parent
-  local first_ready_issue_id
-  local issue_id
-  local ready_epic_count=0
-  local ready_issue_ids
-  local ready_json
-  local ready_parent
-  local ready_parent_list=''
-
   if [ -n "$EPIC_ID" ]; then
     return
   fi
 
-  build_ready_command
-  ready_json=$("${READY_CMD[@]}")
-  ready_issue_ids=$(printf '%s' "$ready_json" | json_issue_ids)
-  first_ready_issue_id=$(printf '%s' "$ready_json" | json_issue_id_at_index 0)
+  EPIC_ID=$(python3 "$TICKET_STATE_SCRIPT" resolve-epic)
 
-  while IFS= read -r issue_id; do
-    [ -n "$issue_id" ] || continue
+  if [ -z "$EPIC_ID" ]; then
+    printf 'No active or incomplete Ralph epic found. Nothing to do.\n'
+    exit 0
+  fi
+}
 
-    ready_parent=$(br show "$issue_id" --json | json_first_parent)
-    if [ -z "$ready_parent" ]; then
-      continue
-    fi
+resolve_plan_path() {
+  local resolved_plan_path
 
-    found_parent=0
-    while IFS= read -r existing_parent; do
-      if [ "$existing_parent" = "$ready_parent" ]; then
-        found_parent=1
-        break
-      fi
-    done <<EOF
-$(printf '%b' "$ready_parent_list")
-EOF
-
-    if [ "$found_parent" -eq 0 ]; then
-      ready_parent_list="${ready_parent_list}${ready_parent}\n"
-      ready_epic_count=$((ready_epic_count + 1))
-    fi
-  done <<EOF
-$ready_issue_ids
-EOF
-
-  if [ "$ready_epic_count" -eq 1 ]; then
-    while IFS= read -r ready_parent; do
-      if [ -n "$ready_parent" ]; then
-        EPIC_ID=$ready_parent
-        break
-      fi
-    done <<EOF
-$(printf '%b' "$ready_parent_list")
-EOF
+  if [ -n "$PLAN_PATH" ]; then
     return
   fi
 
-  if [ "$ready_epic_count" -gt 1 ]; then
-    printf 'Multiple epics are represented in br ready. Set RALPH_EPIC_ID.\n' >&2
-    exit 1
-  fi
+  resolved_plan_path=$(python3 - "$SCRIPT_DIR" <<'PY'
+from pathlib import Path
+import sys
 
-  if [ -z "$first_ready_issue_id" ]; then
-    build_active_epics_command
-    active_epics_json=$("${ACTIVE_EPICS_CMD[@]}")
-    EPIC_ID=$(printf '%s' "$active_epics_json" | json_issue_id_at_index 0)
-    if [ -n "$EPIC_ID" ]; then
-      return
-    fi
+root = Path(sys.argv[1])
+plans_dir = root / "docs" / "plans"
 
-    printf 'Unable to determine Ralph epic automatically. Set RALPH_EPIC_ID.\n' >&2
-    exit 1
-  fi
+if not plans_dir.is_dir():
+    print("CLAUDE.md")
+    raise SystemExit
 
-  ready_parent=$(br show "$first_ready_issue_id" --json | json_first_parent)
-  if [ -z "$ready_parent" ]; then
-    printf 'Ready issue %s has no parent epic. Set RALPH_EPIC_ID.\n' "$first_ready_issue_id" >&2
-    exit 1
-  fi
+plans = sorted(plans_dir.rglob("*.md"))
+if not plans:
+    print("CLAUDE.md")
+    raise SystemExit
 
-  EPIC_ID=$ready_parent
+if len(plans) == 1:
+    print(plans[0].relative_to(root))
+    raise SystemExit
+
+latest_plan = max(plans, key=lambda path: path.stat().st_mtime)
+print(latest_plan.relative_to(root))
+PY
+)
+
+  PLAN_PATH=$resolved_plan_path
 }
 
 render_prompt() {
   local prompt_file=$1
 
-  python3 - "$SCRIPT_DIR/PROMPT.md" "$prompt_file" "$PLAN_PATH" "$EPIC_ID" "$LABEL" <<'PY'
+  python3 - "$SCRIPT_DIR/PROMPT.md" "$prompt_file" "$PLAN_PATH" "$EPIC_ID" <<'PY'
 from pathlib import Path
 import sys
 
@@ -249,23 +211,23 @@ template_path = Path(sys.argv[1])
 output_path = Path(sys.argv[2])
 plan_path = sys.argv[3]
 epic_id = sys.argv[4]
-label = sys.argv[5]
 
 content = template_path.read_text(encoding="utf-8")
 content = content.replace("__RALPH_PLAN_PATH__", plan_path)
 content = content.replace("__RALPH_EPIC_ID__", epic_id)
-content = content.replace("__RALPH_LABEL__", label)
 output_path.write_text(content, encoding="utf-8")
 PY
 }
 
 resolve_epic_id
+resolve_plan_path
 
 PROMPT_FILE=$(mktemp)
 trap 'rm -f "$PROMPT_FILE"' EXIT
 render_prompt "$PROMPT_FILE"
 
-printf 'Using Ralph scope - Epic: %s - Label: %s\n' "$EPIC_ID" "$LABEL"
+printf 'Using Ralph scope - Epic: %s\n' "$EPIC_ID"
+printf 'Using Ralph context - Plan: %s\n' "$PLAN_PATH"
 
 for i in $(seq 1 "$MAX_ITERATIONS"); do
   printf '\n═══════════════════════════════════════════════════════\n'
@@ -287,13 +249,26 @@ for i in $(seq 1 "$MAX_ITERATIONS"); do
         "${OPENCODE_ENV_PREFIX[@]}"
         opencode run
         --dangerously-skip-permissions
-        --model "$MODEL"
         --dir "$SCRIPT_DIR"
         --title "Ralph Loop Iteration $i/$MAX_ITERATIONS"
         -f "$PROMPT_FILE"
         --
         "$MESSAGE"
       )
+
+      if [ -n "$MODEL" ]; then
+        CMD=(
+          "${OPENCODE_ENV_PREFIX[@]}"
+          opencode run
+          --dangerously-skip-permissions
+          --model "$MODEL"
+          --dir "$SCRIPT_DIR"
+          --title "Ralph Loop Iteration $i/$MAX_ITERATIONS"
+          -f "$PROMPT_FILE"
+          --
+          "$MESSAGE"
+        )
+      fi
 
       run_with_timeout "$OUTPUT_FILE" "${CMD[@]}" || true
       ;;
@@ -327,5 +302,5 @@ for i in $(seq 1 "$MAX_ITERATIONS"); do
 done
 
 printf '\nRalph reached max iterations (%s) without completing all tasks.\n' "$MAX_ITERATIONS"
-printf "Run 'br ready --label %s --parent %s --recursive' to check status.\n" "$LABEL" "$EPIC_ID"
+printf "Run 'python3 scripts/ralph_ticket_state.py summary %s' to check status.\n" "$EPIC_ID"
 exit 1
