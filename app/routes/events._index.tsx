@@ -232,6 +232,12 @@ export default function Events() {
 
                 <p className="text-sm leading-relaxed text-vfc-muted">{event.description}</p>
 
+                {event.sourceLabel && (
+                  <p className="rounded-lg border border-vfc-border bg-vfc-black px-3 py-2 text-xs text-vfc-muted">
+                    {event.sourceLabel}
+                  </p>
+                )}
+
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-vfc-white/90">
                   {event.cafeId ? (
                     <Link to={`/cafes/${event.cafeId}`} className="underline decoration-vfc-yellow/40 underline-offset-2 transition-colors hover:text-vfc-yellow">

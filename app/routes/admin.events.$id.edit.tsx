@@ -27,6 +27,7 @@ function toForm(event: Event): EventForm {
     cafeId: event.cafeId ?? "",
     imageUrl: event.imageUrl ?? "",
     mapUrl: event.mapUrl ?? "",
+    sourceLabel: event.sourceLabel ?? "",
     tags: event.tags.join(", "),
   };
 }
@@ -94,6 +95,7 @@ export default function AdminEventsEdit() {
       cafeId: form.cafeId,
       imageUrl: form.imageUrl,
       mapUrl: form.mapUrl,
+      sourceLabel: form.sourceLabel,
       tags: form.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
     };
 
@@ -275,6 +277,18 @@ export default function AdminEventsEdit() {
               className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
               placeholder="https://maps.app.goo.gl/..."
             />
+          </label>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-vfc-white">Public Source Label (optional)</span>
+            <input
+              type="text"
+              value={form.sourceLabel}
+              onChange={(event) => updateField("sourceLabel", event.target.value)}
+              className="w-full rounded-lg border border-vfc-border bg-vfc-black px-4 py-2.5 text-vfc-white outline-none transition-colors focus:border-vfc-yellow"
+              placeholder="Source: VFC Jogja community announcement"
+            />
+            <p className="mt-2 text-xs text-vfc-muted">Use a generic public source only. Keep WhatsApp sender names, phone numbers, direct quotes, and message IDs in internal review artifacts.</p>
           </label>
 
           <label className="block">

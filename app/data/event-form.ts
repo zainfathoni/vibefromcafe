@@ -8,5 +8,6 @@ export type EventForm = {
   cafeId: string;
   imageUrl: string;
   mapUrl: string;
+  sourceLabel: string;
   tags: string;
 };
