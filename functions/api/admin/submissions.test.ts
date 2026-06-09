@@ -94,7 +94,7 @@ describe("admin submissions api", () => {
     });
   });
 
-  it("moves signed_up to invited and records inviter metadata", async () => {
+  it("moves signed_up to invited without recording inviter metadata", async () => {
     const kv = new MockKvNamespace();
     kv.seed("submission:test-1", {
       id: "test-1",
@@ -131,7 +131,7 @@ describe("admin submissions api", () => {
 
     expect(response.status).toBe(200);
     expect(body.submission.invitationStatus).toBe("invited");
-    expect(body.submission.invited_by).toBe("admin@vfc.id");
+    expect(body.submission.invited_by).toBeUndefined();
     expect(body.submission.invited_at).toBeTruthy();
   });
 

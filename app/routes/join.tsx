@@ -19,6 +19,17 @@ type InterestForm = {
   referralName: string;
 };
 
+type WhatsappInviteConfig = {
+  groupInviteUrl: string;
+  messageTemplate: string;
+};
+
+type JoinResponse = {
+  error?: string;
+  success?: boolean;
+  whatsappInvite?: Partial<WhatsappInviteConfig>;
+};
+
 const initialForm: InterestForm = {
   name: "",
   city: "",
@@ -40,6 +51,7 @@ const REFERRAL_SOURCES = [
 export default function Join() {
   const [form, setForm] = useState<InterestForm>(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [whatsappInvite, setWhatsappInvite] = useState<WhatsappInviteConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,11 +71,16 @@ export default function Join() {
         body: JSON.stringify(form),
       });
 
+      const data = await response.json() as JoinResponse;
+
       if (!response.ok) {
-        const data = await response.json() as { error?: string };
         throw new Error(data.error ?? "Something went wrong");
       }
 
+      setWhatsappInvite({
+        groupInviteUrl: data.whatsappInvite?.groupInviteUrl?.trim() ?? "",
+        messageTemplate: data.whatsappInvite?.messageTemplate?.trim() ?? "",
+      });
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
@@ -84,10 +101,29 @@ export default function Join() {
       <div className="mb-10 rounded-2xl border border-vfc-border bg-vfc-surface p-6">
         {submitted ? (
           <div className="text-center">
-            <h2 className="mb-3 text-2xl font-semibold text-vfc-yellow">Thanks, you&apos;re in the queue!</h2>
-            <p className="text-vfc-muted">
-              We received your details. Tim VFC bakal reach out pas batch berikutnya dibuka.
-            </p>
+            {whatsappInvite?.groupInviteUrl ? (
+              <>
+                <h2 className="mb-3 text-2xl font-semibold text-vfc-yellow">You&apos;re invited!</h2>
+                <p className="mx-auto mb-6 max-w-xl text-vfc-muted">
+                  We received your details. Join the WhatsApp group now to continue onboarding with the VFC community.
+                </p>
+                <a
+                  href={whatsappInvite.groupInviteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex rounded-lg bg-vfc-yellow px-6 py-2.5 font-semibold text-vfc-black transition-colors hover:bg-yellow-300"
+                >
+                  Join WhatsApp group
+                </a>
+              </>
+            ) : (
+              <>
+                <h2 className="mb-3 text-2xl font-semibold text-vfc-yellow">Thanks, your submission is in.</h2>
+                <p className="text-vfc-muted">
+                  We received your details. Tim VFC bakal share the WhatsApp invite soon.
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -186,8 +222,7 @@ export default function Join() {
             )}
 
             <p className="text-sm text-vfc-muted">
-              WhatsApp access tetap invite-only dan referral system tetap dijaga.
-              This form helps us keep onboarding trusted dan relevan.
+              Submit once to get the WhatsApp invite link. Referral context helps us keep onboarding trusted dan relevan.
             </p>
 
             {error && (

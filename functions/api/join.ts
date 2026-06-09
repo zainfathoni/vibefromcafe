@@ -1,5 +1,7 @@
 interface Env {
   VFC_SUBMISSIONS: KVNamespace;
+  WHATSAPP_GROUP_INVITE_URL?: string;
+  WHATSAPP_INVITE_MESSAGE_TEMPLATE?: string;
 }
 
 interface SubmissionBody {
@@ -30,11 +32,21 @@ export interface Submission {
   referralName?: string;
   invitationStatus: SubmissionStatus;
   allowedNextStatuses?: SubmissionStatus[];
-  invited_by?: string;
   invited_at?: string;
   approved_by?: string;
   approved_at?: string;
   createdAt: string;
+}
+
+const DEFAULT_WHATSAPP_INVITE_MESSAGE =
+  "Hi {{name}}, welcome to Vibe From Cafe. Join our WhatsApp community here: {{group_link}}";
+
+function resolveInviteConfig(env: Env) {
+  return {
+    groupInviteUrl: env.WHATSAPP_GROUP_INVITE_URL?.trim() ?? "",
+    messageTemplate:
+      env.WHATSAPP_INVITE_MESSAGE_TEMPLATE?.trim() || DEFAULT_WHATSAPP_INVITE_MESSAGE,
+  };
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -54,6 +66,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   const id = crypto.randomUUID();
+  const now = new Date().toISOString();
   const submission: Submission = {
     id,
     name: name.trim(),
@@ -64,11 +77,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     ...((referralSource === "friend" || referralSource === "other") && referralName?.trim()
       ? { referralName: referralName.trim() }
       : {}),
-    invitationStatus: "signed_up",
-    createdAt: new Date().toISOString(),
+    invitationStatus: "invited",
+    invited_at: now,
+    createdAt: now,
   };
 
   await env.VFC_SUBMISSIONS.put(`submission:${id}`, JSON.stringify(submission));
 
-  return Response.json({ success: true });
+  return Response.json({
+    success: true,
+    submission: { id, invitationStatus: submission.invitationStatus },
+    whatsappInvite: resolveInviteConfig(env),
+  });
 };
