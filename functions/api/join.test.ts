@@ -95,4 +95,50 @@ describe("join api", () => {
     expect(stored.invited_by).toBeUndefined();
     expect(stored.invited_at).toBeTruthy();
   });
+
+  it("keeps submissions actionable when the WhatsApp invite URL is missing", async () => {
+    const kv = new MockKvNamespace();
+
+    const response = await onRequestPost(
+      createContext({
+        request: new Request("https://example.com/api/join", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            name: "Missing Invite Url",
+            city: "Jogja",
+            role: "Developer",
+            whatsapp: "0812-3456-789",
+            referralSource: "instagram",
+          }),
+        }),
+        env: {
+          VFC_SUBMISSIONS: kv,
+          WHATSAPP_GROUP_INVITE_URL: "",
+          WHATSAPP_INVITE_MESSAGE_TEMPLATE: "Hi {{name}}, join {{group_link}}",
+        },
+      }),
+    );
+
+    const body = (await response.json()) as {
+      success: boolean;
+      submission: { id: string; invitationStatus: string };
+      whatsappInvite: { groupInviteUrl: string; messageTemplate: string };
+    };
+    const [[, storedValue]] = kv.entries();
+    const stored = JSON.parse(storedValue) as {
+      id: string;
+      invitationStatus: string;
+      invited_by?: string;
+      invited_at?: string;
+    };
+
+    expect(response.status).toBe(200);
+    expect(body.success).toBe(true);
+    expect(body.submission).toEqual({ id: stored.id, invitationStatus: "signed_up" });
+    expect(body.whatsappInvite.groupInviteUrl).toBe("");
+    expect(stored.invitationStatus).toBe("signed_up");
+    expect(stored.invited_by).toBeUndefined();
+    expect(stored.invited_at).toBeUndefined();
+  });
 });

@@ -67,6 +67,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
+  const whatsappInvite = resolveInviteConfig(env);
+  const invitationStatus: SubmissionStatus = whatsappInvite.groupInviteUrl ? "invited" : "signed_up";
   const submission: Submission = {
     id,
     name: name.trim(),
@@ -77,8 +79,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     ...((referralSource === "friend" || referralSource === "other") && referralName?.trim()
       ? { referralName: referralName.trim() }
       : {}),
-    invitationStatus: "invited",
-    invited_at: now,
+    invitationStatus,
+    ...(invitationStatus === "invited" ? { invited_at: now } : {}),
     createdAt: now,
   };
 
@@ -87,6 +89,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   return Response.json({
     success: true,
     submission: { id, invitationStatus: submission.invitationStatus },
-    whatsappInvite: resolveInviteConfig(env),
+    whatsappInvite,
   });
 };
