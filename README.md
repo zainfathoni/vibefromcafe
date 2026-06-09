@@ -88,16 +88,13 @@ Cafes live in `app/data/cafes.json`. Each cafe has:
 
 Events can link to a cafe via `cafeId`. When an event doesn't have its own `imageUrl` or `mapUrl`, the linked cafe's values are used as fallbacks.
 
-## Admin: Inviting Members
+## Join Flow: WhatsApp Invitation
 
-When new signups come in, admins can invite them to the WhatsApp group in one click:
+When new signups submit the join form, the site immediately stores the submission as `invited` and shows the WhatsApp group invite link on the success screen.
 
-1. Go to the **Admin** page (protected by Cloudflare Access)
-2. Find the signup in the list — their phone number is a clickable **Invite** button
-3. Click it → WhatsApp opens with a prefilled message containing the group invite link
-4. Hit **Send** in WhatsApp — done!
+Admins can still use the protected **Admin** page to monitor submissions and move members through later states such as `requested_to_join`, `approved`, or `rejected`.
 
-The signup status updates automatically: `signed_up` → `invited` → `approved` → `joined`
+The normal signup status flow is now: `invited` → `requested_to_join` → `approved`.
 
 ### Environment Variables
 

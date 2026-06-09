@@ -189,7 +189,6 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   }
 
   const now = new Date().toISOString();
-  const inviter = deriveInviter(request);
 
   const updated: Submission = {
     ...current,
@@ -198,11 +197,11 @@ export const onRequestPatch: PagesFunction<Env> = async (context) => {
   };
 
   if (currentStatus !== targetStatus && targetStatus === "invited") {
-    updated.invited_by = inviter;
     updated.invited_at = now;
   }
 
   if (currentStatus !== targetStatus && targetStatus === "approved") {
+    const inviter = deriveInviter(request);
     updated.approved_by = inviter;
     updated.approved_at = now;
   }

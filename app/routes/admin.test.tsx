@@ -179,7 +179,7 @@ describe("admin route", () => {
 
     expect(within(row).getByText("Yogyakarta")).toBeInTheDocument();
     expect(within(row).getByText("Developer")).toBeInTheDocument();
-    expect(within(row).getAllByText("-")).toHaveLength(5);
+    expect(within(row).getAllByText("-")).toHaveLength(4);
     expect(within(row).getByRole("combobox")).toHaveValue("signed_up");
   });
 
@@ -312,7 +312,7 @@ describe("admin route", () => {
     expect(await screen.findByRole("combobox")).toHaveValue("approved");
   });
 
-  it("shows invited and approved audit fields", async () => {
+  it("shows approved audit fields without rendering legacy invited_by", async () => {
     mockAdminApis({
       submissions: [
         {
@@ -340,7 +340,7 @@ describe("admin route", () => {
       return;
     }
 
-    expect(within(row).getByText(/inviter@vfc.id/)).toBeInTheDocument();
+    expect(within(row).queryByText(/inviter@vfc.id/)).not.toBeInTheDocument();
     expect(within(row).getByText(/approver@vfc.id/)).toBeInTheDocument();
   });
 

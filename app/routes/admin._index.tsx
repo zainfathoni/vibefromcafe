@@ -29,7 +29,6 @@ interface Submission {
   referralName?: string;
   invitationStatus: InvitationStatus;
   allowedNextStatuses?: InvitationStatus[];
-  invited_by?: string;
   invited_at?: string;
   approved_by?: string;
   approved_at?: string;
@@ -457,7 +456,6 @@ export default function Admin() {
                 <th className="px-4 py-3 font-medium">Referral Source</th>
                 <th className="px-4 py-3 font-medium">Referral Name</th>
                 <th className="px-4 py-3 font-medium">Invitation Status</th>
-                <th className="px-4 py-3 font-medium">Invited</th>
                 <th className="px-4 py-3 font-medium">Approved</th>
                 <th className="px-4 py-3 font-medium">Submitted At</th>
               </tr>
@@ -466,13 +464,13 @@ export default function Admin() {
             <tbody>
               {submissionsLoading ? (
                 <tr>
-                  <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
+                  <td className="px-4 py-6 text-vfc-muted" colSpan={9}>
                     Loading submissions…
                   </td>
                 </tr>
               ) : filteredSubmissions.length === 0 ? (
                 <tr>
-                  <td className="px-4 py-6 text-vfc-muted" colSpan={10}>
+                  <td className="px-4 py-6 text-vfc-muted" colSpan={9}>
                     {submissions.length === 0
                       ? "No submissions found."
                       : "No submissions match the selected filter."}
@@ -529,9 +527,6 @@ export default function Admin() {
                             ))}
                           </select>
                         </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">
-                        {formatStatusAudit(submission.invited_by, submission.invited_at)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">
                         {formatStatusAudit(submission.approved_by, submission.approved_at)}
