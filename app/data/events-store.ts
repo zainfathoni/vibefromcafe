@@ -19,13 +19,13 @@ function toDateValue(event: Event) {
   return Date.parse(`${event.date}T${event.time || "00:00"}:00`);
 }
 
-function sortEvents(events: Event[]) {
+export function sortEvents(events: Event[]) {
   return [...events].sort((a, b) => {
     const dateA = toDateValue(a);
     const dateB = toDateValue(b);
 
     if (!Number.isNaN(dateA) && !Number.isNaN(dateB)) {
-      return dateA - dateB;
+      return dateB - dateA;
     }
 
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
