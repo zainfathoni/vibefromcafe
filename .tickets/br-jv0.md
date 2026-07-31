@@ -1,6 +1,6 @@
 ---
 id: br-jv0
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-04-18T15:17:14.914511Z
@@ -8,7 +8,16 @@ type: epic
 priority: 1
 external-ref: https://github.com/zainfathoni/vibefromcafe/issues/27
 ---
-# Transfer repository to vibefromcafe/web
+# [Superseded] Transfer repository to vibefromcafe/web
+
+Resolution
+This plan is superseded by the approved repository relationship and the organization migration tracker: `https://github.com/vibefromcafe/vibefromcafe/issues/1`.
+
+- `vibefromcafe/vibefromcafe` is the canonical repository and keeps its current name.
+- `zainfathoni/vibefromcafe` remains the legacy source until cutover is complete.
+- Do not execute the transfer, rename, archive, or Cloudflare reconnection steps from this ticket.
+
+The text below is retained only as historical context.
 
 Problem
 GitHub issue #27 tracks moving this repository from `zainfathoni/vibefromcafe` to `vibefromcafe/web`. The work spans GitHub transfer/rename, Cloudflare Pages reconnect, and repo updates for stale hardcoded repository references.
@@ -35,5 +44,4 @@ Verification expectations
 - Confirm the old GitHub URL redirects to the new repository.
 - Confirm `app/routes/join.tsx` no longer references the old repository URL once the repo move is complete.
 - Confirm the Cloudflare Pages deployment connection is valid after the transfer.
-
 
