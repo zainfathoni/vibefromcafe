@@ -4,6 +4,12 @@ A community website for remote workers in Indonesia — find the best cafes with
 
 **Live site:** [vibefromcafe.id](https://vibefromcafe.id) _(coming soon)_
 
+## Repository status
+
+This repository is the legacy source until the production cutover is complete. The canonical repository is [`vibefromcafe/vibefromcafe`](https://github.com/vibefromcafe/vibefromcafe), and [its issue #1](https://github.com/vibefromcafe/vibefromcafe/issues/1) is the source of truth for migration and cutover readiness.
+
+The former plan to transfer this repository and rename it to `vibefromcafe/web` is superseded. Do not transfer or archive this repository, rename the canonical repository, or change production Cloudflare resources without an explicit decision in the organization tracker.
+
 ## Stack
 
 - [React Router v7](https://reactrouter.com/) — file-based routing, static export

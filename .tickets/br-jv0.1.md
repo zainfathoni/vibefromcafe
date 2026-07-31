@@ -1,6 +1,6 @@
 ---
 id: br-jv0.1
-status: open
+status: closed
 deps: []
 links: []
 created: 2026-04-18T15:17:45.570171Z
@@ -8,7 +8,12 @@ type: task
 priority: 1
 parent: br-jv0
 ---
-# Execute repo transfer and update moved-repo references
+# [Superseded] Execute repo transfer and update moved-repo references
+
+Resolution
+This task is superseded by `https://github.com/vibefromcafe/vibefromcafe/issues/1`. The organization repository is canonical and retains the name `vibefromcafe`; this repository remains the legacy source until cutover is complete. Do not execute the transfer, rename, archive, or Cloudflare reconnection steps below.
+
+The text below is retained only as historical context.
 
 Problem
 GitHub issue #27 requires a repository transfer plus a few concrete follow-up updates so the moved repo keeps working cleanly. The operational steps and the repo edits need to be tracked together because the move is only complete when both the GitHub location and the in-repo references are correct.
@@ -38,4 +43,3 @@ Verification
 - Confirm the old GitHub URL redirects to the new repository.
 - Run `grep` or equivalent repo search to confirm the old repo URL is gone from tracked source files that should change.
 - If tracked source files change, run the relevant project verification commands for those edits.
-
