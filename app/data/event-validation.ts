@@ -10,6 +10,7 @@ export type EventInput = {
   cafeId?: string;
   imageUrl?: string;
   mapUrl?: string;
+  sourceLabel?: string;
   tags?: string[];
 };
 
@@ -124,6 +125,10 @@ export function parseEventInput(body: unknown, requireAllFields: boolean) {
 
   if ("mapUrl" in payload) {
     input.mapUrl = normalizeOptionalString(payload.mapUrl);
+  }
+
+  if ("sourceLabel" in payload) {
+    input.sourceLabel = normalizeOptionalString(payload.sourceLabel);
   }
 
   if ("tags" in payload) {

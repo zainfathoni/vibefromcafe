@@ -586,6 +586,7 @@ export default function Admin() {
                   <th className="px-4 py-3 font-medium">Title</th>
                   <th className="px-4 py-3 font-medium">Schedule</th>
                   <th className="px-4 py-3 font-medium">Location</th>
+                  <th className="px-4 py-3 font-medium">Source</th>
                   <th className="px-4 py-3 font-medium">Tags</th>
                   <th className="px-4 py-3 font-medium">Created At</th>
                   <th className="px-4 py-3 font-medium">Actions</th>
@@ -594,13 +595,13 @@ export default function Admin() {
               <tbody>
                 {eventsLoading ? (
                   <tr>
-                    <td className="px-4 py-6 text-vfc-muted" colSpan={6}>
+                    <td className="px-4 py-6 text-vfc-muted" colSpan={7}>
                       Loading events…
                     </td>
                   </tr>
                 ) : events.length === 0 ? (
                   <tr>
-                    <td className="px-4 py-6 text-vfc-muted" colSpan={6}>
+                    <td className="px-4 py-6 text-vfc-muted" colSpan={7}>
                       No events found.
                     </td>
                   </tr>
@@ -610,6 +611,7 @@ export default function Admin() {
                       <td className="px-4 py-3 font-medium text-vfc-white">{event.title}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{formatEventSchedule(event)}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{event.location}</td>
+                      <td className="px-4 py-3 text-vfc-white/90">{event.sourceLabel ?? "-"}</td>
                       <td className="px-4 py-3 text-vfc-white/90">{event.tags.length > 0 ? event.tags.join(", ") : "-"}</td>
                       <td className="px-4 py-3 whitespace-nowrap text-vfc-white/80">{formatSubmittedAt(event.createdAt)}</td>
                       <td className="px-4 py-3">

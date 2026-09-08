@@ -64,6 +64,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     cafeId: parsed.input.cafeId,
     imageUrl: parsed.input.imageUrl,
     mapUrl: parsed.input.mapUrl,
+    sourceLabel: parsed.input.sourceLabel,
     status: "published",
     tags: parsed.input.tags ?? [],
     createdAt: new Date().toISOString(),
