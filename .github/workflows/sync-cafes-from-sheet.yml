@@ -16,6 +16,7 @@ jobs:
       # Prefer PAT_TOKEN so the generated PR triggers CI, but keep a safe
       # fallback to github.token so scheduled syncs still open a PR.
       CREATE_PR_TOKEN: ${{ secrets.PAT_TOKEN || github.token }}
+      HAS_PAT_TOKEN: ${{ secrets.PAT_TOKEN != '' }}
 
     steps:
       - name: Checkout repository
@@ -34,7 +35,7 @@ jobs:
         run: npm run sync:cafes
 
       - name: Warn when PAT_TOKEN is not configured
-        if: ${{ secrets.PAT_TOKEN == '' }}
+        if: ${{ env.HAS_PAT_TOKEN != 'true' }}
         run: |
           echo "::warning title=PAT_TOKEN not configured::Falling back to github.token. The sync PR will still be created, but downstream push and pull_request workflows will not run on that PR. Add a fine-grained PAT as the PAT_TOKEN repository secret with contents: write and pull-requests: write permissions to re-enable CI on sync PRs."
 

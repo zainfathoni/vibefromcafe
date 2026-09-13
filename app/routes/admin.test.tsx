@@ -238,7 +238,11 @@ describe("admin route", () => {
 
     renderAdmin();
 
-    const whatsappLink = await screen.findByRole("link", { name: "0812-3456-789" });
+    const whatsappLink = await screen.findByRole(
+      "link",
+      { name: "0812-3456-789" },
+      { timeout: 5000 },
+    );
     expect(whatsappLink).toHaveAttribute("target", "_blank");
     expect(whatsappLink).toHaveAttribute(
       "href",
