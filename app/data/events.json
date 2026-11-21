@@ -8,7 +8,78 @@
     "location": "Bean Garden Palagan, Yogyakarta",
     "cafeId": "the-bean-garden-palagan",
     "status": "published",
-    "tags": ["bukber", "VFC", "networking"],
+    "tags": [
+      "bukber",
+      "VFC",
+      "networking"
+    ],
     "createdAt": "2026-03-10T16:00:00.000Z"
+  },
+  {
+    "id": "vfc-jogja-tycho-2026-06-02",
+    "title": "VFC edisi Pameran Tycho",
+    "description": "Meetup VFC di The Bean Garden Palagan untuk berbagi dan melihat demo Tycho. Dijadwalkan mulai pukul 09.00 WIB hingga sore; peserta dapat datang sesuai waktu luang.",
+    "date": "2026-06-02",
+    "time": "09:00",
+    "location": "The Bean Garden Palagan, Yogyakarta",
+    "cafeId": "the-bean-garden-palagan",
+    "mapUrl": "https://maps.app.goo.gl/WBKAVMZGJqFcBxRq8",
+    "tags": [
+      "VFC",
+      "Jogja",
+      "Tycho"
+    ],
+    "status": "published",
+    "createdAt": "2026-11-21T20:15:00.000Z"
+  },
+  {
+    "id": "vfc-bandung-kcd-2026-10-23",
+    "title": "WFC Bandung Spesial KCD",
+    "description": "Ajakan coworking komunitas VFC Bandung edisi KCD, dijadwalkan mulai pukul 13.00 WIB. Lokasi pertemuan mengikuti tautan peta pada pengumuman.",
+    "date": "2026-10-23",
+    "time": "13:00",
+    "location": "Bandung — lihat peta lokasi",
+    "mapUrl": "https://maps.app.goo.gl/ZZWKzPN8XDqFVA3V8",
+    "tags": [
+      "VFC",
+      "Bandung",
+      "coworking"
+    ],
+    "status": "published",
+    "createdAt": "2026-11-21T20:15:00.000Z"
+  },
+  {
+    "id": "vfc-swe-growth-diy-2026-10-28",
+    "title": "VFC x SWE Growth DIY",
+    "description": "Coworking dan ngobrol bersama komunitas VFC dan SWE Growth DIY di Garuda Spark Innovation Hub, Yogyakarta. Pengumuman mengundang peserta untuk datang atau menyusul mulai pukul 09.00 WIB.",
+    "date": "2026-10-28",
+    "time": "09:00",
+    "location": "Garuda Spark Innovation Hub, Yogyakarta",
+    "mapUrl": "https://maps.app.goo.gl/pVVyqqz4VL3q4tTA9",
+    "tags": [
+      "VFC",
+      "Jogja",
+      "SWE Growth DIY",
+      "coworking"
+    ],
+    "status": "published",
+    "createdAt": "2026-11-21T20:15:00.000Z"
+  },
+  {
+    "id": "vfc-gsih-sharing-2026-11-11",
+    "title": "VFC edisi GSIH — Sharing dan Diskusi",
+    "description": "Pertemuan VFC di Garuda Spark Innovation Hub, Yogyakarta, dengan agenda sharing ulang talk oleh Zain, dilanjutkan ngobrol dan diskusi bersama. Dijadwalkan mulai pukul 09.00 WIB.",
+    "date": "2026-11-11",
+    "time": "09:00",
+    "location": "Garuda Spark Innovation Hub, Yogyakarta",
+    "mapUrl": "https://maps.app.goo.gl/pVVyqqz4VL3q4tTA9",
+    "tags": [
+      "VFC",
+      "Jogja",
+      "sharing",
+      "coworking"
+    ],
+    "status": "published",
+    "createdAt": "2026-11-21T20:15:00.000Z"
   }
 ]

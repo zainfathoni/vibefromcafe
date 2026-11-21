@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
 import cafes from "../data/cafes.json";
+import { communities, jakartaMeetup } from "../data/chapters";
 
 export const meta: MetaFunction = () => [
   { title: "Chapters — Vibe From Cafe" },
@@ -9,13 +10,6 @@ export const meta: MetaFunction = () => [
     content:
       "Explore Vibe From Cafe communities in Jogja, Solo, Bandung, Surabaya, Malang, and Kuala Lumpur, plus meetups in Jakarta.",
   },
-];
-
-const communities = [
-  { name: "Solo", description: "Connect with the VFC community in Solo (Surakarta)." },
-  { name: "Bandung", description: "Join local conversations and cafe meetups with VFC Bandung." },
-  { name: "Surabaya–Malang", description: "One shared VFC group connects members in Surabaya and Malang." },
-  { name: "Kuala Lumpur", description: "VFC connections extend beyond Indonesia with a local group in Kuala Lumpur, Malaysia." },
 ];
 
 export default function Chapters() {
@@ -67,9 +61,7 @@ export default function Chapters() {
           <p className="mb-3 text-xs font-medium text-vfc-yellow">Meetup presence</p>
           <h2 className="mb-2 text-2xl font-bold text-vfc-white">Jakarta</h2>
           <p className="mb-4 text-sm text-vfc-muted">
-            VFC members also meet in Jakarta, including a pre-IDSW coffee meetup
-            on 20 November 2026. This is meetup presence, not a separately
-            confirmed local chapter.
+            {jakartaMeetup.description}
           </p>
           <Link to="/join" className="mt-auto text-sm font-medium text-vfc-yellow hover:underline">
             Join the community &rarr;

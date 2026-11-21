@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import type { MetaFunction } from "react-router";
 import cafes from "../data/cafes.json";
+import { communities, jakartaMeetup } from "../data/chapters";
 import CafeCard from "../components/CafeCard";
 import type { Cafe } from "../data/types";
 
@@ -92,11 +93,11 @@ export default function Home() {
       <section className="bg-vfc-surface py-16 px-4 border-y border-vfc-border">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-vfc-white mb-4">
-            Upcoming Events
+            Community Events
           </h2>
           <p className="text-vfc-muted mb-6">
-            Hands-on AI adoption sessions, builder meetups, and career growth
-            circles &mdash; coming soon.
+            Explore past meetups, AI sharing sessions, and community gatherings,
+            and check for upcoming events.
           </p>
           <Link
             to="/events"
@@ -129,19 +130,18 @@ export default function Home() {
             </p>
           </Link>
 
-          <div className="rounded-xl border border-dashed border-vfc-border bg-vfc-black p-6 opacity-80">
-            <h3 className="text-xl font-semibold text-vfc-white/70 mb-2">
-              Jakarta
-            </h3>
-            <p className="text-vfc-muted text-sm">Coming soon</p>
-          </div>
-
-          <div className="rounded-xl border border-dashed border-vfc-border bg-vfc-black p-6 opacity-80">
-            <h3 className="text-xl font-semibold text-vfc-white/70 mb-2">
-              Bandung
-            </h3>
-            <p className="text-vfc-muted text-sm">Coming soon</p>
-          </div>
+          {communities.map((community) => (
+            <Link key={community.name} to="/chapters" className="group rounded-xl border border-vfc-border bg-vfc-surface p-6 transition-all hover:border-vfc-yellow">
+              <p className="mb-2 text-xs font-medium text-vfc-yellow">Local group</p>
+              <h3 className="mb-2 text-xl font-semibold text-vfc-white group-hover:text-vfc-yellow">{community.name}</h3>
+              <p className="text-sm text-vfc-muted">{community.description}</p>
+            </Link>
+          ))}
+          <Link to="/chapters" className="group rounded-xl border border-vfc-border bg-vfc-surface p-6 transition-all hover:border-vfc-yellow">
+            <p className="mb-2 text-xs font-medium text-vfc-yellow">Meetup presence</p>
+            <h3 className="mb-2 text-xl font-semibold text-vfc-white group-hover:text-vfc-yellow">{jakartaMeetup.name}</h3>
+            <p className="text-sm text-vfc-muted">{jakartaMeetup.description}</p>
+          </Link>
         </div>
       </section>
 
