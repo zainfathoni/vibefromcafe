@@ -81,5 +81,85 @@
     ],
     "status": "published",
     "createdAt": "2026-11-21T20:15:00.000Z"
+  },
+  {
+    "id": "vfc-malang-2026-06-19",
+    "title": "WFC Malang",
+    "date": "2026-06-19",
+    "time": "13:00",
+    "location": "Malang — lihat peta lokasi",
+    "mapUrl": "https://share.google/W9wLSVHXpkqXcuybN",
+    "description": "Ajakan WFC bersama di Malang, dengan teman-teman komunitas DevOps dan Infra. Dijadwalkan mulai pukul 13.00 WIB; lokasi mengikuti tautan pada pengumuman.",
+    "status": "published",
+    "tags": [
+      "VFC",
+      "Malang",
+      "meetup"
+    ],
+    "createdAt": "2026-11-21T20:20:00.000Z"
+  },
+  {
+    "id": "vfc-bandung-jati-kopi-2026-06-30",
+    "title": "WFC Bandung di Jati Kopi",
+    "date": "2026-06-30",
+    "time": "08:00",
+    "location": "Jati Kopi, Jl. Talaga Bodas No.44, Bandung",
+    "mapUrl": "https://maps.app.goo.gl/EkM3eR3hqCEFLUZo7",
+    "description": "WFC bersama di Jati Kopi, Bandung. Ajakan di grup mencantumkan pukul 08.00–20.30 WIB; peserta dapat datang sesuai waktu luang dan memesan makan atau minum masing-masing.",
+    "status": "published",
+    "tags": [
+      "VFC",
+      "Bandung",
+      "meetup"
+    ],
+    "createdAt": "2026-11-21T20:20:00.000Z"
+  },
+  {
+    "id": "vfc-bandung-ruangduduk-2026-07-02",
+    "title": "WFC Bandung di Ruangduduk",
+    "date": "2026-07-02",
+    "time": "08:00",
+    "location": "Ruangduduk Cafee, Jl. Wayang No.2, Bandung",
+    "mapUrl": "https://maps.app.goo.gl/Rw2U6vAMaE3KvpA59",
+    "description": "WFC bersama di Ruangduduk Cafee, Bandung. Ajakan di grup mencantumkan pukul 08.00–20.30 WIB dan terbuka untuk peserta yang ingin datang sesuai waktu luang.",
+    "status": "published",
+    "tags": [
+      "VFC",
+      "Bandung",
+      "meetup"
+    ],
+    "createdAt": "2026-11-21T20:20:00.000Z"
+  },
+  {
+    "id": "vfc-surabaya-2026-08-07",
+    "title": "WFC Surabaya Pusat",
+    "date": "2026-08-07",
+    "time": "13:00",
+    "location": "Surabaya Pusat — lihat peta lokasi",
+    "mapUrl": "https://maps.app.goo.gl/6KoU8gvNWvodyHAX9",
+    "description": "Ajakan WFC bersama di Surabaya Pusat mulai pukul 13.00 WIB. Peserta di grup juga mengajak teman-teman lain untuk bergabung pada hari yang sama.",
+    "status": "published",
+    "tags": [
+      "VFC",
+      "Surabaya",
+      "meetup"
+    ],
+    "createdAt": "2026-11-21T20:20:00.000Z"
+  },
+  {
+    "id": "vfc-solo-2026-11-06",
+    "title": "VFC Solo — Ngopi dan WFC",
+    "date": "2026-11-06",
+    "time": "",
+    "location": "Solo — lihat peta lokasi",
+    "mapUrl": "https://maps.app.goo.gl/kvJMZDo9H1Y4yyed9",
+    "description": "Ngopi dan WFC bersama di Solo pada sore hingga malam hari. Lokasi disepakati lewat grup dan foto pertemuan dibagikan malam itu. Jam mulai tepat tidak tercatat.",
+    "status": "published",
+    "tags": [
+      "VFC",
+      "Solo",
+      "meetup"
+    ],
+    "createdAt": "2026-11-21T20:20:00.000Z"
   }
 ]

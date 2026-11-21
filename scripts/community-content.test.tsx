@@ -21,7 +21,12 @@ describe("community content consistency", () => {
   it("keeps seed event IDs unique and validates backfilled logistics and cafe references", () => {
     expect(new Set(events.map((event) => event.id)).size).toBe(events.length);
     for (const event of events) {
-      expect(parseEventInput(event, true).error).toBeUndefined();
+      // Archive records may have a known date but no exact start time.
+      expect(event.title).toBeTruthy();
+      expect(event.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(event.location).toBeTruthy();
+      expect(parseEventInput(event, Boolean(event.time)).error).toBeUndefined();
+      if (!event.time) expect(event.description).toContain("Jam mulai tepat tidak tercatat");
       if (event.cafeId) expect(cafes.some((cafe) => cafe.slug === event.cafeId)).toBe(true);
       expect(JSON.stringify(event)).not.toMatch(/chat\.whatsapp\.com|@s\.whatsapp\.net|@g\.us/);
     }

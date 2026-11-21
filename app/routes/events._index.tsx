@@ -217,7 +217,7 @@ export default function Events() {
                   {event.date < new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) && (
                     <p className="mb-2 text-xs font-medium text-vfc-muted">Past event</p>
                   )}
-                  <p className="text-xs uppercase tracking-wide text-vfc-yellow">{formatEventDate(event.date)} • {formatEventTime(event.time)}</p>
+                  <p className="text-xs uppercase tracking-wide text-vfc-yellow">{formatEventDate(event.date)}{event.time ? ` • ${formatEventTime(event.time)}` : " • Jam mulai tidak tercatat"}</p>
                   <div className="mt-2 flex items-start justify-between gap-3">
                     <h2 className="text-xl font-semibold text-vfc-white">{event.title}</h2>
                     <a
