@@ -160,8 +160,8 @@ export default function Events() {
         <div>
           <h1 className="text-3xl font-bold text-vfc-white">Community Events</h1>
           <p className="mt-2 max-w-2xl text-vfc-muted">
-            Join VFC AI adoption sessions, coffee meetups, and open demos across
-            our chapter spaces.
+            Explore past VFC gatherings and check upcoming AI adoption sessions,
+            coffee meetups, and open demos.
           </p>
         </div>
         <button
@@ -214,7 +214,10 @@ export default function Events() {
 
               <div className="space-y-4 p-5">
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-vfc-yellow">{formatEventDate(event.date)} • {formatEventTime(event.time)}</p>
+                  {event.date < new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) && (
+                    <p className="mb-2 text-xs font-medium text-vfc-muted">Past event</p>
+                  )}
+                  <p className="text-xs uppercase tracking-wide text-vfc-yellow">{formatEventDate(event.date)}{event.time ? ` • ${formatEventTime(event.time)}` : " • Jam mulai tidak tercatat"}</p>
                   <div className="mt-2 flex items-start justify-between gap-3">
                     <h2 className="text-xl font-semibold text-vfc-white">{event.title}</h2>
                     <a
